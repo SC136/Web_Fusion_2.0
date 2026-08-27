@@ -77,15 +77,15 @@ export default function ProfilePage() {
                 {/* Left Side: Avatar + Details + Bio + Action Pills */}
                 <div className="flex-1 flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left z-10 min-w-0">
                   {/* Large Circular Avatar */}
-                  <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-[#E0F2FE] border-4 border-white shadow-md flex-shrink-0">
+                  <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-gradient-to-b from-[#E0F2FE] to-[#BAE6FD] border-4 border-white shadow-md flex-shrink-0">
                     <Image
-                      src="/dashboard.png"
+                      src="/mascots/blue_dress_hat.png"
                       alt={profileUser.name}
                       fill
-                      className="object-cover object-top scale-175 translate-y-1"
+                      className="object-cover object-top scale-115 translate-y-1"
                       priority
                     />
-                    <div className="absolute bottom-1 right-1 w-4 h-4 bg-[#16A34A] rounded-full border-2 border-white" title="Active on Campus" />
+                    <div className="absolute bottom-1 right-1 w-4 h-4 bg-[#16A34A] rounded-full border-2 border-white shadow-xs" title="Active on Campus" />
                   </div>
 
                   <div className="space-y-2 flex-1 min-w-0">
