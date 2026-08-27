@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import {
   currentUser,
   overviewStats,
@@ -11,50 +12,51 @@ import {
   upcomingReturns,
   recentMessages,
   popularSearches,
-  sidebarNav,
 } from "@/app/data/mockData";
 import { AppIcon } from "@/app/components/dashboard/Icons";
-import { useState } from "react";
+import AppNavbar from "@/app/components/layout/AppNavbar";
+import AppFooter from "@/app/components/layout/AppFooter";
+import Sidebar from "@/app/components/dashboard/Sidebar";
 
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="flex min-h-screen bg-[#FEFEFE]">
-      {/* ─── LEFT SIDEBAR (Desktop) ─────────────────────────── */}
-      <Sidebar />
+    <div className="min-h-screen bg-[#FBF7F0] text-[#18181B] flex flex-col select-none">
+      {/* ─── UNIFIED TOP NAVBAR ───────────────────────────────── */}
+      <AppNavbar variant="auth" />
 
-      {/* ─── MAIN AREA ──────────────────────────────────────── */}
-      <div className="flex-1 lg:ml-[220px] flex flex-col min-h-screen">
-        {/* Top Bar */}
-        <TopBar />
+      {/* ─── MAIN CONTENT BODY ────────────────────────────────── */}
+      <div className="flex-1 flex max-w-[1550px] w-full mx-auto">
+        {/* ─── UNIFIED LEFT SIDEBAR ───────────────────────────── */}
+        <Sidebar />
 
-        {/* Content */}
-        <div className="flex-1 flex">
-          {/* ─── CENTER CONTENT ─────────────────────────────── */}
-          <main className="flex-1 p-5 lg:p-6 overflow-y-auto max-h-[calc(100vh-56px)]">
-            {/* Welcome */}
-            <div className="flex items-start justify-between mb-5">
+        {/* ─── DASHBOARD CONTENT + RIGHT SIDEBAR ──────────────── */}
+        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+          {/* ─── MAIN CENTER AREA ─────────────────────────────── */}
+          <main className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-5">
+            {/* Welcome Banner */}
+            <div className="flex items-start justify-between">
               <div>
                 <h1
-                  className="text-2xl md:text-3xl font-bold text-[#18181B] mb-1"
+                  className="text-2xl sm:text-3xl font-bold text-[#18181B] tracking-normal mb-1 flex items-center gap-2"
                   style={{ fontFamily: "'Pixelify Sans', monospace" }}
                 >
                   Welcome back, {currentUser.name}!
                 </h1>
-                <p className="text-sm text-[#6B7280]">Let&apos;s make sharing the new normal.</p>
+                <p className="text-xs sm:text-sm text-[#52525B]">Let&apos;s make sharing the new normal.</p>
               </div>
-              <div className="hidden md:block w-[120px] h-[100px] relative">
+              <div className="hidden md:block w-[110px] h-[90px] relative">
                 <Image src="/hero-center.jpg" alt="mascot" fill className="object-contain mix-blend-multiply" />
               </div>
             </div>
 
             {/* AI Search Bar */}
-            <div className="bg-[#F0FDF4] border border-[#BBF7D0] rounded-2xl p-4 mb-5">
-              <p className="text-sm font-semibold text-[#166534] mb-2 flex items-center gap-2">
+            <div className="bg-[#F0FDF4] border border-[#BBF7D0] rounded-2xl p-4 shadow-2xs">
+              <p className="text-xs sm:text-sm font-semibold text-[#166534] mb-2 flex items-center gap-1.5">
                 <span>What do you need today?</span>
               </p>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <div className="relative flex-1">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9CA3AF]">
                     <AppIcon name="sparkles" size={16} className="text-[#16A34A]" />
@@ -65,12 +67,12 @@ export default function DashboardPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="e.g. I need a camera and tripod for a reel shoot tomorrow"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#D1D5DB] text-sm text-[#18181B] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#86EFAC] focus:border-transparent shadow-xs"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#D1D5DB] text-xs sm:text-sm text-[#18181B] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#86EFAC] focus:border-transparent shadow-2xs"
                   />
                 </div>
                 <button
                   id="ai-search-btn"
-                  className="px-5 py-2.5 bg-[#16A34A] text-white text-sm font-semibold rounded-xl hover:bg-[#15803D] transition-colors flex items-center gap-2 whitespace-nowrap shadow-xs"
+                  className="px-5 py-2.5 bg-[#16A34A] hover:bg-[#15803D] text-white text-xs sm:text-sm font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 whitespace-nowrap shadow-2xs cursor-pointer"
                 >
                   <span>Search with AI</span>
                   <AppIcon name="sparkles" size={15} />
@@ -81,7 +83,8 @@ export default function DashboardPage() {
                 {popularSearches.map((tag) => (
                   <button
                     key={tag}
-                    className="text-[11px] px-2.5 py-1 bg-white border border-[#E5E7EB] rounded-lg text-[#374151] hover:bg-[#F9FAFB] transition-colors"
+                    onClick={() => setSearchQuery(tag)}
+                    className="text-[11px] px-2.5 py-1 bg-white border border-[#E5E7EB] rounded-lg text-[#374151] hover:bg-[#F9FAFB] transition-colors cursor-pointer shadow-2xs"
                   >
                     {tag}
                   </button>
@@ -90,24 +93,24 @@ export default function DashboardPage() {
             </div>
 
             {/* Overview Stats */}
-            <div className="mb-5">
-              <h2 className="text-base font-bold text-[#18181B] mb-3">Overview</h2>
+            <div>
+              <h2 className="text-sm sm:text-base font-bold text-[#18181B] mb-3">Overview</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
                 {overviewStats.map((stat) => (
                   <div
                     key={stat.label}
-                    className="bg-white rounded-2xl border border-[#F3F4F6] p-4 hover:shadow-sm transition-shadow"
+                    className="bg-white rounded-2xl border border-[#F0EAE0] p-3.5 shadow-2xs hover:shadow-xs transition-shadow"
                   >
                     <div className="flex items-center gap-2.5 mb-2">
                       <div
-                        className="w-9 h-9 rounded-xl flex items-center justify-center"
+                        className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                         style={{ backgroundColor: stat.bgColor, color: stat.textColor }}
                       >
                         <AppIcon name={stat.icon} size={18} />
                       </div>
-                      <span className="text-xl font-bold text-[#18181B]">{stat.value}</span>
+                      <span className="text-lg sm:text-xl font-bold text-[#18181B]">{stat.value}</span>
                     </div>
-                    <p className="text-[11px] text-[#6B7280] font-medium">{stat.label}</p>
+                    <p className="text-[11px] text-[#6B7280] font-medium leading-tight">{stat.label}</p>
                     <p className="text-[10px] text-[#16A34A] font-semibold mt-0.5">{stat.change}</p>
                   </div>
                 ))}
@@ -115,30 +118,30 @@ export default function DashboardPage() {
             </div>
 
             {/* Activity Tracker */}
-            <div className="bg-white rounded-2xl border border-[#F3F4F6] p-4 mb-5">
-              <h2 className="text-base font-bold text-[#18181B] mb-4">Your Activity</h2>
-              <div className="flex items-center justify-between overflow-x-auto gap-1">
+            <div className="bg-white rounded-2xl border border-[#F0EAE0] p-4 shadow-2xs">
+              <h2 className="text-sm sm:text-base font-bold text-[#18181B] mb-3">Your Activity</h2>
+              <div className="flex items-center justify-between overflow-x-auto gap-1 pb-1">
                 {activityStages.map((stage, i) => (
                   <div key={stage.label} className="flex items-center">
-                    <div className="flex flex-col items-center min-w-[80px]">
+                    <div className="flex flex-col items-center min-w-[75px]">
                       <div
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center mb-1.5 transition-colors ${
+                        className={`w-9 h-9 rounded-xl flex items-center justify-center mb-1.5 transition-colors ${
                           stage.active
-                            ? "bg-[#18181B] text-white shadow-md"
-                            : "bg-[#F9FAFB] text-[#6B7280] border border-[#E5E7EB]"
+                            ? "bg-[#18181B] text-white shadow-xs"
+                            : "bg-[#FBF7F0] text-[#6B7280] border border-[#E5E7EB]"
                         }`}
                       >
-                        <AppIcon name={stage.icon} size={18} />
+                        <AppIcon name={stage.icon} size={16} />
                       </div>
                       <span
-                        className={`text-[11px] font-medium ${
+                        className={`text-[10px] sm:text-[11px] font-medium ${
                           stage.active ? "text-[#18181B] font-bold" : "text-[#9CA3AF]"
                         }`}
                       >
                         {stage.label}
                       </span>
                       <span
-                        className={`text-lg font-bold ${
+                        className={`text-base sm:text-lg font-bold ${
                           stage.active ? "text-[#18181B]" : "text-[#6B7280]"
                         }`}
                       >
@@ -146,7 +149,7 @@ export default function DashboardPage() {
                       </span>
                     </div>
                     {i < activityStages.length - 1 && (
-                      <div className="w-8 h-[2px] bg-[#E5E7EB] mx-1 mt-[-20px]" />
+                      <div className="w-6 sm:w-8 h-[2px] bg-[#E8E0D2] mx-1 mt-[-18px]" />
                     )}
                   </div>
                 ))}
@@ -154,48 +157,50 @@ export default function DashboardPage() {
             </div>
 
             {/* Bottom Row: Recommended + Categories */}
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-5">
+            <div className="grid grid-cols-1 xl:grid-cols-[1fr_260px] gap-5">
               {/* Recommended Items */}
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-base font-bold text-[#18181B] flex items-center gap-1.5">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-sm sm:text-base font-bold text-[#18181B] flex items-center gap-1.5">
                     <span>Recommended for You</span>
-                    <AppIcon name="sparkles" size={16} className="text-amber-500" />
+                    <AppIcon name="sparkles" size={15} className="text-amber-500" />
                   </h2>
-                  <button className="text-xs font-semibold text-[#16A34A] hover:underline">View all</button>
+                  <button className="text-xs font-semibold text-[#16A34A] hover:underline cursor-pointer">
+                    View all
+                  </button>
                 </div>
-                <p className="text-[11px] text-[#9CA3AF] mb-3 -mt-2">
+                <p className="text-[11px] text-[#9CA3AF] mb-3">
                   Based on your need: &quot;Camera and tripod for reel&quot;
                 </p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {recommendedItems.map((item) => (
                     <div
                       key={item.id}
-                      className="bg-white rounded-2xl border border-[#F3F4F6] overflow-hidden hover:shadow-md transition-shadow group cursor-pointer"
+                      className="bg-white rounded-2xl border border-[#F0EAE0] overflow-hidden hover:shadow-md transition-all group cursor-pointer"
                     >
-                      <div className="aspect-square bg-[#F9FAFB] relative overflow-hidden">
+                      <div className="aspect-square bg-[#FBF7F0] relative overflow-hidden">
                         <Image
                           src={item.image}
                           alt={item.name}
                           fill
-                          className="object-contain p-3 group-hover:scale-105 transition-transform duration-300"
+                          className="object-contain p-2.5 group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
                       <div className="p-3">
-                        <div className="flex items-center gap-2 text-[10px] text-[#6B7280] mb-1.5">
+                        <div className="flex items-center gap-1.5 text-[10px] text-[#6B7280] mb-1">
                           <span className="flex items-center gap-0.5 text-amber-500 font-semibold">
-                            <AppIcon name="star" size={12} className="fill-amber-400 text-amber-400" />
+                            <AppIcon name="star" size={11} className="fill-amber-400 text-amber-400" />
                             <span className="text-[#374151]">{item.rating}</span>
                           </span>
                           <span className="text-[#D1D5DB]">•</span>
                           <span className="flex items-center gap-0.5 text-[#6B7280]">
-                            <AppIcon name="map-pin" size={11} className="text-[#9CA3AF]" />
+                            <AppIcon name="map-pin" size={10} className="text-[#9CA3AF]" />
                             {item.distance}
                           </span>
                         </div>
-                        <p className="text-[13px] font-semibold text-[#18181B] mb-0.5 truncate">{item.name}</p>
-                        <p className="text-[10px] text-[#9CA3AF] mb-2">By {item.owner}</p>
-                        <p className="text-[13px] font-bold text-[#18181B]">{item.pricePerDay}</p>
+                        <p className="text-xs font-semibold text-[#18181B] mb-0.5 truncate">{item.name}</p>
+                        <p className="text-[10px] text-[#9CA3AF] mb-1.5">By {item.owner}</p>
+                        <p className="text-xs font-bold text-[#18181B]">{item.pricePerDay}</p>
                         <p className="text-[10px] text-[#16A34A] font-medium">{item.deposit}</p>
                       </div>
                     </div>
@@ -206,22 +211,24 @@ export default function DashboardPage() {
               {/* Popular Categories */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-base font-bold text-[#18181B]">Popular Categories</h2>
-                  <button className="text-xs font-semibold text-[#16A34A] hover:underline">View all</button>
+                  <h2 className="text-sm sm:text-base font-bold text-[#18181B]">Popular Categories</h2>
+                  <button className="text-xs font-semibold text-[#16A34A] hover:underline cursor-pointer">
+                    View all
+                  </button>
                 </div>
                 <div className="space-y-2">
                   {popularCategories.map((cat) => (
                     <div
                       key={cat.name}
-                      className="flex items-center gap-3 bg-white rounded-xl border border-[#F3F4F6] px-4 py-3 hover:shadow-sm transition-shadow cursor-pointer"
+                      className="flex items-center gap-3 bg-white rounded-xl border border-[#F0EAE0] px-3.5 py-2.5 hover:shadow-2xs transition-shadow cursor-pointer"
                     >
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${cat.color}`}>
-                        <AppIcon name={cat.icon} size={16} />
+                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${cat.color}`}>
+                        <AppIcon name={cat.icon} size={15} />
                       </div>
-                      <div className="flex-1">
-                        <p className="text-[13px] font-medium text-[#18181B]">{cat.name}</p>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-[#18181B] truncate">{cat.name}</p>
                       </div>
-                      <span className="text-[11px] text-[#9CA3AF] font-medium">{cat.count} items</span>
+                      <span className="text-[11px] text-[#9CA3AF] font-medium whitespace-nowrap">{cat.count} items</span>
                     </div>
                   ))}
                 </div>
@@ -229,219 +236,122 @@ export default function DashboardPage() {
             </div>
           </main>
 
-          {/* ─── RIGHT SIDEBAR ─────────────────────────────────── */}
-          <aside className="hidden xl:block w-[280px] border-l border-[#F3F4F6] p-5 overflow-y-auto max-h-[calc(100vh-56px)] space-y-5 flex-shrink-0">
-            {/* Trust Score */}
-            <div className="bg-white rounded-2xl border border-[#F3F4F6] p-4">
-              <h3 className="text-sm font-bold text-[#18181B] mb-3">Your Trust Score</h3>
+          {/* ─── RIGHT SIDEBAR WIDGETS ───────────────────────── */}
+          <aside className="w-full lg:w-[280px] p-4 sm:p-6 lg:pl-0 space-y-4 flex-shrink-0">
+            {/* Trust Score Card */}
+            <Link
+              href="/profile"
+              id="dashboard-trust-widget"
+              className="bg-white rounded-2xl border border-[#F0EAE0] p-4 block hover:shadow-md transition-shadow group shadow-2xs"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-xs font-bold text-[#18181B] uppercase tracking-wide group-hover:text-[#16A34A] transition-colors">
+                  Your Trust Score
+                </h3>
+                <span className="text-[10px] font-bold text-[#16A34A] flex items-center gap-1">
+                  View Profile <AppIcon name="arrow-right" size={11} />
+                </span>
+              </div>
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-12 h-12 rounded-full bg-[#F0FDF4] border-2 border-[#16A34A] flex items-center justify-center text-[#16A34A]">
-                  <AppIcon name="shield-check" size={24} />
+                <div className="w-11 h-11 rounded-full bg-[#F0FDF4] border-2 border-[#16A34A] flex items-center justify-center text-[#16A34A]">
+                  <AppIcon name="shield-check" size={22} />
                 </div>
                 <div>
                   <div className="flex items-baseline gap-1">
                     <span className="text-2xl font-bold text-[#18181B]">{currentUser.trustScore}</span>
-                    <span className="text-sm text-[#9CA3AF]">/ 5</span>
+                    <span className="text-xs text-[#9CA3AF]">/ 5</span>
                   </div>
-                  <span className="text-[11px] font-semibold text-[#16A34A] bg-[#F0FDF4] px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-bold text-[#16A34A] bg-[#F0FDF4] px-2 py-0.5 rounded-full">
                     Excellent
                   </span>
                 </div>
               </div>
-              <div className="space-y-2 text-[12px] text-[#6B7280]">
+              <div className="space-y-1.5 text-[11px] text-[#6B7280]">
                 <div className="flex items-center gap-2">
-                  <span className="text-[#3B82F6]"><AppIcon name="repeat" size={14} /></span>
+                  <span className="text-[#3B82F6]"><AppIcon name="repeat" size={13} /></span>
                   <span>{currentUser.successfulExchanges} Successful Exchanges</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[#10B981]"><AppIcon name="clock-check" size={14} /></span>
+                  <span className="text-[#10B981]"><AppIcon name="clock-check" size={13} /></span>
                   <span>{currentUser.lateReturns} Late Returns</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[#F59E0B]"><AppIcon name="alert-circle" size={14} /></span>
+                  <span className="text-[#F59E0B]"><AppIcon name="alert-circle" size={13} /></span>
                   <span>{currentUser.disputes} Disputes</span>
                 </div>
               </div>
-              <div className="mt-3 pt-3 border-t border-[#F3F4F6]">
-                <div className="flex items-center gap-1.5 text-[12px]">
-                  <span className="text-[#16A34A]"><AppIcon name="shield-check" size={15} /></span>
-                  <span className="font-semibold text-[#18181B]">Verified Member</span>
-                </div>
-                <p className="text-[11px] text-[#9CA3AF] ml-5">{currentUser.department}, {currentUser.year}</p>
-              </div>
-            </div>
+            </Link>
 
             {/* Upcoming Returns */}
-            <div className="bg-white rounded-2xl border border-[#F3F4F6] p-4">
+            <div className="bg-white rounded-2xl border border-[#F0EAE0] p-4 shadow-2xs">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-bold text-[#18181B]">Upcoming Returns</h3>
-                <button className="text-[11px] font-semibold text-[#16A34A] hover:underline">View all</button>
+                <h3 className="text-xs font-bold text-[#18181B] uppercase tracking-wide">Upcoming Returns</h3>
+                <button className="text-[10px] font-semibold text-[#16A34A] hover:underline cursor-pointer">View all</button>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {upcomingReturns.map((ret) => (
-                  <div key={ret.id} className="flex items-center gap-3">
-                    <div className={`w-9 h-9 rounded-full ${ret.avatarBg} flex items-center justify-center font-bold text-xs`}>
+                  <div key={ret.id} className="flex items-center gap-2.5">
+                    <div className={`w-8 h-8 rounded-full ${ret.avatarBg} flex items-center justify-center font-bold text-[11px] flex-shrink-0`}>
                       {ret.initials}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-semibold text-[#18181B] truncate">{ret.item}</p>
-                      <p className="text-[11px] text-[#9CA3AF]">By {ret.owner}</p>
+                      <p className="text-xs font-semibold text-[#18181B] truncate">{ret.item}</p>
+                      <p className="text-[10px] text-[#9CA3AF]">By {ret.owner}</p>
                     </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <span
-                        className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                          ret.urgent
-                            ? "bg-[#FEF2F2] text-[#DC2626]"
-                            : "bg-[#FEF3C7] text-[#D97706]"
-                        }`}
-                      >
-                        {ret.dueIn}
-                      </span>
-                      <button className="text-[#9CA3AF] hover:text-[#18181B] transition-colors">
-                        <AppIcon name="eye" size={14} />
-                      </button>
-                    </div>
+                    <span
+                      className={`text-[9px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
+                        ret.urgent
+                          ? "bg-[#FEF2F2] text-[#DC2626]"
+                          : "bg-[#FEF3C7] text-[#D97706]"
+                      }`}
+                    >
+                      {ret.dueIn}
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Recent Messages */}
-            <div className="bg-white rounded-2xl border border-[#F3F4F6] p-4">
+            <div className="bg-white rounded-2xl border border-[#F0EAE0] p-4 shadow-2xs">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-bold text-[#18181B]">Recent Messages</h3>
-                <button className="text-[11px] font-semibold text-[#16A34A] hover:underline">View all</button>
+                <h3 className="text-xs font-bold text-[#18181B] uppercase tracking-wide">Recent Messages</h3>
+                <button className="text-[10px] font-semibold text-[#16A34A] hover:underline cursor-pointer">View all</button>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {recentMessages.map((msg) => (
-                  <div key={msg.id} className="flex items-center gap-3">
-                    <div className={`w-9 h-9 rounded-full ${msg.avatarBg} flex items-center justify-center font-bold text-xs`}>
+                  <div key={msg.id} className="flex items-center gap-2.5">
+                    <div className={`w-8 h-8 rounded-full ${msg.avatarBg} flex items-center justify-center font-bold text-[11px] flex-shrink-0`}>
                       {msg.initials}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-semibold text-[#18181B] truncate">{msg.name}</p>
-                      <p className="text-[11px] text-[#9CA3AF] truncate">{msg.message}</p>
+                      <p className="text-xs font-semibold text-[#18181B] truncate">{msg.name}</p>
+                      <p className="text-[10px] text-[#9CA3AF] truncate">{msg.message}</p>
                     </div>
-                    <span className="text-[10px] text-[#9CA3AF] whitespace-nowrap">{msg.time}</span>
+                    <span className="text-[9px] text-[#9CA3AF] whitespace-nowrap">{msg.time}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Impact Card */}
-            <div className="bg-gradient-to-br from-[#065F46] to-[#047857] rounded-2xl p-4 text-white">
+            <div className="bg-gradient-to-br from-[#065F46] to-[#047857] rounded-2xl p-4 text-white shadow-2xs">
               <div className="flex items-center justify-between mb-1">
                 <p className="text-xs font-semibold opacity-90">Every share counts!</p>
                 <AppIcon name="leaf" size={16} className="text-emerald-200" />
               </div>
-              <p className="text-[11px] opacity-75 mb-2">You&apos;ve helped save</p>
-              <p className="text-3xl font-bold mb-0.5">
-                {currentUser.co2Saved} kg CO<sub className="text-base font-normal">2</sub>
+              <p className="text-[10px] opacity-75 mb-1.5">You&apos;ve helped save</p>
+              <p className="text-2xl font-bold mb-0.5">
+                {currentUser.co2Saved} kg CO<sub className="text-sm font-normal">2</sub>
               </p>
-              <p className="text-[11px] opacity-75">this month</p>
+              <p className="text-[10px] opacity-75">this month</p>
             </div>
           </aside>
         </div>
       </div>
+
+      {/* ─── UNIFIED BOTTOM FOOTER ────────────────────────────── */}
+      <AppFooter />
     </div>
-  );
-}
-
-/* ─── SIDEBAR ────────────────────────────────────────────────── */
-function SidebarIcon({ name }: { name: string }) {
-  const p: Record<string, string> = {
-    grid: "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z",
-    search: "M11 3a8 8 0 100 16 8 8 0 000-16zM21 21l-4.3-4.3",
-    sparkles: "M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5z",
-    inbox: "M22 12l-6 0-2 3h-4l-2-3-6 0",
-    "arrow-up-right": "M7 17L17 7M7 7h10v10",
-    list: "M8 6h13M8 12h13M8 18h13",
-    message: "M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z",
-    star: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z",
-    leaf: "M11 20A7 7 0 019.8 6.9C15.5 4.9 17 3.5 19 2c1 2 2 4.5 2 8 0 5.5-4.5 10-10 10z",
-    shield: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
-  };
-  return (
-    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-      <path d={p[name] || ""} />
-    </svg>
-  );
-}
-
-function Sidebar() {
-  return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-[#FDFBF1] border-r border-[#E8E4D8] flex flex-col z-40 hidden lg:flex">
-      {/* Logo */}
-      <div className="px-5 py-5 flex items-center gap-2.5">
-        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#3B82F6] via-[#10B981] to-[#84CC16] p-[2px] flex items-center justify-center">
-          <div className="w-full h-full bg-[#FDFBF1] rounded-full flex items-center justify-center">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38" />
-            </svg>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-[10px] font-black tracking-tight text-[#18181B] leading-none">CAMPUS</span>
-          <span className="text-[10px] font-black tracking-tight text-[#18181B] leading-none">CIRCULAR</span>
-        </div>
-      </div>
-
-      {/* Nav */}
-      <nav className="flex-1 px-3 py-2 space-y-0.5 overflow-y-auto">
-        {sidebarNav.map((item) => (
-          <Link
-            key={item.label}
-            href={item.href}
-            id={`sidebar-${item.label.toLowerCase().replace(/\s/g, "-")}`}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all ${
-              item.active
-                ? "bg-[#EAF7EE] text-[#166534] font-semibold"
-                : "text-[#6B7280] hover:bg-[#F5F2E8] hover:text-[#18181B]"
-            }`}
-          >
-            <span className={item.active ? "text-[#16A34A]" : "text-[#9CA3AF]"}>
-              <SidebarIcon name={item.icon} />
-            </span>
-            {item.label}
-          </Link>
-        ))}
-      </nav>
-
-      {/* User */}
-      <div className="px-4 py-4 border-t border-[#E8E4D8]">
-        <div className="flex items-center gap-3">
-          <div className={`w-9 h-9 rounded-full ${currentUser.avatarBg} flex items-center justify-center font-bold text-xs`}>
-            {currentUser.initials}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-semibold text-[#18181B] truncate">Hey, {currentUser.name}!</p>
-            <p className="text-[11px] text-[#9CA3AF]">View Profile</p>
-          </div>
-        </div>
-      </div>
-    </aside>
-  );
-}
-
-/* ─── TOP BAR ────────────────────────────────────────────────── */
-function TopBar() {
-  return (
-    <header className="h-14 border-b border-[#EDE9DA] bg-[#FEFEFE] px-5 flex items-center justify-end gap-4 flex-shrink-0 sticky top-0 z-30">
-      <button id="topbar-notifications" className="w-9 h-9 rounded-xl bg-[#F9FAFB] flex items-center justify-center hover:bg-[#F3F4F6] transition-colors relative">
-        <svg width="18" height="18" fill="none" stroke="#6B7280" strokeWidth="2" viewBox="0 0 24 24">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-        </svg>
-        <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-[#EF4444] rounded-full border-2 border-white" />
-      </button>
-      <button id="topbar-messages" className="w-9 h-9 rounded-xl bg-[#F9FAFB] flex items-center justify-center hover:bg-[#F3F4F6] transition-colors">
-        <svg width="18" height="18" fill="none" stroke="#6B7280" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg>
-      </button>
-      <div className={`w-9 h-9 rounded-full ${currentUser.avatarBg} flex items-center justify-center font-bold text-xs cursor-pointer hover:ring-2 hover:ring-[#16A34A] transition-all`}>
-        {currentUser.initials}
-      </div>
-    </header>
   );
 }
