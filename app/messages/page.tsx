@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Sidebar from "@/app/components/dashboard/Sidebar";
-import TopBar from "@/app/components/dashboard/TopBar";
+import AppNavbar from "@/app/components/layout/AppNavbar";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 import { mockChatThreads, currentUser } from "@/app/data/mockData";
 
@@ -101,13 +101,17 @@ export default function MessagesPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#FBF7F0] text-[#18181B] select-none">
-      {/* ─── Persistent Left Sidebar ───────────────────────────── */}
-      <Sidebar />
+    <div className="min-h-screen bg-[#FBF7F0] text-[#18181B] select-none flex flex-col">
+      {/* ─── Master Continuous Top Navbar ─────────────────────── */}
+      <AppNavbar variant="auth" />
 
-      {/* ─── Main Content Area ─────────────────────────────────── */}
-      <div className="flex-1 lg:ml-[240px] flex flex-col h-screen overflow-hidden">
-        <TopBar />
+      {/* ─── Main Body (Sidebar + Content) ─────────────────── */}
+      <div className="flex-1 flex w-full">
+        {/* ─── Persistent Left Sidebar ────────────────────────── */}
+        <Sidebar />
+
+        {/* ─── Main Content Area ──────────────────────────────── */}
+        <div className="flex-1 lg:ml-[240px] flex flex-col h-[calc(100vh-64px)] overflow-hidden min-w-0">
 
         {/* ─── Chat Container (2-Column Layout) ─────────────────── */}
         <div className="flex-1 flex overflow-hidden p-4 sm:p-6 gap-4">
@@ -414,6 +418,8 @@ export default function MessagesPage() {
           </div>
         </div>
       )}
+        </div>
+      </div>
     </div>
   );
 }

@@ -10,9 +10,7 @@ interface AppNavbarProps {
 
 const navLinks = [
   { label: "Browse", href: "/browse" },
-  { label: "AI Assistant", href: "/ai-assistant" },
   { label: "How it Works", href: "/how-it-works" },
-  { label: "For You", href: "/dashboard" },
   { label: "Impact", href: "/impact" },
   { label: "Help", href: "/help" },
 ];
@@ -36,23 +34,13 @@ export default function AppNavbar({ variant = "auth" }: AppNavbarProps) {
       </Link>
 
       {/* ─── Center Nav Links ─────────────────────────────────── */}
-      <nav className="hidden md:flex items-center gap-7">
+      <nav className="hidden md:flex items-center gap-8">
         {navLinks.map((item) => {
           let isActive = false;
           if (item.label === "Browse") {
             isActive = pathname.startsWith("/browse");
-          } else if (item.label === "AI Assistant") {
-            isActive = pathname.startsWith("/ai-assistant");
           } else if (item.label === "How it Works") {
             isActive = pathname.startsWith("/how-it-works");
-          } else if (item.label === "For You") {
-            isActive =
-              pathname === "/dashboard" ||
-              pathname === "/" ||
-              pathname.startsWith("/listings") ||
-              pathname.startsWith("/loans") ||
-              pathname.startsWith("/requests") ||
-              pathname.startsWith("/profile");
           } else if (item.label === "Impact") {
             isActive = pathname.startsWith("/impact");
           } else if (item.label === "Help") {

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/app/components/dashboard/Sidebar";
-import TopBar from "@/app/components/dashboard/TopBar";
+import AppNavbar from "@/app/components/layout/AppNavbar";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 import { mockAiBundles, browseResources } from "@/app/data/mockData";
 
@@ -118,13 +118,17 @@ export default function AiAssistantPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#FBF7F0] text-[#18181B] select-none">
-      {/* ─── Left Persistent Sidebar ───────────────────────────── */}
-      <Sidebar />
+    <div className="min-h-screen bg-[#FBF7F0] text-[#18181B] select-none flex flex-col">
+      {/* ─── Master Continuous Top Navbar ─────────────────────── */}
+      <AppNavbar variant="auth" />
 
-      {/* ─── Main Content Area ─────────────────────────────────── */}
-      <div className="flex-1 lg:ml-[240px] flex flex-col min-h-screen">
-        <TopBar />
+      {/* ─── Main Body (Sidebar + Content) ─────────────────── */}
+      <div className="flex-1 flex w-full">
+        {/* ─── Left Persistent Sidebar ────────────────────────── */}
+        <Sidebar />
+
+        {/* ─── Main Content Area ──────────────────────────────── */}
+        <div className="flex-1 lg:ml-[240px] flex flex-col min-w-0 min-h-[calc(100vh-64px)]">
 
         {/* ─── Hero Header ─────────────────────────────────────── */}
         <div className="px-5 lg:px-8 pt-6 pb-2 w-full">
@@ -454,6 +458,7 @@ export default function AiAssistantPage() {
             </div>
           </div>
         </main>
+        </div>
       </div>
 
       {/* ─── 1-Click Bundle Borrow Confirmation Modal ──────────── */}
