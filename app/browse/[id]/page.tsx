@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import AppNavbar from "@/app/components/layout/AppNavbar";
-import { browseResources } from "@/app/data/mockData";
+import { browseResources, recommendedItems } from "@/app/data/mockData";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 
 export default function ProductDetailPage() {
@@ -13,9 +13,38 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const id = params?.id as string;
 
+  // Map recommendedItems to full product shape if needed
+  const foundRec = recommendedItems.find((r) => r.id === id);
+  const normalizedRec = foundRec
+    ? {
+        id: foundRec.id,
+        title: foundRec.name,
+        category: "Photography & Media",
+        image: foundRec.image,
+        status: "Available Now",
+        statusType: "now",
+        isFavorite: false,
+        owner: foundRec.owner,
+        department: "Campus Verified Lender",
+        avatarBg: "bg-blue-100 text-blue-800",
+        initials: foundRec.owner
+          .split(" ")
+          .map((n) => n[0])
+          .join(""),
+        rating: foundRec.rating,
+        reviews: 28,
+        distance: parseFloat(foundRec.distance) || 0.8,
+        condition: "Like New",
+        dailyRate: parseInt(foundRec.pricePerDay.replace(/[^0-9]/g, "")) || 150,
+        deposit: parseInt(foundRec.deposit.replace(/[^0-9]/g, "")) || 1000,
+        lateFee: 40,
+      }
+    : null;
+
   // Find product or fallback to first item
   const product =
     browseResources.find((p) => p.id === id) ||
+    normalizedRec ||
     browseResources[0];
 
   // Gallery active images

@@ -66,26 +66,29 @@ export default function DashboardPage() {
                       className="flex-1 px-4 py-2.5 rounded-xl bg-white border border-[#E5E7EB] text-xs md:text-sm text-[#18181B] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#86EFAC] focus:border-transparent shadow-2xs"
                     />
                     <button
-                      id="ai-search-btn"
-                      className="px-4 md:px-5 py-2.5 bg-[#6F9535] hover:bg-[#61832C] text-white text-xs md:text-[13px] font-semibold rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap shadow-xs cursor-pointer active:scale-98"
+                      type="submit"
+                      id="dashboard-ai-search-btn"
+                      className="bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 hover:from-[#8AC538] hover:to-[#72A627] transition-all shadow-xs active:translate-y-0.5 cursor-pointer whitespace-nowrap"
                     >
                       <span>Search with AI</span>
-                      <span className="text-sm">✨</span>
+                      <AppIcon name="sparkles" size={15} />
                     </button>
                   </div>
-                  <div className="flex items-center gap-2 mt-3 flex-wrap">
-                    <span className="text-[11px] text-[#6B7280] font-medium">Popular:</span>
-                    {popularSearches.map((tag) => (
-                      <button
+
+                  {/* Popular Tags */}
+                  <div className="flex items-center gap-2 flex-wrap text-xs text-[#6B7280]">
+                    <span className="font-medium text-[#4B5563]">Popular:</span>
+                    {["Camera + Tripod", "Projector", "Mic", "Lighting", "Calculator"].map((tag) => (
+                      <Link
                         key={tag}
-                        onClick={() => setSearchQuery(tag)}
-                        className="text-[11px] px-3 py-1 bg-white/90 border border-[#E0E7D5] rounded-xl text-[#374151] hover:bg-white hover:border-[#CBD5C0] hover:text-[#18181B] transition-colors cursor-pointer shadow-2xs"
+                        href={`/browse?search=${encodeURIComponent(tag)}`}
+                        className="text-[11px] px-3 py-1 bg-white/90 border border-[#E0E7D5] rounded-xl text-[#374151] hover:bg-white hover:border-[#6F9535] hover:text-[#18181B] transition-colors cursor-pointer shadow-2xs"
                       >
                         {tag}
-                      </button>
+                      </Link>
                     ))}
                   </div>
-                </div>
+                </form>
               </div>
 
               {/* Right Column: 3D Mascot Illustration */}
@@ -101,7 +104,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Overview Stats */}
-            <div className="bg-white rounded-2xl border border-[#EDE8C8] p-4 md:p-5 mb-5">
+            <div className="bg-white rounded-2xl border border-[#EDE8C8] p-4 md:p-5 mb-5 shadow-2xs">
               <h2 className="text-base font-bold text-[#18181B] mb-3">Overview</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
                 {overviewStats.map((stat) => (
@@ -127,7 +130,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Activity Tracker */}
-            <div className="bg-[#FEFAEE] rounded-2xl border border-[#EDE8C8] p-4 md:p-5 mb-5">
+            <div className="bg-[#FEFAEE] rounded-2xl border border-[#EDE8C8] p-4 md:p-5 mb-5 shadow-2xs">
               <h2 className="text-base font-bold text-[#18181B] mb-4">Your Activity</h2>
               <div className="flex items-center justify-between overflow-x-auto gap-2 px-2">
                 {activityStages.map((stage, i) => {
@@ -186,16 +189,19 @@ export default function DashboardPage() {
                     <span>Recommended for You</span>
                     <AppIcon name="sparkles" size={16} className="text-amber-500" />
                   </h2>
-                  <button className="text-xs font-semibold text-[#16A34A] hover:underline">View all</button>
+                  <Link href="/browse" className="text-xs font-semibold text-[#16A34A] hover:underline cursor-pointer">
+                    View all
+                  </Link>
                 </div>
                 <p className="text-[11px] text-[#9CA3AF] mb-3 -mt-2">
                   Based on your need: &quot;Camera and tripod for reel&quot;
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {recommendedItems.map((item) => (
-                    <div
+                    <Link
                       key={item.id}
-                      className="bg-white rounded-2xl border border-[#F3F4F6] overflow-hidden hover:shadow-md transition-shadow group cursor-pointer"
+                      href={`/browse/${item.id}`}
+                      className="bg-white rounded-2xl border border-[#EDE8C8] overflow-hidden hover:shadow-md transition-all group cursor-pointer flex flex-col justify-between block"
                     >
                       <div className="aspect-square bg-[#F9FAFB] relative overflow-hidden">
                         <Image
@@ -217,12 +223,12 @@ export default function DashboardPage() {
                             {item.distance}
                           </span>
                         </div>
-                        <p className="text-[13px] font-semibold text-[#18181B] mb-0.5 truncate">{item.name}</p>
+                        <p className="text-[13px] font-semibold text-[#18181B] mb-0.5 truncate group-hover:text-[#16A34A] transition-colors">{item.name}</p>
                         <p className="text-[10px] text-[#9CA3AF] mb-2">By {item.owner}</p>
                         <p className="text-[13px] font-bold text-[#18181B]">{item.pricePerDay}</p>
                         <p className="text-[10px] text-[#16A34A] font-medium">{item.deposit}</p>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -231,22 +237,25 @@ export default function DashboardPage() {
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <h2 className="text-base font-bold text-[#18181B]">Popular Categories</h2>
-                  <button className="text-xs font-semibold text-[#16A34A] hover:underline">View all</button>
+                  <Link href="/browse" className="text-xs font-semibold text-[#16A34A] hover:underline cursor-pointer">
+                    View all
+                  </Link>
                 </div>
                 <div className="space-y-2">
                   {popularCategories.map((cat) => (
-                    <div
+                    <Link
                       key={cat.name}
-                      className="flex items-center gap-3 bg-white rounded-xl border border-[#F3F4F6] px-4 py-3 hover:shadow-sm transition-shadow cursor-pointer"
+                      href={`/browse?category=${encodeURIComponent(cat.name)}`}
+                      className="flex items-center gap-3 bg-white rounded-xl border border-[#EDE8C8] px-4 py-3 hover:shadow-sm hover:border-[#6F9535]/50 transition-all cursor-pointer block group"
                     >
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${cat.color}`}>
                         <AppIcon name={cat.icon} size={16} />
                       </div>
                       <div className="flex-1">
-                        <p className="text-[13px] font-medium text-[#18181B]">{cat.name}</p>
+                        <p className="text-[13px] font-medium text-[#18181B] group-hover:text-[#16A34A] transition-colors">{cat.name}</p>
                       </div>
                       <span className="text-[11px] text-[#9CA3AF] font-medium">{cat.count} items</span>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -256,8 +265,11 @@ export default function DashboardPage() {
           {/* ─── RIGHT SIDEBAR ─────────────────────────────────── */}
           <aside className="hidden xl:flex w-[280px] 2xl:w-[290px] border-l border-[#EDE8C8] p-4 flex-col gap-3.5 flex-shrink-0 bg-[#FEFEFE] h-[calc(100vh-56px)] justify-between overflow-hidden">
             {/* Trust Score */}
-            <div className="bg-white rounded-2xl border border-[#EDE8C8] p-4 shadow-2xs">
-              <h3 className="text-[13px] font-bold text-[#18181B] mb-2.5">Your Trust Score</h3>
+            <Link href="/profile" className="bg-white rounded-2xl border border-[#EDE8C8] p-4 shadow-2xs hover:shadow-sm transition-all block group">
+              <div className="flex items-center justify-between mb-2.5">
+                <h3 className="text-[13px] font-bold text-[#18181B] group-hover:text-[#16A34A] transition-colors">Your Trust Score</h3>
+                <span className="text-[11px] text-[#16A34A] font-semibold">View Profile →</span>
+              </div>
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 rounded-xl bg-[#F0FDF4] border border-[#BBF7D0] flex items-center justify-center text-[#16A34A] flex-shrink-0">
                   <AppIcon name="shield-check" size={22} />
