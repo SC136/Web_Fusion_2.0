@@ -169,25 +169,37 @@ body {
 /* ─── Scrollbar Styling ──────────────────────────────────────── */
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F3F3F5;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 4px;
+  background: #D1D5DB;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #aaa;
+  background: #9CA3AF;
 }
 
 /* ─── Selection ──────────────────────────────────────────────── */
 
 ::selection {
-  background: #C8E6C9;
+  background: #BBF7D0;
   color: #1a1a1a;
+}
+
+/* ─── Dashboard Utilities ────────────────────────────────────── */
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
