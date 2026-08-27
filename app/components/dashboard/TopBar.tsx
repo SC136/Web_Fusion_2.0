@@ -3,13 +3,15 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import NotificationDropdown from "@/app/components/dashboard/NotificationDropdown";
 
 const navLinks = [
   { label: "Browse", href: "/browse" },
-  { label: "How it Works", href: "/#how-it-works" },
+  { label: "AI Assistant", href: "/ai-assistant" },
+  { label: "How it Works", href: "/how-it-works" },
   { label: "For You", href: "/dashboard" },
-  { label: "Impact", href: "/dashboard#impact" },
-  { label: "Help", href: "/dashboard#help" },
+  { label: "Impact", href: "/impact" },
+  { label: "Help", href: "/help" },
 ];
 
 export default function TopBar() {
@@ -33,7 +35,7 @@ export default function TopBar() {
       {/* ─── Center / Left Nav Links ────────────────────────── */}
       <nav className="hidden md:flex items-center gap-7">
         {navLinks.map((item) => {
-          const isActive = pathname === item.href || (item.href === "/dashboard" && pathname === "/dashboard");
+          const isActive = pathname === item.href || (item.href === "/browse" && pathname.startsWith("/browse"));
           return (
             <Link
               key={item.label}
@@ -53,18 +55,8 @@ export default function TopBar() {
 
       {/* ─── Right Section: Bell with dot, Log Out, Character Avatar + Chevron ─ */}
       <div className="flex items-center gap-3.5 ml-auto">
-        {/* Notification Bell */}
-        <button
-          id="topbar-notifications"
-          aria-label="Notifications"
-          className="w-10 h-10 rounded-full bg-white border border-[#E5E7EB] flex items-center justify-center relative shadow-xs hover:bg-[#F9FAFB] transition-all cursor-pointer flex-shrink-0"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18181B" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
-          <span className="absolute top-1.5 right-1.5 w-3 h-3 bg-[#EA4335] rounded-full ring-2 ring-white" />
-        </button>
+        {/* Notification Dropdown Bell */}
+        <NotificationDropdown />
 
         {/* Log Out Pill */}
         <Link

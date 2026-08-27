@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import NotificationDropdown from "@/app/components/dashboard/NotificationDropdown";
 
 interface AppNavbarProps {
   variant?: "auth" | "guest";
@@ -80,18 +81,8 @@ export default function AppNavbar({ variant = "auth" }: AppNavbarProps) {
       <div className="flex items-center gap-3.5">
         {variant === "auth" ? (
           <>
-            {/* Notification Bell */}
-            <button
-              id="nav-bell"
-              aria-label="Notifications"
-              className="w-10 h-10 rounded-full bg-white border border-[#E5E7EB] flex items-center justify-center relative shadow-xs hover:bg-[#F9FAFB] transition-all cursor-pointer flex-shrink-0"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18181B" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-              </svg>
-              <span className="absolute top-1.5 right-1.5 w-3 h-3 bg-[#EA4335] rounded-full ring-2 ring-white" />
-            </button>
+            {/* Notification Dropdown Bell */}
+            <NotificationDropdown />
 
             {/* Log Out Pill Button */}
             <Link
