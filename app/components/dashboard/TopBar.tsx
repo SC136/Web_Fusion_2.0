@@ -2,33 +2,44 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const navLinks = [
-  { label: "Browse", href: "/dashboard" },
-  { label: "How it Works", href: "/dashboard" },
+  { label: "Browse", href: "/browse" },
+  { label: "How it Works", href: "/#how-it-works" },
   { label: "For You", href: "/dashboard" },
-  { label: "Impact", href: "/dashboard" },
-  { label: "Help", href: "/dashboard" },
+  { label: "Impact", href: "/dashboard#impact" },
+  { label: "Help", href: "/dashboard#help" },
 ];
 
 export default function TopBar() {
+  const pathname = usePathname();
+
   return (
-    <header className="h-16 border-b border-[#EDE8C8] bg-[#FEFEFE] px-6 lg:px-8 flex items-center justify-between gap-4 flex-shrink-0 sticky top-0 z-30 select-none">
+    <header className="h-16 border-b border-[#EDE8C8] bg-[#FDFBF1] px-6 lg:px-8 flex items-center justify-between gap-4 flex-shrink-0 sticky top-0 z-30 select-none">
       {/* ─── Center / Left Nav Links ────────────────────────── */}
       <nav className="hidden md:flex items-center gap-7">
-        {navLinks.map((item) => (
-          <Link
-            key={item.label}
-            href={item.href}
-            className="text-xs lg:text-[13.5px] font-semibold text-[#52525B] hover:text-[#18181B] transition-colors"
-          >
-            {item.label}
-          </Link>
-        ))}
+        {navLinks.map((item) => {
+          const isActive = pathname === item.href || (item.href === "/dashboard" && pathname === "/dashboard");
+          return (
+            <Link
+              key={item.label}
+              href={item.href}
+              className={`text-xs lg:text-[13.5px] font-semibold transition-all relative py-1 ${
+                isActive ? "text-[#18181B] font-bold" : "text-[#52525B] hover:text-[#18181B]"
+              }`}
+            >
+              {item.label}
+              {isActive && (
+                <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#6F9535] rounded-full" />
+              )}
+            </Link>
+          );
+        })}
       </nav>
 
       {/* ─── Right Section: Bell with dot, Log Out, Character Avatar + Chevron ─ */}
-      <div className="flex items-center gap-4 ml-auto">
+      <div className="flex items-center gap-3.5 ml-auto">
         {/* Notification Bell */}
         <button
           id="topbar-notifications"
@@ -55,7 +66,7 @@ export default function TopBar() {
         <Link
           href="/profile"
           id="topbar-avatar-btn"
-          className="flex items-center gap-1.5 cursor-pointer group select-none ml-1"
+          className="flex items-center gap-1.5 cursor-pointer group select-none ml-0.5"
         >
           <div className="w-10 h-10 rounded-full bg-white border border-[#E5E7EB] relative overflow-hidden flex items-center justify-center shadow-xs group-hover:ring-2 group-hover:ring-[#16A34A] transition-all flex-shrink-0">
             <Image
@@ -75,7 +86,7 @@ export default function TopBar() {
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="transition-transform group-hover:translate-y-0.5"
+            className="transition-transform group-hover:translate-y-0.5 hidden sm:block"
           >
             <path d="m6 9 6 6 6-6" />
           </svg>
