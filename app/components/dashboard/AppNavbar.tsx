@@ -8,21 +8,15 @@ export default function AppNavbar() {
   return (
     <header className="h-16 px-5 md:px-8 flex items-center justify-between border-b border-[#EFE8DC] bg-[#FBF7F0] sticky top-0 z-40 w-full select-none flex-shrink-0">
       {/* ─── Logo ────────────────────────────────────────────── */}
-      <Link href="/" className="flex items-center gap-2.5 group" id="app-nav-logo">
-        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#3B82F6] via-[#10B981] to-[#84CC16] p-[2px] flex items-center justify-center shadow-2xs transition-transform group-hover:scale-105">
-          <div className="w-full h-full bg-[#FBF7F0] rounded-full flex items-center justify-center">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
-            </svg>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-[11px] font-black tracking-tight text-[#18181B] leading-none">
-            CAMPUS
-          </span>
-          <span className="text-[11px] font-black tracking-tight text-[#18181B] leading-none">
-            CIRCULAR
-          </span>
+      <Link href="/" className="flex items-center group" id="app-nav-logo">
+        <div className="relative w-[190px] h-[52px]">
+          <Image
+            src="/named_logo.png"
+            alt="Campus Circular"
+            fill
+            className="object-contain object-left transition-transform group-hover:scale-105"
+            priority
+          />
         </div>
       </Link>
 

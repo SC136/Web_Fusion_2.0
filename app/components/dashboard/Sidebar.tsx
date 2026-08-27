@@ -105,17 +105,15 @@ export default function Sidebar() {
   return (
     <aside className="fixed left-0 top-0 bottom-0 w-[240px] bg-[#FDFBF1] border-r border-[#E8E4D8] flex flex-col z-40 hidden lg:flex select-none">
       {/* ─── 1. Logo ────────────────────────────────────────── */}
-      <Link href="/dashboard" className="px-5 py-5 flex items-center gap-2.5 flex-shrink-0 cursor-pointer">
-        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#3B82F6] via-[#10B981] to-[#84CC16] p-[2px] flex items-center justify-center shadow-2xs">
-          <div className="w-full h-full bg-[#FDFBF1] rounded-full flex items-center justify-center">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
-            </svg>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-[10px] font-black tracking-tight text-[#18181B] leading-none">CAMPUS</span>
-          <span className="text-[10px] font-black tracking-tight text-[#18181B] leading-none">CIRCULAR</span>
+      <Link href="/dashboard" className="px-4 py-4 flex items-center flex-shrink-0 cursor-pointer group">
+        <div className="relative w-[190px] h-[54px]">
+          <Image
+            src="/named_logo.png"
+            alt="Campus Circular"
+            fill
+            className="object-contain object-left transition-transform group-hover:scale-[1.02]"
+            priority
+          />
         </div>
       </Link>
 
