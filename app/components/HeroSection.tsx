@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Navbar from "./Navbar";
+import AppNavbar from "./layout/AppNavbar";
 
 export default function HeroSection() {
   return (
@@ -13,8 +13,8 @@ export default function HeroSection() {
         className="object-cover object-bottom -z-10 pointer-events-none select-none"
       />
 
-      {/* Navbar at top */}
-      <Navbar />
+      {/* Unified Navbar at top */}
+      <AppNavbar variant="guest" />
 
       {/* Hero Center Content - Over the background */}
       <div className="flex-1 flex flex-col items-center justify-start text-center pt-4 sm:pt-6 md:pt-10 lg:pt-12 px-4 z-10 max-w-4xl mx-auto">
@@ -122,7 +122,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Spacer at bottom so content is vertically centered in upper open area */}
+      {/* Spacer at bottom so content is vertically centered */}
       <div className="h-[28vh] sm:h-[32vh] md:h-[36vh] w-full pointer-events-none flex-shrink-0" />
     </div>
   );

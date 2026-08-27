@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import AppNavbar from "@/app/components/layout/AppNavbar";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,58 +24,8 @@ export default function LoginPage() {
 
   return (
     <div className="w-full h-screen h-[100dvh] max-h-screen overflow-hidden flex flex-col justify-between bg-[#FBF7F0] select-none">
-      {/* ─── TOP NAVBAR ───────────────────────────────────────── */}
-      <header className="w-full px-6 md:px-12 py-3 flex items-center justify-between z-30 flex-shrink-0">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group" id="login-nav-logo">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#3B82F6] via-[#10B981] to-[#84CC16] p-[2px] flex items-center justify-center shadow-xs transition-transform group-hover:scale-105">
-            <div className="w-full h-full bg-[#FBF7F0] rounded-full flex items-center justify-center">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
-              </svg>
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xs font-black tracking-tight text-[#18181B] leading-none">
-              CAMPUS
-            </span>
-            <span className="text-xs font-black tracking-tight text-[#18181B] leading-none">
-              CIRCULAR
-            </span>
-          </div>
-        </Link>
-
-        {/* Center Nav Links */}
-        <nav className="hidden md:flex items-center gap-7">
-          {["Browse", "How it Works", "For You", "Impact", "Help"].map((item) => (
-            <Link
-              key={item}
-              href="/dashboard"
-              className="text-xs lg:text-sm font-semibold text-[#3F3F46] hover:text-[#18181B] transition-colors"
-            >
-              {item}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Right Actions */}
-        <div className="flex items-center gap-3">
-          <Link
-            href="/"
-            id="back-to-home"
-            className="text-xs lg:text-sm font-semibold text-[#18181B] hover:text-[#16A34A] transition-colors px-3 py-1.5"
-          >
-            Back to Home
-          </Link>
-          <Link
-            href="#"
-            id="login-nav-signup"
-            className="px-4 py-2 text-xs lg:text-sm font-semibold text-white bg-[#18181B] rounded-xl hover:bg-[#27272A] transition-all shadow-xs"
-          >
-            Sign up
-          </Link>
-        </div>
-      </header>
+      {/* ─── UNIFIED TOP NAVBAR ───────────────────────────────── */}
+      <AppNavbar variant="guest" />
 
       {/* ─── MAIN CONTENT AREA ────────────────────────────────── */}
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 flex items-center justify-center relative min-h-0">
@@ -275,9 +226,6 @@ export default function LoginPage() {
           </div>
         </div>
       </main>
-
-      {/* Footer spacer */}
-      <footer className="h-2 w-full flex-shrink-0" />
     </div>
   );
 }
