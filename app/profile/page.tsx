@@ -335,116 +335,127 @@ export default function ProfilePage() {
           {activeTab === "public" && (
             <div className="space-y-8 animate-fadeInUp">
               {/* Header Hero Title */}
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#8DBF43]/20 border border-[#8DBF43]/40 rounded-full text-xs font-bold text-[#2D5A1E]">
-                  <span>TRUST &amp; COMMUNITY</span>
-                  <span>✦</span>
-                </div>
-                <h2
-                  className="text-2xl sm:text-4xl font-bold text-[#18181B] tracking-tight relative inline-block"
-                  style={{ fontFamily: "'Pixelify Sans', monospace" }}
-                >
-                  Borrow from people<br />you can actually trust.
-                  {/* Blue Hand-Drawn Underline */}
-                  <div className="w-full mt-1">
-                    <svg width="220" height="8" viewBox="0 0 220 8" fill="none">
-                      <path d="M2 5C60 2 160 2 218 6" stroke="#3B82F6" strokeWidth="3.5" strokeLinecap="round" />
-                    </svg>
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-[#EDE8C8]">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F5F8E9] border border-[#D8E8B8] rounded-full text-xs font-bold text-[#2E5E1C] mb-2.5 shadow-2xs">
+                    <span>TRUST &amp; COMMUNITY LEDGER</span>
+                    <span>✦</span>
                   </div>
-                </h2>
-                <p className="text-xs sm:text-sm text-[#52525B] font-medium max-w-xl">
-                  Verification, trust scores, and full exchange history for every campus member.
-                </p>
+                  <h2
+                    className="text-2xl sm:text-4xl font-extrabold text-[#18181B] tracking-tight leading-tight"
+                    style={{ fontFamily: "'Pixelify Sans', monospace" }}
+                  >
+                    Borrow from people you can actually trust.
+                  </h2>
+                  <p className="text-xs sm:text-sm text-[#52525B] font-medium max-w-2xl mt-1.5">
+                    Real-time verification badges, peer-vouched trust ratings, and transparent exchange histories for every campus member.
+                  </p>
+                </div>
+
+                {/* Public View Status Pill */}
+                <div className="flex items-center gap-2 bg-[#FEFAEE] border border-[#EDE8C8] px-4 py-2 rounded-2xl text-xs font-bold text-[#78350F] shadow-2xs flex-shrink-0">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#16A34A]" />
+                  <span>Public View Active</span>
+                </div>
               </div>
 
               {/* 2-Column Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                {/* ─── LEFT COLUMN: Profile Card ───────────────── */}
-                <div className="lg:col-span-5 bg-white rounded-3xl border border-[#F0EAE0] p-6 shadow-xs space-y-6 flex flex-col justify-between">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                {/* ─── LEFT COLUMN: Member Profile Card ─────────── */}
+                <div className="lg:col-span-5 bg-white rounded-3xl border border-[#EDE8C8] p-6 lg:p-7 shadow-2xs space-y-6">
                   {/* User Header */}
                   <div className="flex items-center gap-4">
-                    <div className="relative w-16 h-16 rounded-full overflow-hidden bg-amber-100 border-2 border-white shadow-xs flex-shrink-0">
+                    <div className="relative w-18 h-18 rounded-full overflow-hidden bg-gradient-to-b from-[#E0F2FE] to-[#BAE6FD] border-2 border-white shadow-xs flex-shrink-0 flex items-center justify-center">
                       <Image
-                        src="/mascots/blue_dress_hat.png"
+                        src="/mascots/mascot_character.png"
                         alt={publicProfileMaya.name}
                         fill
-                        className="object-cover object-top scale-110"
+                        className="object-contain object-bottom scale-110 p-0.5"
+                        priority
                       />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-[#18181B]">
-                        {publicProfileMaya.name}
-                      </h3>
-                      <p className="text-xs text-[#52525B] font-medium">
-                        {publicProfileMaya.department} • {publicProfileMaya.year} • {publicProfileMaya.location}
+                      <div className="flex items-center gap-1.5">
+                        <h3 className="text-xl font-extrabold text-[#18181B]">
+                          {publicProfileMaya.name}
+                        </h3>
+                        <span className="text-[#16A34A] flex items-center" title="Verified Campus Identity">
+                          <AppIcon name="shield-check" size={17} />
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#52525B] font-medium mt-0.5">
+                        {publicProfileMaya.department} • {publicProfileMaya.year}
                       </p>
-                      <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#16A34A] text-white">
-                          <AppIcon name="check" size={10} />
+                      <div className="flex items-center gap-2 mt-2 flex-wrap">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-[#DCFCE7] text-[#15803D] border border-[#BBF7D0]">
+                          <AppIcon name="check" size={11} />
                           <span>Verified Student</span>
                         </span>
-                        <span className="text-[10px] text-[#71717A] bg-[#F4EFE6] px-2 py-0.5 rounded-full font-medium">
+                        <span className="text-[10px] text-[#71717A] bg-[#FBF7F0] border border-[#EDE8C8] px-2.5 py-0.5 rounded-full font-medium">
                           {publicProfileMaya.memberSince}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Trust Score Circular Meter */}
-                  <div className="bg-[#FBF7F0] rounded-2xl p-4 flex items-center justify-around">
-                    <div className="w-20 h-20 rounded-full border-4 border-[#16A34A] flex flex-col items-center justify-center bg-white shadow-2xs">
-                      <span className="text-2xl font-black text-[#18181B] leading-none">
-                        {publicProfileMaya.trustScore}
-                      </span>
-                      <span className="text-[9px] font-bold text-[#71717A] uppercase">
-                        Trust Score
-                      </span>
-                    </div>
-                    <div>
-                      <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-[#DCFCE7] text-[#15803D] mb-1">
-                        {publicProfileMaya.rank}
-                      </span>
-                      <p className="text-[11px] text-[#71717A]">
-                        Consistent on-time returns
-                      </p>
+                  {/* Trust Score Card */}
+                  <div className="bg-[#F5F8E9] border border-[#D8E8B8] rounded-2xl p-4 flex items-center justify-between shadow-2xs">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-16 h-16 rounded-full border-4 border-[#6F9535] flex flex-col items-center justify-center bg-white shadow-xs">
+                        <span className="text-xl font-black text-[#18181B] leading-none">
+                          {publicProfileMaya.trustScore}
+                        </span>
+                        <span className="text-[8px] font-extrabold text-[#6F9535] uppercase tracking-wider mt-0.5">
+                          SCORE
+                        </span>
+                      </div>
+                      <div>
+                        <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#DCFCE7] text-[#15803D] mb-0.5">
+                          {publicProfileMaya.rank}
+                        </span>
+                        <p className="text-[11.5px] font-semibold text-[#2E5E1C]">
+                          100% on-time return rate
+                        </p>
+                      </div>
                     </div>
                   </div>
 
                   {/* 4 Stat Metrics */}
-                  <div className="grid grid-cols-4 gap-2 text-center py-2 border-y border-[#F0EAE0]">
-                    <div>
-                      <p className="text-lg font-bold text-[#18181B]">{publicProfileMaya.stats.exchanges}</p>
-                      <p className="text-[10px] text-[#71717A]">Exchanges</p>
+                  <div className="grid grid-cols-4 gap-2 text-center py-3 border-y border-[#EDE8C8]">
+                    <div className="p-1">
+                      <p className="text-lg font-black text-[#18181B]">{publicProfileMaya.stats.exchanges}</p>
+                      <p className="text-[10px] text-[#71717A] font-semibold">Exchanges</p>
                     </div>
-                    <div>
-                      <p className="text-lg font-bold text-[#18181B] flex items-center justify-center gap-0.5">
+                    <div className="p-1">
+                      <p className="text-lg font-black text-[#18181B] flex items-center justify-center gap-0.5">
                         {publicProfileMaya.stats.rating}
-                        <AppIcon name="star" size={12} className="fill-amber-400 text-amber-400" />
+                        <AppIcon name="star" size={13} className="fill-amber-400 text-amber-400" />
                       </p>
-                      <p className="text-[10px] text-[#71717A]">Avg Rating</p>
+                      <p className="text-[10px] text-[#71717A] font-semibold">Avg Rating</p>
                     </div>
-                    <div>
-                      <p className="text-lg font-bold text-[#18181B]">{publicProfileMaya.stats.lateReturns}</p>
-                      <p className="text-[10px] text-[#71717A]">Late Returns</p>
+                    <div className="p-1">
+                      <p className="text-lg font-black text-[#18181B]">{publicProfileMaya.stats.lateReturns}</p>
+                      <p className="text-[10px] text-[#71717A] font-semibold">Late Returns</p>
                     </div>
-                    <div>
-                      <p className="text-lg font-bold text-[#18181B]">{publicProfileMaya.stats.disputes}</p>
-                      <p className="text-[10px] text-[#71717A]">Disputes</p>
+                    <div className="p-1">
+                      <p className="text-lg font-black text-[#16A34A]">{publicProfileMaya.stats.disputes}</p>
+                      <p className="text-[10px] text-[#71717A] font-semibold">Disputes</p>
                     </div>
                   </div>
 
                   {/* Rating Breakdown Bars */}
-                  <div className="space-y-1 text-xs">
+                  <div className="space-y-1.5 text-xs bg-[#FDFBF1] p-3.5 rounded-2xl border border-[#EDE8C8]">
+                    <p className="text-[11px] font-bold text-[#18181B] mb-2">Rating Distribution</p>
                     {publicProfileMaya.ratingDistribution.map((d) => (
                       <div key={d.stars} className="flex items-center gap-2 text-[11px] text-[#71717A]">
-                        <span className="w-4 font-bold">{d.stars}★</span>
-                        <div className="flex-1 h-2 bg-[#F4EFE6] rounded-full overflow-hidden">
+                        <span className="w-5 font-bold text-[#18181B]">{d.stars}★</span>
+                        <div className="flex-1 h-2 bg-[#EFE9DB] rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-[#8DBF43] rounded-full"
+                            className="h-full bg-[#6F9535] rounded-full"
                             style={{ width: `${d.percentage}%` }}
                           />
                         </div>
-                        <span className="w-4 text-right">{d.count}</span>
+                        <span className="w-5 text-right font-medium">{d.count}</span>
                       </div>
                     ))}
                   </div>
@@ -454,58 +465,64 @@ export default function ProfilePage() {
                     {publicProfileMaya.badges.map((b) => (
                       <div
                         key={b.label}
-                        className="bg-[#FBF7F0] border border-[#F0EAE0] rounded-xl px-2.5 py-1.5 flex items-center gap-2 text-[11px] font-bold text-[#3F3F46]"
+                        className="bg-[#FEFAEE] border border-[#EDE8C8] rounded-xl px-3 py-2 flex items-center gap-2 text-[11px] font-bold text-[#3F3F46]"
                       >
-                        <AppIcon name={b.icon} size={14} className="text-[#8DBF43]" />
-                        <span>{b.label}</span>
+                        <AppIcon name={b.icon} size={15} className="text-[#6F9535]" />
+                        <span className="truncate">{b.label}</span>
                       </div>
                     ))}
                   </div>
 
                   {/* Action CTA Buttons */}
-                  <div className="space-y-2 pt-2">
-                    <button
+                  <div className="space-y-2.5 pt-1">
+                    <Link
+                      href="/browse"
                       id="maya-request-borrow-btn"
-                      className="w-full py-2.5 bg-[#18181B] hover:bg-[#27272A] text-white font-bold text-xs rounded-xl transition-all shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="w-full py-3 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold text-xs sm:text-sm rounded-2xl transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] flex items-center justify-center gap-2 cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
                     >
-                      <span>Request to Borrow</span>
-                      <AppIcon name="arrow-right" size={14} />
-                    </button>
+                      <span>Browse Maya&apos;s Listings</span>
+                      <AppIcon name="arrow-right" size={15} />
+                    </Link>
                     <button
+                      onClick={() => alert("Connecting you with Maya via encrypted campus chat...")}
                       id="maya-send-message-btn"
-                      className="w-full py-2.5 bg-[#8DBF43] hover:bg-[#7EAC3B] text-[#18181B] font-bold text-xs rounded-xl transition-all shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="w-full py-3 bg-white hover:bg-[#F9FAFB] text-[#18181B] font-bold text-xs sm:text-sm rounded-2xl transition-all border border-[#E5E7EB] shadow-xs flex items-center justify-center gap-2 cursor-pointer active:translate-y-0.5"
                     >
-                      <span>Send Message</span>
-                      <AppIcon name="arrow-right" size={14} />
+                      <span>Send Direct Message 💬</span>
                     </button>
                   </div>
                 </div>
 
-                {/* ─── RIGHT COLUMN: Exchange History, Reviews & Checklist */}
+                {/* ─── RIGHT COLUMN: Exchange Ledger & Reviews ─── */}
                 <div className="lg:col-span-7 space-y-6">
-                  {/* 1. Exchange History */}
-                  <div className="bg-white rounded-3xl border border-[#F0EAE0] p-6 shadow-2xs">
-                    <div className="flex items-center justify-between mb-4">
-                      <h4 className="text-base font-bold text-[#18181B]">
-                        Exchange History
-                      </h4>
-                      <button className="text-xs font-semibold text-[#16A34A] hover:underline">
-                        View all
-                      </button>
+                  {/* 1. Exchange Ledger */}
+                  <div className="bg-white rounded-3xl border border-[#EDE8C8] p-6 lg:p-7 shadow-2xs">
+                    <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#EDE8C8]">
+                      <div>
+                        <h4 className="text-base font-bold text-[#18181B]">
+                          Exchange Ledger
+                        </h4>
+                        <p className="text-[11px] text-[#71717A]">
+                          47 verified handovers with zero escrow disputes
+                        </p>
+                      </div>
+                      <span className="text-xs font-bold text-[#16A34A] bg-[#DCFCE7] px-3 py-1 rounded-full border border-[#BBF7D0]">
+                        100% Verified
+                      </span>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2.5">
                       {publicProfileMaya.exchangeHistory.map((ex, idx) => (
                         <div
                           key={idx}
-                          className="flex items-center justify-between gap-3 p-2.5 rounded-2xl hover:bg-[#FBF7F0] transition-colors border border-transparent hover:border-[#F0EAE0]"
+                          className="flex items-center justify-between gap-3 p-3 rounded-2xl bg-[#FDFBF1] hover:bg-[#F8F5E4] transition-all border border-[#EDE8C8]"
                         >
                           <div className="flex items-center gap-3 min-w-0">
-                            <div className="w-10 h-10 rounded-xl bg-[#F4EFE6] flex items-center justify-center text-[#52525B] flex-shrink-0">
+                            <div className="w-10 h-10 rounded-xl bg-white border border-[#EDE8C8] flex items-center justify-center text-[#18181B] flex-shrink-0 shadow-2xs">
                               <AppIcon name={ex.icon} size={18} />
                             </div>
                             <div className="min-w-0">
-                              <p className="text-xs font-bold text-[#18181B] truncate">
+                              <p className="text-xs sm:text-[13px] font-bold text-[#18181B] truncate">
                                 {ex.item}
                               </p>
                               <p className="text-[11px] text-[#71717A] truncate">
@@ -515,12 +532,12 @@ export default function ProfilePage() {
                           </div>
 
                           <span
-                            className={`text-[10px] font-bold px-2.5 py-1 rounded-full whitespace-nowrap ${
+                            className={`text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-full whitespace-nowrap border ${
                               ex.statusType === "success"
-                                ? "bg-[#DCFCE7] text-[#15803D]"
+                                ? "bg-[#DCFCE7] text-[#15803D] border-[#BBF7D0]"
                                 : ex.statusType === "warning"
-                                ? "bg-[#FEF3C7] text-[#D97706]"
-                                : "bg-[#DBEAFE] text-[#1D4ED8]"
+                                ? "bg-[#FEF3C7] text-[#D97706] border-[#FDE68A]"
+                                : "bg-[#DBEAFE] text-[#1D4ED8] border-[#BFDBFE]"
                             }`}
                           >
                             {ex.status}
@@ -530,41 +547,48 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  {/* 2. Ratings & Reviews */}
-                  <div className="bg-white rounded-3xl border border-[#F0EAE0] p-6 shadow-2xs">
-                    <div className="flex items-center justify-between mb-4">
-                      <h4 className="text-base font-bold text-[#18181B] flex items-center gap-2">
-                        <span>Ratings &amp; Reviews</span>
-                      </h4>
-                      <div className="flex items-center gap-1">
-                        <span className="text-base font-black text-[#18181B]">4.9</span>
+                  {/* 2. Ratings & Verified Reviews */}
+                  <div className="bg-white rounded-3xl border border-[#EDE8C8] p-6 lg:p-7 shadow-2xs">
+                    <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#EDE8C8]">
+                      <div>
+                        <h4 className="text-base font-bold text-[#18181B] flex items-center gap-2">
+                          <span>Verified Peer Reviews</span>
+                        </h4>
+                        <p className="text-[11px] text-[#71717A]">
+                          Feedback from fellow students after return inspection
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1.5 bg-[#FEFAEE] border border-[#EDE8C8] px-3 py-1.5 rounded-2xl">
+                        <span className="text-sm font-black text-[#18181B]">4.9</span>
                         <div className="flex items-center text-amber-400">
                           {[1, 2, 3, 4, 5].map((s) => (
-                            <AppIcon key={s} name="star" size={13} className="fill-amber-400 text-amber-400" />
+                            <AppIcon key={s} name="star" size={12} className="fill-amber-400 text-amber-400" />
                           ))}
                         </div>
-                        <span className="text-xs text-[#71717A] ml-1">38 ratings</span>
+                        <span className="text-[11px] text-[#71717A] font-semibold">(38)</span>
                       </div>
                     </div>
 
                     <div className="space-y-3">
                       {publicProfileMaya.ratingsReviews.map((rev, idx) => (
-                        <div key={idx} className="bg-[#FBF7F0] rounded-2xl p-3 text-xs space-y-1">
+                        <div key={idx} className="bg-[#FDFBF1] border border-[#EDE8C8] rounded-2xl p-3.5 text-xs space-y-2">
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <div className={`w-6 h-6 rounded-full ${rev.avatarBg} flex items-center justify-center text-[10px] font-bold`}>
+                            <div className="flex items-center gap-2.5">
+                              <div className={`w-7 h-7 rounded-full ${rev.avatarBg} flex items-center justify-center text-[10px] font-bold shadow-2xs`}>
                                 {rev.initials}
                               </div>
-                              <span className="font-bold text-[#18181B]">{rev.name}</span>
-                              <div className="flex items-center text-amber-400">
-                                {[...Array(rev.rating)].map((_, i) => (
-                                  <AppIcon key={i} name="star" size={10} className="fill-amber-400 text-amber-400" />
-                                ))}
+                              <div>
+                                <p className="font-bold text-[#18181B] text-[12px] leading-tight">{rev.name}</p>
+                                <p className="text-[10px] text-[#71717A]">{rev.date || "Recent"}</p>
                               </div>
                             </div>
-                            <span className="text-[10px] text-[#A1A1AA]">{rev.date}</span>
+                            <div className="flex items-center text-amber-400">
+                              {[...Array(rev.rating)].map((_, i) => (
+                                <AppIcon key={i} name="star" size={11} className="fill-amber-400 text-amber-400" />
+                              ))}
+                            </div>
                           </div>
-                          <p className="text-[11px] text-[#52525B] pl-8">
+                          <p className="text-[#374151] text-[11.5px] leading-relaxed pl-9">
                             &quot;{rev.comment}&quot;
                           </p>
                         </div>
