@@ -23,6 +23,7 @@ export default function BrowsePage() {
   const [minRating, setMinRating] = useState<number>(0);
   const [sortBy, setSortBy] = useState<"relevance" | "price-asc" | "price-desc" | "rating" | "distance">("relevance");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [favorites, setFavorites] = useState<Record<string, boolean>>({
     b1: true,
   });
@@ -233,8 +234,22 @@ export default function BrowsePage() {
               )}
             </div>
 
-            {/* Sort & Grid/List Switcher */}
-            <div className="flex items-center gap-2.5 flex-shrink-0">
+            {/* Sort & Grid/List Switcher & Mobile Filter Toggle */}
+            <div className="flex items-center gap-2 sm:gap-2.5 flex-shrink-0">
+              {/* Mobile Filter Toggle */}
+              <button
+                type="button"
+                onClick={() => setShowMobileFilters(!showMobileFilters)}
+                className={`lg:hidden px-3.5 py-2.5 rounded-2xl border text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all ${
+                  showMobileFilters
+                    ? "bg-[#18181B] text-white border-[#18181B]"
+                    : "bg-[#FDFBF1] hover:bg-[#F5F2E8] border-[#EDE8C8] text-[#18181B]"
+                }`}
+              >
+                <AppIcon name="filter" size={14} className={showMobileFilters ? "text-white" : "text-[#6F9535]"} />
+                <span>Filters</span>
+              </button>
+
               {/* Sort Dropdown */}
               <div className="relative">
                 <select
@@ -318,15 +333,11 @@ export default function BrowsePage() {
                 className={`px-3.5 py-2 rounded-2xl border flex items-center gap-2.5 flex-shrink-0 cursor-pointer shadow-2xs hover:shadow-xs transition-all duration-200 ${
                   isSelected
                     ? "bg-[#6F9535] text-white border-[#6F9535] scale-102"
-                    : "bg-white text-[#18181B] border-[#EDE8C8] hover:bg-[#FDFBF1]"
+                    : "bg-white text-[#52525B] border-[#EDE8C8] hover:bg-[#FDFBF1]"
                 }`}
               >
-                <div
-                  className={`w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                    isSelected ? "bg-white/20 text-white" : "bg-[#FDFBF1] border border-[#EDE8C8]"
-                  }`}
-                >
-                  <AppIcon name={cat.icon} size={14} className={isSelected ? "text-white" : "text-[#6F9535]"} />
+                <div className={`w-7 h-7 rounded-xl flex items-center justify-center ${isSelected ? "bg-white/20 text-white" : "bg-[#FAF7F0] text-[#6F9535]"}`}>
+                  <AppIcon name={cat.icon} size={14} />
                 </div>
                 <div className="text-left">
                   <p className="text-xs font-bold leading-tight">{cat.name}</p>
@@ -342,7 +353,7 @@ export default function BrowsePage() {
         {/* ─── 4. Main Layout (Sidebar + Product Grid) ────────── */}
         <div className="mt-5 flex flex-col lg:flex-row items-start gap-6 flex-1">
           {/* ─── LEFT FILTERS SIDEBAR ─────────────────────────── */}
-          <aside className="w-full lg:w-[250px] xl:w-[260px] bg-white rounded-3xl border border-[#EDE8C8] p-5 shadow-2xs flex-shrink-0 select-none space-y-4">
+          <aside className={`w-full lg:w-[250px] xl:w-[260px] bg-white rounded-3xl border border-[#EDE8C8] p-5 shadow-2xs flex-shrink-0 select-none space-y-4 ${showMobileFilters ? "block animate-fadeIn" : "hidden lg:block"}`}>
             {/* Filter Header */}
             <div className="flex items-center justify-between pb-3 border-b border-[#EDE8C8]">
               <div className="flex items-center gap-2">

@@ -17,6 +17,7 @@ export default function MessagesPage() {
   const [isTyping, setIsTyping] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [copiedOtp, setCopiedOtp] = useState(false);
+  const [mobileView, setMobileView] = useState<"list" | "chat">("list");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -118,7 +119,7 @@ export default function MessagesPage() {
           {/* ══════════════════════════════════════════════════════════
              1. LEFT PANE: CONVERSATION THREADS (1/3)
              ══════════════════════════════════════════════════════════ */}
-          <div className="w-full sm:w-80 md:w-96 bg-white rounded-3xl border border-[#EDE8C8] shadow-2xs flex flex-col overflow-hidden flex-shrink-0">
+          <div className={`w-full sm:w-80 md:w-96 bg-white rounded-3xl border border-[#EDE8C8] shadow-2xs flex-col overflow-hidden flex-shrink-0 ${mobileView === "list" ? "flex" : "hidden sm:flex"}`}>
             {/* Thread Header & Search */}
             <div className="p-4 border-b border-[#F0EAE0] space-y-3">
               <div className="flex items-center justify-between">
@@ -177,6 +178,7 @@ export default function MessagesPage() {
                     key={thread.id}
                     onClick={() => {
                       setActiveThreadId(thread.id);
+                      setMobileView("chat");
                       setThreads((prev) =>
                         prev.map((t) => (t.id === thread.id ? { ...t, unreadCount: 0 } : t))
                       );
@@ -230,12 +232,21 @@ export default function MessagesPage() {
           {/* ══════════════════════════════════════════════════════════
              2. RIGHT PANE: ACTIVE CHAT CONVERSATION & MEETUP ACTIONS
              ══════════════════════════════════════════════════════════ */}
-          <div className="flex-1 bg-white rounded-3xl border border-[#EDE8C8] shadow-2xs flex flex-col overflow-hidden">
+          <div className={`flex-1 bg-white rounded-3xl border border-[#EDE8C8] shadow-2xs flex-col overflow-hidden ${mobileView === "chat" ? "flex" : "hidden sm:flex"}`}>
             {/* Top Bar of Active Conversation */}
-            <div className="p-4 sm:px-6 border-b border-[#F0EAE0] flex flex-wrap items-center justify-between gap-3 bg-[#FAF7F0]/60">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="relative">
-                  <div className={`w-10 h-10 rounded-2xl ${activeThread.peerAvatarBg} flex items-center justify-center font-extrabold text-xs shadow-2xs`}>
+            <div className="p-3.5 sm:p-4 sm:px-6 border-b border-[#F0EAE0] flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 bg-[#FAF7F0]/60">
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                {/* Mobile Back Button */}
+                <button
+                  type="button"
+                  onClick={() => setMobileView("list")}
+                  className="sm:hidden p-2 rounded-xl bg-white border border-[#EDE8C8] text-[#18181B] font-bold text-xs shadow-2xs flex items-center gap-1 cursor-pointer"
+                >
+                  <span>←</span>
+                </button>
+
+                <div className="relative flex-shrink-0">
+                  <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-2xl ${activeThread.peerAvatarBg} flex items-center justify-center font-extrabold text-xs shadow-2xs`}>
                     {activeThread.peerInitials}
                   </div>
                   {activeThread.online && (
@@ -244,16 +255,16 @@ export default function MessagesPage() {
                 </div>
 
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-sm font-bold text-[#18181B] truncate">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <h2 className="text-xs sm:text-sm font-bold text-[#18181B] truncate">
                       {activeThread.peerName}
                     </h2>
-                    <span className="text-[10px] font-extrabold bg-[#FEF3C7] text-[#92400E] px-2 py-0.5 rounded-full flex items-center gap-0.5">
+                    <span className="text-[9.5px] font-extrabold bg-[#FEF3C7] text-[#92400E] px-1.5 py-0.2 rounded-full flex items-center gap-0.5">
                       <span>★</span>
                       <span>{activeThread.peerTrustScore}</span>
                     </span>
                   </div>
-                  <p className="text-[11px] text-[#71717A]">
+                  <p className="text-[10px] sm:text-[11px] text-[#71717A] truncate">
                     {activeThread.peerDept} • {activeThread.exchangeRole}
                   </p>
                 </div>
