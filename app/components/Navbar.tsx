@@ -43,14 +43,14 @@ export default function Navbar() {
       {/* Auth Buttons */}
       <div className="hidden md:flex items-center gap-2.5">
         <a
-          href="#"
+          href="/login"
           id="nav-login"
           className="px-4 py-2 text-xs lg:text-sm font-semibold text-[#18181B] bg-white/70 border border-[#D4D4D8] rounded-xl hover:bg-white transition-all duration-200 shadow-xs"
         >
           Log in
         </a>
         <a
-          href="#"
+          href="/login"
           id="nav-signup"
           className="px-4 py-2 text-xs lg:text-sm font-semibold text-white bg-[#18181B] rounded-xl hover:bg-[#27272A] transition-all duration-200 shadow-sm"
         >
