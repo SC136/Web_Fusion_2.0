@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   currentUser,
   overviewStats,
@@ -19,6 +20,7 @@ import TopBar from "@/app/components/dashboard/TopBar";
 import { useState } from "react";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
@@ -52,7 +54,13 @@ export default function DashboardPage() {
                 </div>
 
                 {/* AI Search Card */}
-                <div className="bg-[#F5F8E9] border border-[#D8E8B8] rounded-2xl p-4 shadow-2xs">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    router.push(`/browse?search=${encodeURIComponent(searchQuery || "Camera and tripod")}`);
+                  }}
+                  className="bg-[#F5F8E9] border border-[#D8E8B8] rounded-2xl p-4 shadow-2xs"
+                >
                   <p className="text-[13px] font-semibold text-[#2E5E1C] mb-2.5">
                     What do you need today?
                   </p>
@@ -76,7 +84,7 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Popular Tags */}
-                  <div className="flex items-center gap-2 flex-wrap text-xs text-[#6B7280]">
+                  <div className="flex items-center gap-2 flex-wrap text-xs text-[#6B7280] mt-3">
                     <span className="font-medium text-[#4B5563]">Popular:</span>
                     {["Camera + Tripod", "Projector", "Mic", "Lighting", "Calculator"].map((tag) => (
                       <Link
