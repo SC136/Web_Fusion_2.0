@@ -4,7 +4,8 @@ export const currentUser = {
   id: "u1",
   name: "Anaya",
   fullName: "Anaya Sharma",
-  avatar: "👩🏽‍🎓",
+  initials: "AS",
+  avatarBg: "bg-emerald-100 text-emerald-800",
   department: "Computer Engineering",
   year: "3rd Year",
   verified: true,
@@ -16,20 +17,55 @@ export const currentUser = {
 };
 
 export const overviewStats = [
-  { label: "Active Members", value: "128", change: "+12 this week", icon: "👥", color: "#FEF3C7" },
-  { label: "Resources Shared", value: "342", change: "+28 this week", icon: "🤝", color: "#D1FAE5" },
-  { label: "Successful Exchanges", value: "215", change: "+18 this week", icon: "🔄", color: "#DBEAFE" },
-  { label: "Money Saved", value: "₹86,430", change: "+₹6,120 this week", icon: "💰", color: "#FEE2E2" },
-  { label: "On-time Returns", value: "91%", change: "+4% this week", icon: "⏱️", color: "#EDE9FE" },
+  {
+    label: "Active Members",
+    value: "128",
+    change: "+12 this week",
+    icon: "users",
+    bgColor: "#FEF3C7",
+    textColor: "#B45309",
+  },
+  {
+    label: "Resources Shared",
+    value: "342",
+    change: "+28 this week",
+    icon: "share-nodes",
+    bgColor: "#D1FAE5",
+    textColor: "#047857",
+  },
+  {
+    label: "Successful Exchanges",
+    value: "215",
+    change: "+18 this week",
+    icon: "repeat",
+    bgColor: "#DBEAFE",
+    textColor: "#1D4ED8",
+  },
+  {
+    label: "Money Saved",
+    value: "₹86,430",
+    change: "+₹6,120 this week",
+    icon: "banknote",
+    bgColor: "#FEE2E2",
+    textColor: "#B91C1C",
+  },
+  {
+    label: "On-time Returns",
+    value: "91%",
+    change: "+4% this week",
+    icon: "clock-check",
+    bgColor: "#EDE9FE",
+    textColor: "#6D28D9",
+  },
 ];
 
 export const activityStages = [
-  { label: "Requested", count: 2, icon: "📋", active: false },
-  { label: "Accepted", count: 1, icon: "✅", active: false },
-  { label: "Borrowed", count: 2, icon: "🤝", active: true },
-  { label: "Return Due", count: 1, icon: "📅", active: false },
-  { label: "Returned", count: 3, icon: "🔙", active: false },
-  { label: "Settled", count: 2, icon: "💫", active: false },
+  { label: "Requested", count: 2, icon: "file-text", active: false },
+  { label: "Accepted", count: 1, icon: "check-circle", active: false },
+  { label: "Borrowed", count: 2, icon: "package", active: true },
+  { label: "Return Due", count: 1, icon: "calendar-clock", active: false },
+  { label: "Returned", count: 3, icon: "rotate-ccw", active: false },
+  { label: "Settled", count: 2, icon: "check-check", active: false },
 ];
 
 export const recommendedItems = [
@@ -76,11 +112,11 @@ export const recommendedItems = [
 ];
 
 export const popularCategories = [
-  { name: "Electronics", count: 120, icon: "💻" },
-  { name: "Books & Notes", count: 98, icon: "📚" },
-  { name: "Sports", count: 76, icon: "⚽" },
-  { name: "Event Supplies", count: 64, icon: "🎪" },
-  { name: "Tools & DIY", count: 43, icon: "🔧" },
+  { name: "Electronics", count: 120, icon: "laptop", color: "bg-blue-50 text-blue-600" },
+  { name: "Books & Notes", count: 98, icon: "book-open", color: "bg-amber-50 text-amber-600" },
+  { name: "Sports", count: 76, icon: "trophy", color: "bg-rose-50 text-rose-600" },
+  { name: "Event Supplies", count: 64, icon: "sparkles", color: "bg-purple-50 text-purple-600" },
+  { name: "Tools & DIY", count: 43, icon: "wrench", color: "bg-slate-100 text-slate-700" },
 ];
 
 export const upcomingReturns = [
@@ -88,7 +124,8 @@ export const upcomingReturns = [
     id: "ret1",
     item: "Canon EOS M50",
     owner: "Rohan Verma",
-    avatar: "🧑🏽",
+    initials: "RV",
+    avatarBg: "bg-blue-100 text-blue-800",
     dueIn: "Due in 1 day",
     urgent: true,
   },
@@ -96,7 +133,8 @@ export const upcomingReturns = [
     id: "ret2",
     item: "Tripod Stand",
     owner: "Mehak Singh",
-    avatar: "👩🏻",
+    initials: "MS",
+    avatarBg: "bg-pink-100 text-pink-800",
     dueIn: "Due in 2 days",
     urgent: false,
   },
@@ -106,21 +144,24 @@ export const recentMessages = [
   {
     id: "m1",
     name: "Rohan Verma",
-    avatar: "🧑🏽",
+    initials: "RV",
+    avatarBg: "bg-blue-100 text-blue-800",
     message: "Accepted your request",
     time: "2m ago",
   },
   {
     id: "m2",
     name: "Mehak Singh",
-    avatar: "👩🏻",
+    initials: "MS",
+    avatarBg: "bg-pink-100 text-pink-800",
     message: "Sent you a message",
     time: "15m ago",
   },
   {
     id: "m3",
     name: "Arjun Patel",
-    avatar: "🧑🏾",
+    initials: "AP",
+    avatarBg: "bg-amber-100 text-amber-800",
     message: "Returning request",
     time: "1h ago",
   },
