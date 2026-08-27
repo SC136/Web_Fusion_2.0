@@ -124,7 +124,8 @@ export default function MessagesPage() {
             <div className="p-4 border-b border-[#F0EAE0] space-y-3">
               <div className="flex items-center justify-between">
                 <h1 className="text-base font-black text-[#18181B] flex items-center gap-2">
-                  <span>💬 Exchange Messages</span>
+                  <AppIcon name="message" size={16} />
+                  <span>Exchange Messages</span>
                 </h1>
                 <span className="text-xs font-bold text-[#166534] bg-[#DCFCE7] px-2 py-0.5 rounded-full">
                   {threads.reduce((acc, curr) => acc + curr.unreadCount, 0)} New
@@ -138,11 +139,8 @@ export default function MessagesPage() {
                   value={searchFilter}
                   onChange={(e) => setSearchFilter(e.target.value)}
                   placeholder="Search students or items..."
-                  className="w-full pl-9 pr-4 py-2 bg-[#FAF7F0] border border-[#EDE8C8] rounded-xl text-xs text-[#18181B] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#84CC16]"
+                  className="w-full pl-3.5 pr-8 py-2 bg-[#FAF7F0] border border-[#EDE8C8] rounded-xl text-xs text-[#18181B] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#84CC16]"
                 />
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]">
-                  <AppIcon name="search" size={14} />
-                </span>
               </div>
 
               {/* Tabs */}
@@ -260,7 +258,7 @@ export default function MessagesPage() {
                       {activeThread.peerName}
                     </h2>
                     <span className="text-[9.5px] font-extrabold bg-[#FEF3C7] text-[#92400E] px-1.5 py-0.2 rounded-full flex items-center gap-0.5">
-                      <span>★</span>
+                      <AppIcon name="star" size={10} className="text-[#D97706]" />
                       <span>{activeThread.peerTrustScore}</span>
                     </span>
                   </div>
@@ -277,7 +275,8 @@ export default function MessagesPage() {
                   onClick={() => setShowOtpModal(true)}
                   className="px-3 py-1.5 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] text-xs font-black rounded-xl transition-all shadow-xs cursor-pointer flex items-center gap-1.5"
                 >
-                  <span>🔑 Handover OTP: {activeThread.meetupOtp}</span>
+                  <AppIcon name="shield-check" size={13} />
+                  <span>Handover OTP: {activeThread.meetupOtp}</span>
                 </button>
 
                 <Link
@@ -341,14 +340,15 @@ export default function MessagesPage() {
 
             {/* Suggested Quick Replies */}
             <div className="px-4 py-2 bg-white border-t border-[#F0EAE0] flex items-center gap-2 overflow-x-auto">
-              <span className="text-[10px] font-bold text-[#71717A] flex-shrink-0">
-                ⚡ Quick Reply:
+              <span className="text-[10px] font-bold text-[#71717A] flex-shrink-0 flex items-center gap-1">
+                <AppIcon name="zap" size={12} className="text-[#2563EB]" />
+                <span>Quick Reply:</span>
               </span>
               {[
-                "I've reached the meetup spot 📍",
-                `Here is my OTP: ${activeThread.meetupOtp} 🔑`,
-                "Condition checked, looks pristine! ✨",
-                "Can we extend by 1 extra day? ⏱️",
+                "I've reached the meetup spot",
+                `Here is my OTP: ${activeThread.meetupOtp}`,
+                "Condition checked, looks pristine!",
+                "Can we extend by 1 extra day?",
               ].map((reply) => (
                 <button
                   key={reply}
@@ -390,7 +390,7 @@ export default function MessagesPage() {
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl border border-[#EDE8C8] p-6 max-w-sm w-full shadow-2xl space-y-4 text-center animate-fadeInUp">
             <div className="w-14 h-14 rounded-2xl bg-[#F0FDF4] text-[#16A34A] flex items-center justify-center text-2xl mx-auto shadow-xs">
-              🔑
+              <AppIcon name="shield-check" size={28} className="text-[#16A34A]" />
             </div>
             <div>
               <h3 className="text-base font-black text-[#18181B]">

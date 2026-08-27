@@ -392,11 +392,13 @@ export default function BorrowingLifecyclePage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <button className="py-2.5 bg-white hover:bg-[#FBF7F0] border border-[#EDE8C8] text-xs font-bold rounded-xl shadow-2xs cursor-pointer">
-                    💬 Message Lender
+                  <button className="py-2.5 bg-white hover:bg-[#FBF7F0] border border-[#EDE8C8] text-xs font-bold rounded-xl shadow-2xs cursor-pointer flex items-center justify-center gap-1.5">
+                    <AppIcon name="message" size={13} />
+                    <span>Message Lender</span>
                   </button>
-                  <button className="py-2.5 bg-white hover:bg-[#FBF7F0] border border-[#EDE8C8] text-xs font-bold rounded-xl shadow-2xs cursor-pointer">
-                    ⏱ Request Extension (+1 Day)
+                  <button className="py-2.5 bg-white hover:bg-[#FBF7F0] border border-[#EDE8C8] text-xs font-bold rounded-xl shadow-2xs cursor-pointer flex items-center justify-center gap-1.5">
+                    <AppIcon name="clock" size={13} />
+                    <span>Request Extension (+1 Day)</span>
                   </button>
                 </div>
 
@@ -428,7 +430,10 @@ export default function BorrowingLifecyclePage() {
                 </div>
 
                 <div className="p-4 bg-[#FEF3C7] border border-[#FDE68A] rounded-2xl space-y-2 text-xs text-[#92400E]">
-                  <p className="font-bold text-sm">⚠️ Return Deadline: Today, 6:00 PM</p>
+                  <p className="font-bold text-sm flex items-center gap-1.5">
+                    <AppIcon name="alert-circle" size={15} className="text-[#92400E]" />
+                    <span>Return Deadline: Today, 6:00 PM</span>
+                  </p>
                   <p>Drop-off location: <strong>{currentExchange.returnLocation}</strong>. Please ensure all included accessories (lens cap, SD card, battery, bag) are packed.</p>
                 </div>
 
@@ -495,7 +500,10 @@ export default function BorrowingLifecyclePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="p-3 bg-[#FAF7F0] border border-[#EFE8D6] rounded-2xl space-y-2">
                     <div className="flex items-center justify-between text-xs font-bold">
-                      <span>📸 Handover Condition (Before)</span>
+                      <span className="flex items-center gap-1.5">
+                        <AppIcon name="camera" size={13} />
+                        <span>Handover Condition (Before)</span>
+                      </span>
                       <span className="text-[#16A34A]">{currentExchange.beforeCondition.rating}</span>
                     </div>
                     <div className="relative aspect-video rounded-xl overflow-hidden bg-white">
@@ -506,7 +514,10 @@ export default function BorrowingLifecyclePage() {
 
                   <div className="p-3 bg-[#FAF7F0] border border-[#EFE8D6] rounded-2xl space-y-2">
                     <div className="flex items-center justify-between text-xs font-bold">
-                      <span>📸 Return Condition (After)</span>
+                      <span className="flex items-center gap-1.5">
+                        <AppIcon name="camera" size={13} />
+                        <span>Return Condition (After)</span>
+                      </span>
                       <span className={hasDamageReported ? "text-[#DC2626]" : "text-[#16A34A]"}>
                         {hasDamageReported ? "Minor Scratches (Flagged)" : currentExchange.afterCondition.rating}
                       </span>
@@ -585,8 +596,9 @@ export default function BorrowingLifecyclePage() {
                   </div>
                 </div>
 
-                <div className="p-3 bg-[#F0FDF4] border border-[#DCFCE7] rounded-xl text-xs text-[#166534] font-semibold">
-                  ✓ Refund transferred automatically to borrower UPI. Transaction ID: {currentExchange.settlement.transactionId}
+                <div className="p-3 bg-[#F0FDF4] border border-[#DCFCE7] rounded-xl text-xs text-[#166534] font-semibold flex items-center gap-2">
+                  <AppIcon name="check" size={14} className="text-[#16A34A] flex-shrink-0" />
+                  <span>Refund transferred automatically to borrower UPI. Transaction ID: {currentExchange.settlement.transactionId}</span>
                 </div>
 
                 <button
@@ -618,7 +630,7 @@ export default function BorrowingLifecyclePage() {
 
                 {/* Trust Score Reward Card */}
                 <div className="bg-[#FAF5EA] border border-[#EAE1CB] rounded-2xl p-5 text-center space-y-2">
-                  <span className="text-2xl">🎉</span>
+                  <AppIcon name="sparkles" size={26} className="text-[#16A34A] mx-auto" />
                   <h4 className="text-base font-black text-[#18181B]">Trust Profile Updated!</h4>
                   <p className="text-xs text-[#52525B]">
                     Both parties completed this exchange responsibly. <strong>+15 Trust Points</strong> awarded.
@@ -633,7 +645,11 @@ export default function BorrowingLifecyclePage() {
                   <div className="p-3.5 bg-[#FAF7F0] border border-[#EFE8D6] rounded-2xl space-y-1.5">
                     <div className="flex items-center justify-between">
                       <p className="font-bold text-[#18181B]">Borrower Review</p>
-                      <span className="text-[#F59E0B]">★★★★★</span>
+                      <div className="flex items-center gap-0.5 text-[#F59E0B]">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <AppIcon key={s} name="star" size={11} />
+                        ))}
+                      </div>
                     </div>
                     <p className="text-[#52525B] leading-relaxed">&quot;{currentExchange.ratingData.borrowerReview}&quot;</p>
                   </div>
@@ -641,7 +657,11 @@ export default function BorrowingLifecyclePage() {
                   <div className="p-3.5 bg-[#FAF7F0] border border-[#EFE8D6] rounded-2xl space-y-1.5">
                     <div className="flex items-center justify-between">
                       <p className="font-bold text-[#18181B]">Lender Review</p>
-                      <span className="text-[#F59E0B]">★★★★★</span>
+                      <div className="flex items-center gap-0.5 text-[#F59E0B]">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <AppIcon key={s} name="star" size={11} />
+                        ))}
+                      </div>
                     </div>
                     <p className="text-[#52525B] leading-relaxed">&quot;{currentExchange.ratingData.lenderReview}&quot;</p>
                   </div>
@@ -703,7 +723,10 @@ export default function BorrowingLifecyclePage() {
                       <p className="text-[10px] text-[#71717A]">Lender ({currentExchange.ownerDept})</p>
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold text-[#16A34A]">✔ Owner</span>
+                  <span className="text-[10px] font-bold text-[#16A34A] flex items-center gap-1">
+                    <AppIcon name="check" size={11} />
+                    <span>Owner</span>
+                  </span>
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -716,7 +739,10 @@ export default function BorrowingLifecyclePage() {
                       <p className="text-[10px] text-[#71717A]">Borrower ({currentExchange.borrowerDept})</p>
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold text-[#2563EB]">✔ Borrower</span>
+                  <span className="text-[10px] font-bold text-[#2563EB] flex items-center gap-1">
+                    <AppIcon name="check" size={11} />
+                    <span>Borrower</span>
+                  </span>
                 </div>
               </div>
 
@@ -740,7 +766,7 @@ export default function BorrowingLifecyclePage() {
             {/* Quick Helper Card */}
             <div className="bg-[#FAF5EA] border border-[#EAE1CB] rounded-3xl p-5 text-xs space-y-2">
               <h4 className="font-bold text-[#18181B] flex items-center gap-1.5">
-                <span>💡</span>
+                <AppIcon name="shield-check" size={14} className="text-[#16A34A]" />
                 <span>Campus Circular Protocol</span>
               </h4>
               <p className="text-[#52525B] text-[11.5px] leading-relaxed">

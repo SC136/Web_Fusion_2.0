@@ -172,8 +172,9 @@ export default function ProductDetailPage() {
                   <AppIcon name="package" size={13} />
                   <span>{product.category}</span>
                 </div>
-                <div className="flex items-center gap-1 text-[11px] font-bold text-[#1D4ED8] bg-[#DBEAFE] border border-[#BFDBFE] px-2.5 py-0.5 rounded-full">
-                  <span>⚡ Instant Approval</span>
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#1D4ED8] bg-[#DBEAFE] border border-[#BFDBFE] px-2.5 py-0.5 rounded-full">
+                  <AppIcon name="zap" size={12} className="text-[#2563EB]" />
+                  <span>Instant Approval</span>
                 </div>
               </div>
 
@@ -185,7 +186,7 @@ export default function ProductDetailPage() {
               {/* Rating & Trust Metrics */}
               <div className="flex flex-wrap items-center gap-3 mb-4">
                 <div className="flex items-center gap-1 text-xs font-bold bg-[#FEF3C7] border border-[#FDE68A] text-[#B45309] px-2.5 py-0.5 rounded-lg">
-                  <span>★</span>
+                  <AppIcon name="star" size={12} className="text-[#D97706]" />
                   <span>{product.rating}</span>
                   <span className="font-medium text-[#78350F]">({product.reviews} reviews)</span>
                 </div>
@@ -198,43 +199,25 @@ export default function ProductDetailPage() {
               {/* 3 Status Info Boxes */}
               <div className="grid grid-cols-3 gap-2.5 bg-[#FAF7F0] border border-[#EFE8D6] rounded-2xl p-3 text-center mb-5 shadow-2xs">
                 <div>
-                  <p className="text-xs font-bold text-[#18181B]">{product.condition}</p>
-                  <p className="text-[10px] text-[#71717A] font-medium">Condition</p>
+                  <p className="text-[10px] text-[#71717A] uppercase font-bold">Daily Rate</p>
+                  <p className="text-base font-black text-[#18181B]">₹{dailyRate}</p>
                 </div>
-                <div className="border-x border-[#E8DFC8]">
-                  <p className="text-xs font-bold text-[#166534]">{product.status}</p>
-                  <p className="text-[10px] text-[#71717A] font-medium">Availability</p>
+                <div className="border-x border-[#EAE1CB]">
+                  <p className="text-[10px] text-[#71717A] uppercase font-bold">Escrow Deposit</p>
+                  <p className="text-base font-black text-[#16A34A]">₹{deposit}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#18181B]">{product.distance} km</p>
-                  <p className="text-[10px] text-[#71717A] font-medium">from you</p>
+                  <p className="text-[10px] text-[#71717A] uppercase font-bold">Condition</p>
+                  <p className="text-base font-black text-[#18181B] truncate">{product.condition}</p>
                 </div>
               </div>
 
-              {/* Pricing Breakdown Card */}
-              <div className="bg-[#FAF5EA] border border-[#EAE1CB] rounded-2xl p-4 mb-5 shadow-2xs space-y-2">
-                <div className="grid grid-cols-3 gap-3 text-left">
-                  <div>
-                    <p className="text-[10.5px] font-semibold text-[#71717A]">Daily Charge</p>
-                    <p className="text-lg font-black text-[#18181B] mt-0.5">
-                      ₹{dailyRate} <span className="text-xs font-normal text-[#71717A]">/ day</span>
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[10.5px] font-semibold text-[#71717A]">Security Deposit</p>
-                    <p className="text-lg font-black text-[#18181B] mt-0.5">
-                      ₹{deposit.toLocaleString()}
-                    </p>
-                    <p className="text-[9.5px] text-[#16A34A] font-bold">100% Refundable</p>
-                  </div>
-                  <div>
-                    <p className="text-[10.5px] font-semibold text-[#71717A]">Late Fee</p>
-                    <p className="text-lg font-black text-[#18181B] mt-0.5">
-                      ₹{lateFee} <span className="text-xs font-normal text-[#71717A]">/ day</span>
-                    </p>
-                    <p className="text-[9.5px] text-[#71717A]">24h grace buffer</p>
-                  </div>
-                </div>
+              {/* Verified Security Notice */}
+              <div className="p-3 bg-[#FAF7F0] rounded-2xl border border-[#EDE8C8] flex items-center gap-2 text-xs text-[#52525B]">
+                <AppIcon name="shield-check" size={16} className="text-[#16A34A] flex-shrink-0" />
+                <p className="text-[11px] leading-tight">
+                  Protected by <strong>Campus Escrow</strong>. Deposit released only after return approval.
+                </p>
               </div>
             </div>
 
@@ -264,7 +247,7 @@ export default function ProductDetailPage() {
                 onClick={() => setIsSaved(!isSaved)}
                 className="w-full py-2 text-xs font-bold text-[#52525B] hover:text-[#18181B] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               >
-                <span>{isSaved ? "❤️" : "🤍"}</span>
+                {isSaved ? <AppIcon name="heart-filled" size={14} className="text-[#EF4444]" /> : <AppIcon name="heart" size={14} className="text-[#71717A]" />}
                 <span>{isSaved ? "Saved to Wishlist" : "Save for Later"}</span>
               </button>
             </div>
@@ -345,7 +328,7 @@ export default function ProductDetailPage() {
                       "User Manual Sheet",
                     ].map((item, idx) => (
                       <div key={idx} className="flex items-center gap-2 p-2 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl font-medium">
-                        <span className="text-[#16A34A] font-bold">✔</span>
+                        <AppIcon name="check" size={13} className="text-[#16A34A] flex-shrink-0" />
                         <span>{item}</span>
                       </div>
                     ))}
@@ -362,7 +345,7 @@ export default function ProductDetailPage() {
                 </h2>
                 <div className="space-y-2.5">
                   <div className="flex items-start gap-3 p-3 bg-[#FAF7F0] border border-[#EFE8D6] rounded-2xl">
-                    <span className="text-base">📸</span>
+                    <AppIcon name="camera" size={18} className="text-[#18181B] flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="font-bold text-[#18181B]">Photo Condition Inspection</p>
                       <p className="text-[11.5px] text-[#52525B] mt-0.5">
@@ -371,7 +354,7 @@ export default function ProductDetailPage() {
                     </div>
                   </div>
                   <div className="flex items-start gap-3 p-3 bg-[#FAF7F0] border border-[#EFE8D6] rounded-2xl">
-                    <span className="text-base">🛡️</span>
+                    <AppIcon name="shield-check" size={18} className="text-[#16A34A] flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="font-bold text-[#18181B]">Refundable Security Deposit</p>
                       <p className="text-[11.5px] text-[#52525B] mt-0.5">
@@ -380,7 +363,7 @@ export default function ProductDetailPage() {
                     </div>
                   </div>
                   <div className="flex items-start gap-3 p-3 bg-[#FAF7F0] border border-[#EFE8D6] rounded-2xl">
-                    <span className="text-base">⏰</span>
+                    <AppIcon name="clock" size={18} className="text-[#D97706] flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="font-bold text-[#18181B]">On-Time Return Pledge</p>
                       <p className="text-[11.5px] text-[#52525B] mt-0.5">
@@ -399,7 +382,10 @@ export default function ProductDetailPage() {
                   Before &amp; After Condition Protocol
                 </h2>
                 <div className="p-4 bg-[#F0FDF4] border border-[#BBF7D0] rounded-2xl space-y-2 text-[#166534]">
-                  <p className="font-bold text-sm">✓ Condition Guarantee Active</p>
+                  <p className="font-bold text-sm flex items-center gap-1.5">
+                    <AppIcon name="shield-check" size={16} />
+                    <span>Condition Guarantee Active</span>
+                  </p>
                   <p className="text-[11.5px] leading-relaxed">
                     This item has undergone <strong>12 successful verified handovers</strong> with 0 disputes. Both parties confirm condition in the app before unlocking exchange completion.
                   </p>
@@ -445,8 +431,9 @@ export default function ProductDetailPage() {
                     {product.owner}
                   </h3>
                   <p className="text-xs text-[#52525B] mt-0.5">{product.department}</p>
-                  <div className="flex items-center gap-1 text-[10.5px] font-bold text-[#166534] mt-1">
-                    <span>✔ Campus ID &amp; Email Verified</span>
+                  <div className="flex items-center gap-1.5 text-[10.5px] font-bold text-[#166534] mt-1">
+                    <AppIcon name="check" size={12} />
+                    <span>Campus ID &amp; Email Verified</span>
                   </div>
                 </div>
               </div>
@@ -454,7 +441,7 @@ export default function ProductDetailPage() {
               {/* Owner Rating */}
               <div className="text-right">
                 <div className="flex items-center justify-end gap-1 text-sm font-black text-[#18181B]">
-                  <span className="text-[#F59E0B]">★</span>
+                  <AppIcon name="star" size={14} className="text-[#F59E0B]" />
                   <span>4.9</span>
                 </div>
                 <p className="text-[10px] text-[#71717A]">(32 reviews)</p>

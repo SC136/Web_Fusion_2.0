@@ -48,7 +48,6 @@ export default function DashboardPage() {
                     style={{ fontFamily: "'Pixelify Sans', monospace" }}
                   >
                     <span>Welcome back, {currentUser.name}!</span>
-                    <span className="text-2xl not-italic">👋</span>
                   </h1>
                   <p className="text-sm text-[#6B7280]">Let&apos;s make sharing the new normal.</p>
                 </div>
@@ -90,9 +89,10 @@ export default function DashboardPage() {
                       <Link
                         key={tag}
                         href="/ai-assistant"
-                        className="text-[11px] px-3 py-1 bg-white/90 border border-[#E0E7D5] rounded-xl text-[#374151] hover:bg-white hover:border-[#6F9535] hover:text-[#18181B] transition-colors cursor-pointer shadow-2xs"
+                        className="text-[11px] px-3 py-1 bg-white/90 border border-[#E0E7D5] rounded-xl text-[#374151] hover:bg-white hover:border-[#6F9535] hover:text-[#18181B] transition-colors cursor-pointer shadow-2xs flex items-center gap-1"
                       >
-                        ✨ {tag}
+                        <AppIcon name="sparkles" size={11} className="text-[#6F9535]" />
+                        <span>{tag}</span>
                       </Link>
                     ))}
                   </div>

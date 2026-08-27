@@ -98,9 +98,6 @@ export default function ProfilePage() {
                         <h2 className="text-xl sm:text-2xl font-bold text-[#18181B]">
                           {profileUser.name}
                         </h2>
-                        <span className="w-5 h-5 rounded-full bg-[#16A34A] text-white flex items-center justify-center shadow-2xs">
-                          <AppIcon name="check" size={12} />
-                        </span>
                       </div>
                       <p className="text-xs sm:text-[13px] font-semibold text-[#52525B] mt-0.5">
                         {profileUser.department} • {profileUser.year}
@@ -114,7 +111,8 @@ export default function ProfilePage() {
                         <span>{profileUser.location}</span>
                       </span>
                       <span className="flex items-center gap-1 bg-[#F9FAFB] border border-[#E5E7EB] px-2.5 py-1 rounded-lg font-medium text-[11.5px]">
-                        <span>📅 Member since Aug 2024</span>
+                        <AppIcon name="calendar" size={12} className="text-[#9CA3AF]" />
+                        <span>Member since Aug 2024</span>
                       </span>
                     </div>
 
@@ -129,7 +127,8 @@ export default function ProfilePage() {
                         <span>College Email Verified</span>
                       </span>
                       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-[#FEF3C7] text-[#B45309] border border-[#FDE68A]">
-                        <span>✦ Top Lender</span>
+                        <AppIcon name="shield-check" size={12} />
+                        <span>Top Lender</span>
                       </span>
                     </div>
                   </div>
@@ -164,21 +163,21 @@ export default function ProfilePage() {
                   {/* Highlights Mini Stats */}
                   <div className="space-y-2 text-xs min-w-[150px]">
                     <div className="bg-[#FEFCF6] border border-[#F4E8CB] p-2 rounded-xl flex items-center gap-2.5">
-                      <span className="text-base">⚡</span>
+                      <AppIcon name="zap" size={16} className="text-[#F59E0B]" />
                       <div>
                         <p className="text-[10px] text-[#78716C] font-semibold">Response Time</p>
                         <p className="text-xs font-bold text-[#18181B]">&lt; 15 mins</p>
                       </div>
                     </div>
                     <div className="bg-[#FEFCF6] border border-[#F4E8CB] p-2 rounded-xl flex items-center gap-2.5">
-                      <span className="text-base">🏅</span>
+                      <AppIcon name="trophy" size={16} className="text-[#84CC16]" />
                       <div>
                         <p className="text-[10px] text-[#78716C] font-semibold">Campus Rank</p>
                         <p className="text-xs font-bold text-[#18181B]">Top 5% on Campus</p>
                       </div>
                     </div>
                     <div className="bg-[#FEFCF6] border border-[#F4E8CB] p-2 rounded-xl flex items-center gap-2.5">
-                      <span className="text-base">🌱</span>
+                      <AppIcon name="leaf" size={16} className="text-[#16A34A]" />
                       <div>
                         <p className="text-[10px] text-[#78716C] font-semibold">CO₂ Saved</p>
                         <p className="text-xs font-bold text-[#18181B]">12.4 kg CO₂</p>
@@ -190,7 +189,7 @@ export default function ProfilePage() {
                 {/* Far Right: Clean Mascot with Friendly Speech Bubble */}
                 <div className="relative flex flex-col items-center justify-end flex-shrink-0 z-0 pl-2">
                   <div className="mb-2 bg-[#FFF9EA] border border-[#F4E8CB] px-3 py-1.5 rounded-xl text-[11px] font-bold text-[#78350F] shadow-2xs relative max-w-[170px] text-center">
-                    <span>100% on-time returns! 🌱</span>
+                    <span>100% on-time returns!</span>
                     <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#FFF9EA] border-r border-b border-[#F4E8CB] rotate-45" />
                   </div>
                   <div className="relative w-32 h-36 lg:w-36 lg:h-40 flex-shrink-0">
@@ -451,7 +450,9 @@ export default function ProfilePage() {
                     <p className="text-[11px] font-bold text-[#18181B] mb-2">Rating Distribution</p>
                     {publicProfileMaya.ratingDistribution.map((d) => (
                       <div key={d.stars} className="flex items-center gap-2 text-[11px] text-[#71717A]">
-                        <span className="w-5 font-bold text-[#18181B]">{d.stars}★</span>
+                        <span className="w-5 font-bold text-[#18181B] flex items-center gap-0.5">
+                          {d.stars}<AppIcon name="star" size={9} className="text-[#F59E0B]" />
+                        </span>
                         <div className="flex-1 h-2 bg-[#EFE9DB] rounded-full overflow-hidden">
                           <div
                             className="h-full bg-[#6F9535] rounded-full"
@@ -491,7 +492,8 @@ export default function ProfilePage() {
                       id="maya-send-message-btn"
                       className="w-full py-3 bg-white hover:bg-[#F9FAFB] text-[#18181B] font-bold text-xs sm:text-sm rounded-2xl transition-all border border-[#E5E7EB] shadow-xs flex items-center justify-center gap-2 cursor-pointer active:translate-y-0.5"
                     >
-                      <span>Send Direct Message 💬</span>
+                      <AppIcon name="message" size={15} />
+                      <span>Send Direct Message</span>
                     </button>
                   </div>
                 </div>

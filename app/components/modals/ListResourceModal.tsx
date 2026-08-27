@@ -139,7 +139,7 @@ export default function ListResourceModal({
                     : "text-[#71717A] hover:text-[#18181B]"
                 }`}
               >
-                <span>📦</span>
+                <AppIcon name="package" size={14} />
                 <span>List a Resource (Lend)</span>
               </button>
               <button
@@ -154,7 +154,7 @@ export default function ListResourceModal({
                     : "text-[#71717A] hover:text-[#18181B]"
                 }`}
               >
-                <span>📢</span>
+                <AppIcon name="bell" size={14} className="text-[#D97706]" />
                 <span>Community Request (Wanted)</span>
               </button>
             </div>
@@ -396,8 +396,8 @@ export default function ListResourceModal({
                   )}
 
                   {/* AI Recommendation Pill */}
-                  <div className="p-3 bg-[#F0FDF4] border border-[#BBF7D0] rounded-2xl flex items-start gap-2 text-[11.5px] text-[#166534]">
-                    <span className="text-base">💡</span>
+                  <div className="p-3 bg-[#F0FDF4] border border-[#BBF7D0] rounded-2xl flex items-start gap-2.5 text-[11.5px] text-[#166534]">
+                    <AppIcon name="sparkles" size={16} className="text-[#16A34A] flex-shrink-0 mt-0.5" />
                     <div>
                       <p className="font-bold">Smart Pricing Suggestion</p>
                       <p className="text-[11px] text-[#15803D]">
@@ -441,8 +441,9 @@ export default function ListResourceModal({
                     </div>
                   </div>
 
-                  <div className="p-3 bg-[#FAF5EA] border border-[#EAE1CB] rounded-xl text-[11px] text-[#52525B]">
-                    ✔ I confirm that this item is in working condition and I am authorized to lend it within campus regulations.
+                  <div className="p-3 bg-[#FAF5EA] border border-[#EAE1CB] rounded-xl text-[11px] text-[#52525B] flex items-center gap-2">
+                    <span className="text-[#16A34A] font-bold">✓</span>
+                    <span>I confirm that this item is in working condition and I am authorized to lend it within campus regulations.</span>
                   </div>
                 </div>
               )}
@@ -574,8 +575,9 @@ export default function ListResourceModal({
                     </div>
                   </div>
 
-                  <div className="p-3 bg-[#F0FDF4] border border-[#BBF7D0] rounded-xl text-[11px] text-[#166534]">
-                    📢 When you post this, students in matching clubs will be notified immediately.
+                  <div className="p-3 bg-[#F0FDF4] border border-[#BBF7D0] rounded-xl text-[11px] text-[#166534] flex items-center gap-2">
+                    <AppIcon name="bell" size={14} className="text-[#16A34A] flex-shrink-0" />
+                    <span>When you post this, students in matching clubs will be notified immediately.</span>
                   </div>
                 </div>
               )}

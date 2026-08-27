@@ -31,7 +31,7 @@ export const overviewStats = [
     label: "Resources Shared",
     value: "342",
     change: "+28 this week",
-    icon: "user",
+    icon: "package",
     cardBg: "#EBF3FE",
     cardBorder: "#D1E3FC",
     iconBg: "#D6E8FE",
@@ -1296,7 +1296,7 @@ export const mockAiBundles = [
     title: "Campus Creator & Reel Production Kit",
     tagline: "4-in-1 complete audiovisual production kit optimized for campus reels and club shoots",
     scenarioPrompt: "I need to make a reel for my club event tomorrow",
-    badge: "🎬 PS Section 4 Verified Kit",
+    badge: "PS Section 4 Verified Kit",
     bundleDiscountPercent: 15,
     items: [
       {
@@ -1363,7 +1363,7 @@ export const mockAiBundles = [
     title: "Electronics Lab & Hardware Exam Pro Kit",
     tagline: "Essential measurement tools, programmable computation, and prototyping essentials",
     scenarioPrompt: "I have an electronics & IoT lab midterm on Friday",
-    badge: "⚡ Hardware Exam Kit",
+    badge: "Hardware Exam Kit",
     bundleDiscountPercent: 12,
     items: [
       {
@@ -1416,7 +1416,7 @@ export const mockAiBundles = [
     title: "Campus Weekend Trek & Camping Gear Kit",
     tagline: "Lightweight weather-sealed shelter, insulated sleep system, and power backup",
     scenarioPrompt: "Heading for weekend trekking near campus hills",
-    badge: "🏕️ Outdoor Adventure Kit",
+    badge: "Outdoor Adventure Kit",
     bundleDiscountPercent: 15,
     items: [
       {
@@ -1469,7 +1469,7 @@ export const mockAiBundles = [
     title: "Placement Interview & Presentation Kit",
     tagline: "Sharp professional attire and presentation accessories for recruiters and jury panels",
     scenarioPrompt: "Mock placement interview tomorrow morning",
-    badge: "👔 Career Ready Kit",
+    badge: "Career Ready Kit",
     bundleDiscountPercent: 10,
     items: [
       {
@@ -1563,7 +1563,7 @@ export const mockChatThreads = [
         id: "msg-106",
         sender: "Aarav Mehta",
         isMe: false,
-        text: "Handover signed off on Campus Circular! Enjoy your club reel shoot, and feel free to message if you need tips on the autofocus settings! 📷✨",
+        text: "Handover signed off on Campus Circular! Enjoy your club reel shoot, and feel free to message if you need tips on the autofocus settings!",
         time: "Today, 10:20 AM",
       },
     ],

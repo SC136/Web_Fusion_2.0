@@ -136,7 +136,7 @@ export default function AiAssistantPage() {
             <div className="space-y-2 max-w-2xl z-10">
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-bold uppercase tracking-wider bg-[#EDE9FE] text-[#6D28D9] px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                  <span>✨</span>
+                  <AppIcon name="sparkles" size={12} className="text-[#7C3AED]" />
                   <span>AI Need-Based Discovery • Section 4</span>
                 </span>
                 <span className="text-xs text-[#7C3AED] font-semibold">
@@ -177,7 +177,8 @@ export default function AiAssistantPage() {
              ══════════════════════════════════════════════════════════ */}
           <div className="bg-white rounded-3xl border border-[#EDE8C8] p-5 sm:p-6 shadow-2xs space-y-4">
             <label className="text-xs font-black text-[#374151] uppercase tracking-wider flex items-center gap-1.5">
-              <span>💬 Describe Your Requirement / Event:</span>
+              <AppIcon name="message" size={14} className="text-[#6F9535]" />
+              <span>Describe Your Requirement / Event:</span>
             </label>
 
             {/* Prompt Input Box */}
@@ -199,7 +200,7 @@ export default function AiAssistantPage() {
                   }`}
                   title="Voice Input (Simulation)"
                 >
-                  🎙️
+                  <AppIcon name="mic" size={15} />
                 </button>
               </div>
 
@@ -209,7 +210,8 @@ export default function AiAssistantPage() {
                 disabled={isThinking}
                 className="px-6 py-3.5 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-black text-xs sm:text-sm rounded-2xl transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2 flex-shrink-0"
               >
-                <span>{isThinking ? "Configuring Kit..." : "Generate Smart Kit ✨"}</span>
+                <span>{isThinking ? "Configuring Kit..." : "Generate Smart Kit"}</span>
+                <AppIcon name="sparkles" size={15} />
               </button>
             </div>
 
@@ -220,21 +222,22 @@ export default function AiAssistantPage() {
               </span>
               <div className="flex flex-wrap gap-2">
                 {[
-                  { label: "🎬 Club Event Reel Shoot (PS Sec 4)", prompt: "I need to make a reel for my club event tomorrow" },
-                  { label: "⚡ Electronics & IoT Lab Exam", prompt: "I have an electronics & IoT lab midterm on Friday" },
-                  { label: "🏕️ Weekend Campus Trekking", prompt: "Heading for weekend trekking near campus hills" },
-                  { label: "👔 Placement Interview & Pitch", prompt: "Mock placement interview tomorrow morning" },
+                  { label: "Club Event Reel Shoot (PS Sec 4)", prompt: "I need to make a reel for my club event tomorrow", icon: "video" },
+                  { label: "Electronics & IoT Lab Exam", prompt: "I have an electronics & IoT lab midterm on Friday", icon: "zap" },
+                  { label: "Weekend Campus Trekking", prompt: "Heading for weekend trekking near campus hills", icon: "leaf" },
+                  { label: "Placement Interview & Pitch", prompt: "Mock placement interview tomorrow morning", icon: "user" },
                 ].map((chip) => (
                   <button
                     key={chip.label}
                     onClick={() => handleChipClick(chip.prompt)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer flex items-center gap-1.5 ${
                       promptText === chip.prompt
                         ? "bg-[#18181B] text-white border-[#18181B]"
                         : "bg-[#FAF7F0] hover:bg-[#F3EFE3] text-[#52525B] border-[#EDE8C8]"
                     }`}
                   >
-                    {chip.label}
+                    <AppIcon name={chip.icon} size={13} />
+                    <span>{chip.label}</span>
                   </button>
                 ))}
               </div>

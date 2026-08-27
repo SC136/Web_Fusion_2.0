@@ -176,14 +176,14 @@ export default function AdminPage() {
   };
 
   const handlePingBorrower = (borrower: string, item: string) => {
-    handleAction(`📲 Urgent SMS & Email handover notification sent to ${borrower} for ${item}!`);
+    handleAction(`Urgent SMS & Email handover notification sent to ${borrower} for ${item}!`);
   };
 
   const handleResolveDispute = (id: string, issue: string) => {
     setDisputesList((prev) =>
       prev.map((d) => (d.id === id ? { ...d, status: "Resolved", statusColor: "bg-[#DCFCE7] text-[#15803D]" } : d))
     );
-    handleAction(`⚖️ Dispute "${issue}" resolved. Escrow deposit released!`);
+    handleAction(`Dispute "${issue}" resolved. Escrow deposit released!`);
   };
 
   const adminNavItems = useMemo(
@@ -309,7 +309,7 @@ export default function AdminPage() {
                 {/* Quick Refresh Button */}
                 <button
                   type="button"
-                  onClick={() => handleAction("🔄 Admin cache synchronized with campus database!")}
+                  onClick={() => handleAction("Admin cache synchronized with campus database!")}
                   className="px-3.5 py-2 bg-[#FDFBF1] hover:bg-[#FAF7F0] border border-[#EDE8C8] rounded-2xl text-xs font-bold text-[#18181B] flex items-center gap-1.5 cursor-pointer shadow-2xs"
                   title="Sync Data"
                 >
@@ -679,8 +679,9 @@ export default function AdminPage() {
                         </div>
                       ))
                     ) : (
-                      <div className="py-6 text-center text-xs text-[#16A34A] font-bold">
-                        🎉 All submitted items have been reviewed!
+                      <div className="py-6 text-center text-xs text-[#16A34A] font-bold flex items-center justify-center gap-1.5">
+                        <AppIcon name="check-check" size={16} />
+                        <span>All submitted items have been reviewed!</span>
                       </div>
                     )}
                   </div>
@@ -691,7 +692,7 @@ export default function AdminPage() {
                   disabled={approvalsList.length === 0}
                   onClick={() => {
                     setApprovalsList([]);
-                    handleAction(`✓ Batch approved all ${approvalsList.length} student equipment listings!`);
+                    handleAction(`Batch approved all ${approvalsList.length} student equipment listings!`);
                   }}
                   className="w-full py-2.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] disabled:opacity-50 text-white text-xs font-bold rounded-2xl transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer text-center"
                 >
@@ -703,7 +704,7 @@ export default function AdminPage() {
             {/* Floating Toast Notification */}
             {toastMessage && (
               <div className="fixed bottom-6 right-6 z-50 bg-[#18181B] text-white px-5 py-3 rounded-2xl shadow-2xl border border-white/10 text-xs font-bold flex items-center gap-2 animate-fadeInUp">
-                <span>🛡️</span>
+                <AppIcon name="shield-check" size={16} className="text-[#84CC16]" />
                 <span>{toastMessage}</span>
               </div>
             )}

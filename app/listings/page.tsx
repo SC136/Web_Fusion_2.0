@@ -83,7 +83,8 @@ export default function MyListingsPage() {
               href="/requests"
               className="px-4 py-2.5 bg-white hover:bg-[#FAF7F0] border border-[#EDE8C8] text-xs font-bold rounded-xl transition-all shadow-2xs flex items-center gap-1.5"
             >
-              <span>📢 Wanted Board</span>
+              <AppIcon name="bell" size={14} className="text-[#D97706]" />
+              <span>Wanted Board</span>
             </Link>
             <button
               onClick={() => setIsModalOpen(true)}
@@ -113,7 +114,11 @@ export default function MyListingsPage() {
           </div>
           <div className="bg-white rounded-2xl border border-[#EDE8C8] p-4 shadow-2xs">
             <p className="text-[11px] font-bold text-[#71717A] uppercase">Lender Rating</p>
-            <p className="text-xl font-black text-[#18181B] mt-1">★ 4.9 <span className="text-xs font-normal text-[#71717A]">(28 reviews)</span></p>
+            <p className="text-xl font-black text-[#18181B] mt-1 flex items-center gap-1">
+              <AppIcon name="star" size={16} className="text-[#F59E0B]" />
+              <span>4.9</span>
+              <span className="text-xs font-normal text-[#71717A]">(28 reviews)</span>
+            </p>
             <span className="text-[10px] text-[#16A34A] font-bold">Top Verified Sharer</span>
           </div>
         </div>

@@ -123,7 +123,7 @@ export default function AdminLoginPage() {
         </div>
         {/* Speech Bubble */}
         <div className="bg-[#D1E7B7] text-[#1E4E1C] border border-[#B8D996] px-3.5 py-2 rounded-2xl rounded-bl-none text-xs font-bold shadow-xs -mb-3">
-          Let&apos;s keep the campus circular! 💻
+          Let&apos;s keep the campus circular!
         </div>
       </div>
     </div>

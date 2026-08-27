@@ -260,7 +260,7 @@ export default function BrowsePage() {
                   <option value="relevance">Sort: Relevance</option>
                   <option value="price-asc">Price: Low to High</option>
                   <option value="price-desc">Price: High to Low</option>
-                  <option value="rating">Top Rated (★)</option>
+                  <option value="rating">Top Rated</option>
                   <option value="distance">Nearest Distance</option>
                 </select>
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[#71717A]">
@@ -555,11 +555,9 @@ export default function BrowsePage() {
                         title={favorites[item.id] ? "Favorited" : "Add to favorites"}
                       >
                         {favorites[item.id] ? (
-                          <span className="text-sm">❤️</span>
+                          <AppIcon name="heart-filled" size={15} className="text-[#EF4444]" />
                         ) : (
-                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-                          </svg>
+                          <AppIcon name="heart" size={15} className="text-[#6B7280]" />
                         )}
                       </button>
 
@@ -608,7 +606,7 @@ export default function BrowsePage() {
                             </p>
                           </div>
                           <div className="flex items-center gap-1 text-xs font-bold text-[#18181B]">
-                            <span className="text-[#F59E0B]">★</span>
+                            <AppIcon name="star" size={12} className="text-[#F59E0B]" />
                             <span>{item.rating}</span>
                           </div>
                         </div>
@@ -658,8 +656,10 @@ export default function BrowsePage() {
                         <h3 className="text-sm sm:text-base font-bold text-[#18181B] group-hover:text-[#6F9535] transition-colors truncate">
                           {item.title}
                         </h3>
-                        <p className="text-xs text-[#71717A] truncate">
-                          Owner: <strong>{item.owner}</strong> ({item.department}) • ★ {item.rating}
+                        <p className="text-xs text-[#71717A] truncate flex items-center gap-1">
+                          <span>Owner: <strong>{item.owner}</strong> ({item.department}) • </span>
+                          <AppIcon name="star" size={11} className="text-[#F59E0B]" />
+                          <span>{item.rating}</span>
                         </p>
                       </div>
                     </Link>

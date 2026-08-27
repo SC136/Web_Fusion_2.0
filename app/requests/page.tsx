@@ -65,8 +65,9 @@ export default function CommunityRequestsPage() {
         <div className="bg-gradient-to-r from-[#F2F8ED] via-[#FBF7EE] to-[#EFF6FE] border border-[#DCEAD6] rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 shadow-2xs">
           <div className="space-y-1.5 max-w-xl">
             <div className="flex items-center gap-2">
-              <span className="text-xs bg-[#DCFCE7] text-[#166534] font-bold px-2.5 py-0.5 rounded-full">
-                📢 Campus Circular Community Board
+              <span className="text-xs bg-[#DCFCE7] text-[#166534] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+                <AppIcon name="bell" size={13} className="text-[#16A34A]" />
+                <span>Campus Circular Community Board</span>
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-[#18181B] tracking-tight">
@@ -94,7 +95,8 @@ export default function CommunityRequestsPage() {
               }}
               className="flex-1 sm:flex-none px-4 py-3 bg-white hover:bg-[#FAF7F0] border border-[#EDE8C8] text-[#18181B] font-bold text-xs rounded-2xl transition-all shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
             >
-              <span>📦 List a Resource</span>
+              <AppIcon name="package" size={14} />
+              <span>List a Resource</span>
             </button>
           </div>
         </div>
@@ -146,8 +148,9 @@ export default function CommunityRequestsPage() {
                         {req.postedAgo}
                       </span>
                       {req.urgency === "High" && (
-                        <span className="text-[10px] font-bold bg-[#FEE2E2] text-[#DC2626] px-2 py-0.5 rounded-full">
-                          🔥 Urgent
+                        <span className="text-[10px] font-bold bg-[#FEE2E2] text-[#DC2626] px-2 py-0.5 rounded-full flex items-center gap-1">
+                          <AppIcon name="flame" size={11} className="text-[#DC2626]" />
+                          <span>Urgent</span>
                         </span>
                       )}
                     </div>
@@ -187,7 +190,7 @@ export default function CommunityRequestsPage() {
 
                   {hasOffered ? (
                     <div className="flex items-center gap-1.5 text-xs font-bold text-[#16A34A] bg-[#DCFCE7] px-4 py-2 rounded-xl">
-                      <span>✓</span>
+                      <AppIcon name="check" size={12} />
                       <span>Lend Offer Sent</span>
                     </div>
                   ) : (
@@ -195,7 +198,8 @@ export default function CommunityRequestsPage() {
                       onClick={() => handleRespond(req.id)}
                       className="px-4 py-2 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold text-xs rounded-xl transition-all shadow-xs cursor-pointer flex items-center gap-1.5"
                     >
-                      <span>🤝 I Can Lend This!</span>
+                      <AppIcon name="handshake" size={13} />
+                      <span>I Can Lend This!</span>
                     </button>
                   )}
                 </div>
