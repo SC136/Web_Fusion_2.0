@@ -313,7 +313,7 @@ export default function DashboardPage() {
                 </div>
                 <p className="text-[10.5px] text-[#78716C] ml-5">{currentUser.department}, {currentUser.year}</p>
               </div>
-            </div>
+            </Link>
 
             {/* Recent Messages */}
             <div className="bg-white rounded-2xl border border-[#EDE8C8] p-4 shadow-2xs">
