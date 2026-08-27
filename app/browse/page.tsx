@@ -69,11 +69,11 @@ export default function BrowsePage() {
   };
 
   const quickSearchTags = [
-    { label: "📸 DSLR Cameras", query: "camera" },
-    { label: "📐 Tripods & Lighting", query: "tripod" },
-    { label: "🎹 Synthesizers", query: "keyboard" },
-    { label: "🎙️ Microphones", query: "mic" },
-    { label: "📚 Coursebooks", query: "calculus" },
+    { label: "DSLR Cameras", query: "camera", icon: "camera" },
+    { label: "Tripods & Lighting", query: "tripod", icon: "video" },
+    { label: "Synthesizers", query: "keyboard", icon: "music" },
+    { label: "Microphones", query: "mic", icon: "mic" },
+    { label: "Coursebooks", query: "calculus", icon: "book" },
   ];
 
   // Filter and Sort logic
@@ -173,12 +173,14 @@ export default function BrowsePage() {
                 }}
                 className="px-5 py-2.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold text-xs sm:text-sm rounded-2xl transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] flex items-center gap-2 cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
               >
-                <span>+ List a Resource</span>
+                <AppIcon name="package" size={15} />
+                <span>List a Resource</span>
               </button>
               <Link
                 href="/requests"
                 className="px-4 py-2.5 bg-white hover:bg-[#FAF7F0] border border-[#EDE8C8] text-[#18181B] font-bold text-xs sm:text-sm rounded-2xl transition-all shadow-2xs flex items-center gap-2 cursor-pointer active:translate-y-0.5"
               >
+                <AppIcon name="bell" size={15} className="text-[#D97706]" />
                 <span>Wanted Requests</span>
                 <span className="bg-[#FEF3C7] text-[#92400E] text-[10px] px-2 py-0.5 rounded-full font-extrabold border border-[#FDE68A]">
                   4 Open
@@ -189,8 +191,9 @@ export default function BrowsePage() {
 
           {/* Right Mascot with Speech Bubble */}
           <div className="relative hidden md:flex items-center gap-3 flex-shrink-0">
-            <div className="bg-white border border-[#EDE8C8] px-4 py-2 rounded-2xl text-xs font-bold text-[#18181B] shadow-2xs relative">
-              <span className="text-[#16A34A]">{filteredResources.length} resources</span> nearby! 🎒
+            <div className="bg-white border border-[#EDE8C8] px-4 py-2 rounded-2xl text-xs font-bold text-[#18181B] shadow-2xs relative flex items-center gap-1.5">
+              <AppIcon name="map-pin" size={13} className="text-[#16A34A]" />
+              <span><strong className="text-[#16A34A]">{filteredResources.length} items</strong> available nearby</span>
               <div className="absolute top-1/2 -right-1.5 -translate-y-1/2 w-2.5 h-2.5 bg-white border-t border-r border-[#EDE8C8] rotate-45" />
             </div>
             <div className="relative w-28 h-32 lg:w-32 lg:h-36">
@@ -281,9 +284,10 @@ export default function BrowsePage() {
               <button
                 key={tag.query}
                 onClick={() => setSearchQuery(tag.query)}
-                className="px-3 py-1 rounded-xl bg-[#FDFBF1] hover:bg-[#F5F2E8] border border-[#EDE8C8] text-[11px] font-semibold text-[#52525B] hover:text-[#18181B] transition-all flex-shrink-0 cursor-pointer"
+                className="px-3 py-1.5 rounded-xl bg-[#FDFBF1] hover:bg-[#F5F2E8] border border-[#EDE8C8] text-[11px] font-bold text-[#52525B] hover:text-[#18181B] transition-all flex items-center gap-1.5 flex-shrink-0 cursor-pointer shadow-2xs hover:border-[#6F9535]/40"
               >
-                {tag.label}
+                <AppIcon name={tag.icon} size={13} className="text-[#6F9535]" />
+                <span>{tag.label}</span>
               </button>
             ))}
           </div>
