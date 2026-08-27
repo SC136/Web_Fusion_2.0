@@ -84,7 +84,7 @@ export default function LoginPage() {
           />
 
           {/* Form Content Overlay accurately confined inside the white clay board */}
-          <div className="absolute left-[9%] top-[19%] w-[66.5%] h-[73%] flex flex-col items-center justify-between text-center px-4 sm:px-6 py-2 z-20 overflow-hidden">
+          <div className="absolute left-[10%] top-[17%] w-[64%] h-[75%] flex flex-col items-center justify-between text-center px-4 sm:px-6 py-2 z-20 overflow-hidden">
             {/* Top Heading Group */}
             <div className="flex flex-col items-center w-full">
               {/* LOG IN Title in Pixelify Sans */}
@@ -115,7 +115,7 @@ export default function LoginPage() {
             </div>
 
             {/* Login Form Inputs & Actions */}
-            <form onSubmit={handleSubmit} className="w-full space-y-1.5 sm:space-y-2">
+            <form onSubmit={handleSubmit} className="w-full space-y-2">
               {/* Campus Email Input */}
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#71717A]">
@@ -131,7 +131,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Campus Email"
-                  className="w-full pl-8 pr-3 py-1.5 sm:py-2 rounded-full bg-white/95 border border-[#E4E4E7] text-[11px] sm:text-xs text-[#18181B] placeholder:text-[#A1A1AA] focus:outline-none focus:ring-2 focus:ring-[#84CC16] focus:border-transparent transition-all shadow-2xs"
+                  className="w-full pl-9 pr-3 py-2 rounded-2xl bg-[#FBF9F4] border border-[#E5E0D5] text-xs text-[#18181B] placeholder:text-[#9C9588] focus:outline-none focus:ring-2 focus:ring-[#7FB634] focus:bg-white transition-all shadow-[inset_0_1px_3px_rgba(0,0,0,0.06)]"
                 />
               </div>
 
@@ -150,12 +150,12 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
-                  className="w-full pl-8 pr-8 py-1.5 sm:py-2 rounded-full bg-white/95 border border-[#E4E4E7] text-[11px] sm:text-xs text-[#18181B] placeholder:text-[#A1A1AA] focus:outline-none focus:ring-2 focus:ring-[#84CC16] focus:border-transparent transition-all shadow-2xs"
+                  className="w-full pl-9 pr-9 py-2 rounded-2xl bg-[#FBF9F4] border border-[#E5E0D5] text-xs text-[#18181B] placeholder:text-[#9C9588] focus:outline-none focus:ring-2 focus:ring-[#7FB634] focus:bg-white transition-all shadow-[inset_0_1px_3px_rgba(0,0,0,0.06)]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#71717A] hover:text-[#18181B] transition-colors"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#71717A] hover:text-[#18181B] transition-colors cursor-pointer"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
@@ -178,7 +178,7 @@ export default function LoginPage() {
               <div className="flex justify-end pr-1 -mt-0.5">
                 <Link
                   href="#"
-                  className="text-[9px] sm:text-[10px] font-semibold text-[#65A30D] hover:text-[#4D7C0F] transition-colors"
+                  className="text-[10px] font-bold text-[#65A30D] hover:text-[#4D7C0F] hover:underline transition-colors"
                 >
                   Forgot Password?
                 </Link>
@@ -189,15 +189,15 @@ export default function LoginPage() {
                 type="submit"
                 id="login-submit-btn"
                 disabled={loading}
-                className="w-full py-2 sm:py-2.5 bg-[#8DBF43] hover:bg-[#7EAC3B] active:bg-[#729C34] text-[#18181B] font-bold text-xs sm:text-sm rounded-full transition-all duration-150 shadow-xs hover:shadow-sm cursor-pointer flex items-center justify-center"
+                className="w-full py-2.5 sm:py-3 bg-gradient-to-b from-[#7FB634] to-[#689A24] hover:from-[#8AC538] hover:to-[#72A627] text-white font-black text-xs sm:text-[13.5px] rounded-2xl transition-all duration-150 shadow-[0_4px_12px_rgba(104,154,36,0.3),inset_0_1px_1px_rgba(255,255,255,0.4)] border-b-2 border-[#547C1C] active:translate-y-0.5 active:shadow-[0_2px_6px_rgba(104,154,36,0.2)] cursor-pointer flex items-center justify-center tracking-wide"
               >
                 {loading ? "Logging in..." : "Log in"}
               </button>
 
               {/* Divider */}
               <div className="relative flex items-center justify-center py-0.5">
-                <div className="w-full border-t border-[#E4E4E7]" />
-                <span className="absolute bg-white/90 px-2 text-[9px] text-[#71717A] uppercase font-semibold">
+                <div className="w-full border-t border-[#E5E0D5]" />
+                <span className="absolute bg-[#F8F5EE] border border-[#E5E0D5] px-3 py-0.5 text-[9px] text-[#8A8275] uppercase font-bold tracking-wider rounded-full shadow-2xs">
                   or
                 </span>
               </div>
@@ -207,9 +207,9 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => router.push("/dashboard")}
                 id="login-sso-btn"
-                className="w-full py-1.5 sm:py-2 bg-white/95 hover:bg-white border border-[#E4E4E7] text-[#18181B] font-semibold text-[11px] sm:text-xs rounded-full transition-all duration-150 shadow-2xs hover:shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full py-2 sm:py-2.5 bg-white hover:bg-[#FAF9F5] border border-[#DDD6C8] text-[#18181B] font-bold text-[11px] sm:text-xs rounded-2xl transition-all duration-150 shadow-[0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.8)] border-b-2 border-[#CCC4B4] active:translate-y-0.5 cursor-pointer flex items-center justify-center gap-2"
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#52525B]">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="text-[#65A30D]">
                   <path d="M3 21h18M3 10h18M5 10v11M19 10v11M9 10v11M15 10v11M12 2l10 5H2l10-5z" />
                 </svg>
                 <span>Log in with University SSO</span>
