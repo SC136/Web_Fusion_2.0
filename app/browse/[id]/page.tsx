@@ -18,13 +18,13 @@ export default function ProductDetailPage() {
     browseResources.find((p) => p.id === id) ||
     browseResources[0];
 
-  // Gallery active image
+  // Gallery active images
   const galleryImages = [
     product.image,
     "/products/camera.jpg",
     "/products/tripod.jpg",
-    "/products/mic.jpg",
     "/products/ringlight.jpg",
+    "/products/mic.jpg",
     "/mascots/books_camera.png",
   ];
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -34,41 +34,52 @@ export default function ProductDetailPage() {
   const [isBorrowModalOpen, setIsBorrowModalOpen] = useState(false);
   const [borrowDays, setBorrowDays] = useState(3);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
+  const [activeTab, setActiveTab] = useState<"details" | "agreement" | "condition">("details");
 
-  // Pricing calculations
-  const dailyRate = 150;
-  const deposit = 1500;
-  const lateFee = 50;
+  // Dynamic pricing
+  const dailyRate = (product as any).dailyRate || 150;
+  const deposit = (product as any).deposit || 1500;
+  const lateFee = (product as any).lateFee || 50;
+  const platformFee = Math.round(dailyRate * borrowDays * 0.1);
   const rentalTotal = dailyRate * borrowDays;
+  const totalPayable = rentalTotal + platformFee + deposit;
 
   return (
     <div className="min-h-screen bg-[#FBF7F0] text-[#18181B] flex flex-col select-none">
       {/* ─── Top Navbar ───────────────────────────────────────── */}
       <AppNavbar variant="auth" />
 
-      {/* ─── Breadcrumb / Back Link ───────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-3 w-full">
+      {/* ─── Breadcrumb Bar ───────────────────────────────────── */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-3 w-full flex items-center justify-between">
         <Link
           href="/browse"
-          className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#52525B] hover:text-[#18181B] transition-colors"
+          className="inline-flex items-center gap-2 text-xs sm:text-[13px] font-bold text-[#52525B] hover:text-[#18181B] transition-colors group"
         >
-          <span>←</span>
+          <span className="group-hover:-translate-x-0.5 transition-transform">←</span>
           <span>Back to Browse</span>
         </Link>
+
+        <div className="hidden sm:flex items-center gap-2 text-xs text-[#71717A] font-medium">
+          <span>Browse</span>
+          <span>/</span>
+          <span className="text-[#52525B] font-semibold">{product.category}</span>
+          <span>/</span>
+          <span className="text-[#18181B] font-bold truncate max-w-[200px]">{product.title}</span>
+        </div>
       </div>
 
       {/* ─── Main Content Grid ────────────────────────────────── */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 w-full space-y-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-14 w-full space-y-7">
         {/* ══════════════════════════════════════════════════════════
            TOP SECTION: GALLERY (LEFT) + BOOKING CARD (RIGHT)
            ══════════════════════════════════════════════════════════ */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
           {/* ─── LEFT: Product Showcase & Gallery (7 cols) ──────── */}
           <div className="lg:col-span-7 space-y-4">
             {/* Main Stage Display Card */}
-            <div className="relative w-full aspect-[4/3] bg-[#EFF7ED] border border-[#DCEBD9] rounded-3xl overflow-hidden shadow-xs flex items-center justify-center p-6 sm:p-10 group">
-              {/* Main Product Hero Image */}
-              <div className="relative w-4/5 h-4/5 max-h-[360px] z-10">
+            <div className="relative w-full aspect-[4/3] bg-gradient-to-b from-[#F6FAF1] to-[#EAF3E4] border border-[#D5E5CE] rounded-3xl overflow-hidden shadow-xs flex items-center justify-center p-6 sm:p-10 group">
+              {/* Product Hero Image */}
+              <div className="relative w-4/5 h-4/5 max-h-[380px] z-10">
                 <Image
                   src={galleryImages[selectedImageIndex]}
                   alt={product.title}
@@ -78,23 +89,29 @@ export default function ProductDetailPage() {
                 />
               </div>
 
-              {/* Counter Badge (Top Right) */}
-              <div className="absolute top-4 right-4 bg-[#18181B]/70 backdrop-blur-md text-white text-[11px] font-bold px-2.5 py-1 rounded-full z-20">
+              {/* Counter Badge */}
+              <div className="absolute top-4 right-4 bg-[#18181B]/75 backdrop-blur-md text-white text-[11px] font-bold px-3 py-1 rounded-full z-20 shadow-xs">
                 {selectedImageIndex + 1} / {galleryImages.length}
+              </div>
+
+              {/* Verified Resource Watermark Badge */}
+              <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md border border-[#BBF7D0] text-[#15803D] text-[10.5px] font-bold px-2.5 py-1 rounded-full z-20 flex items-center gap-1.5 shadow-2xs">
+                <AppIcon name="shield-check" size={13} />
+                <span>Verified Listing</span>
               </div>
             </div>
 
             {/* Thumbnails Carousel */}
             <div className="flex items-center gap-3">
-              <div className="flex-1 flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-none">
+              <div className="flex-1 flex items-center gap-3 overflow-x-auto pb-1 scrollbar-none">
                 {galleryImages.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedImageIndex(idx)}
                     className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-white border-2 flex-shrink-0 transition-all cursor-pointer ${
                       selectedImageIndex === idx
-                        ? "border-[#84CC16] ring-2 ring-[#84CC16]/40 shadow-xs scale-98"
-                        : "border-[#EDE8C8] hover:border-[#84CC16]/50 opacity-80 hover:opacity-100"
+                        ? "border-[#6F9535] ring-3 ring-[#6F9535]/30 shadow-xs scale-98"
+                        : "border-[#EDE8C8] hover:border-[#6F9535]/50 opacity-85 hover:opacity-100"
                     }`}
                   >
                     <Image src={img} alt="Thumb" fill className="object-cover" />
@@ -107,9 +124,10 @@ export default function ProductDetailPage() {
                 onClick={() =>
                   setSelectedImageIndex((prev) => (prev + 1) % galleryImages.length)
                 }
-                className="w-10 h-10 rounded-2xl bg-white border border-[#EDE8C8] flex items-center justify-center text-[#18181B] hover:bg-[#FBF7F0] shadow-2xs cursor-pointer flex-shrink-0"
+                aria-label="Next image"
+                className="w-11 h-11 rounded-2xl bg-white border border-[#EDE8C8] flex items-center justify-center text-[#18181B] hover:bg-[#F5F2E8] shadow-2xs cursor-pointer flex-shrink-0 transition-all active:scale-95"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="m9 18 6-6-6-6" />
                 </svg>
               </button>
@@ -117,76 +135,87 @@ export default function ProductDetailPage() {
           </div>
 
           {/* ─── RIGHT: Booking & Action Card (5 cols) ─────────── */}
-          <div className="lg:col-span-5 bg-white rounded-3xl border border-[#EDE8C8] p-6 shadow-sm flex flex-col justify-between space-y-5">
+          <div className="lg:col-span-5 bg-white rounded-3xl border border-[#EDE8C8] p-6 sm:p-7 shadow-xs flex flex-col justify-between space-y-5">
             <div>
-              {/* Category Tag */}
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#71717A] mb-2">
-                <AppIcon name="package" size={14} className="text-[#84CC16]" />
-                <span>{product.category}</span>
+              {/* Category & Status Badges */}
+              <div className="flex items-center justify-between gap-2 mb-2.5">
+                <div className="inline-flex items-center gap-1.5 text-xs font-bold text-[#15803D] bg-[#DCFCE7] border border-[#BBF7D0] px-3 py-1 rounded-full">
+                  <AppIcon name="package" size={13} />
+                  <span>{product.category}</span>
+                </div>
+                <div className="flex items-center gap-1 text-[11px] font-bold text-[#1D4ED8] bg-[#DBEAFE] border border-[#BFDBFE] px-2.5 py-0.5 rounded-full">
+                  <span>⚡ Instant Approval</span>
+                </div>
               </div>
 
               {/* Product Title */}
-              <h1 className="text-xl sm:text-2xl font-black text-[#18181B] leading-snug mb-2.5">
+              <h1 className="text-xl sm:text-2xl font-black text-[#18181B] leading-snug mb-2">
                 {product.title}
               </h1>
 
-              {/* Rating & Verified Badge */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center gap-1 text-xs font-bold">
-                  <span className="text-[#F59E0B]">★</span>
-                  <span className="text-[#18181B]">{product.rating}</span>
-                  <span className="text-[#71717A] font-normal">({product.reviews} reviews)</span>
+              {/* Rating & Trust Metrics */}
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                <div className="flex items-center gap-1 text-xs font-bold bg-[#FEF3C7] border border-[#FDE68A] text-[#B45309] px-2.5 py-0.5 rounded-lg">
+                  <span>★</span>
+                  <span>{product.rating}</span>
+                  <span className="font-medium text-[#78350F]">({product.reviews} reviews)</span>
                 </div>
-                <div className="flex items-center gap-1 text-[11px] font-bold text-[#166534] bg-[#DCFCE7] px-2.5 py-0.5 rounded-full">
-                  <AppIcon name="shield-check" size={13} />
-                  <span>Verified</span>
+                <div className="flex items-center gap-1 text-xs text-[#166534] font-bold">
+                  <AppIcon name="shield-check" size={14} />
+                  <span>100% On-time Returns</span>
                 </div>
               </div>
 
               {/* 3 Status Info Boxes */}
-              <div className="grid grid-cols-3 gap-2.5 bg-[#FAF6EC] border border-[#EFE8D6] rounded-2xl p-3 text-center mb-5">
+              <div className="grid grid-cols-3 gap-2.5 bg-[#FAF7F0] border border-[#EFE8D6] rounded-2xl p-3 text-center mb-5 shadow-2xs">
                 <div>
                   <p className="text-xs font-bold text-[#18181B]">{product.condition}</p>
-                  <p className="text-[10px] text-[#71717A]">Condition</p>
+                  <p className="text-[10px] text-[#71717A] font-medium">Condition</p>
                 </div>
                 <div className="border-x border-[#E8DFC8]">
                   <p className="text-xs font-bold text-[#166534]">{product.status}</p>
-                  <p className="text-[10px] text-[#71717A]">Until May 28, 2025</p>
+                  <p className="text-[10px] text-[#71717A] font-medium">Availability</p>
                 </div>
                 <div>
                   <p className="text-xs font-bold text-[#18181B]">{product.distance} km</p>
-                  <p className="text-[10px] text-[#71717A]">from you</p>
+                  <p className="text-[10px] text-[#71717A] font-medium">from you</p>
                 </div>
               </div>
 
-              {/* Pricing 3-Column Strip */}
-              <div className="bg-[#FAF5EA] border border-[#EAE1CB] rounded-2xl p-4 mb-5">
+              {/* Pricing Breakdown Card */}
+              <div className="bg-[#FAF5EA] border border-[#EAE1CB] rounded-2xl p-4 mb-5 shadow-2xs space-y-2">
                 <div className="grid grid-cols-3 gap-3 text-left">
                   <div>
-                    <p className="text-[11px] font-semibold text-[#71717A]">Daily Charge</p>
-                    <p className="text-lg font-black text-[#18181B] mt-0.5">₹{dailyRate} <span className="text-xs font-normal text-[#71717A]">/ day</span></p>
+                    <p className="text-[10.5px] font-semibold text-[#71717A]">Daily Charge</p>
+                    <p className="text-lg font-black text-[#18181B] mt-0.5">
+                      ₹{dailyRate} <span className="text-xs font-normal text-[#71717A]">/ day</span>
+                    </p>
                   </div>
                   <div>
-                    <p className="text-[11px] font-semibold text-[#71717A]">Security Deposit</p>
-                    <p className="text-lg font-black text-[#18181B] mt-0.5">₹{deposit.toLocaleString()}</p>
-                    <p className="text-[10px] text-[#16A34A] font-semibold">Refundable</p>
+                    <p className="text-[10.5px] font-semibold text-[#71717A]">Security Deposit</p>
+                    <p className="text-lg font-black text-[#18181B] mt-0.5">
+                      ₹{deposit.toLocaleString()}
+                    </p>
+                    <p className="text-[9.5px] text-[#16A34A] font-bold">100% Refundable</p>
                   </div>
                   <div>
-                    <p className="text-[11px] font-semibold text-[#71717A]">Late Fee</p>
-                    <p className="text-lg font-black text-[#18181B] mt-0.5">₹{lateFee} <span className="text-xs font-normal text-[#71717A]">/ day</span></p>
-                    <p className="text-[10px] text-[#71717A]">After 24h grace</p>
+                    <p className="text-[10.5px] font-semibold text-[#71717A]">Late Fee</p>
+                    <p className="text-lg font-black text-[#18181B] mt-0.5">
+                      ₹{lateFee} <span className="text-xs font-normal text-[#71717A]">/ day</span>
+                    </p>
+                    <p className="text-[9.5px] text-[#71717A]">24h grace buffer</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="space-y-2.5 pt-2">
-              {/* Primary CTA */}
+            <div className="space-y-2.5 pt-1">
+              {/* Primary CTA with 3D Tactile Styling */}
               <button
                 onClick={() => setIsBorrowModalOpen(true)}
                 id="borrow-now-cta"
-                className="w-full py-3.5 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold rounded-2xl transition-all shadow-xs hover:shadow-md flex items-center justify-center gap-2 text-sm cursor-pointer"
+                className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] hover:from-[#8AC538] hover:to-[#72A627] text-white font-extrabold rounded-2xl transition-all duration-150 shadow-[0_4px_14px_rgba(104,154,36,0.3),inset_0_1px_1px_rgba(255,255,255,0.4)] border-b-2 border-[#547C1C] active:translate-y-0.5 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer tracking-wide"
               >
                 <span>Request to Borrow</span>
                 <span>→</span>
@@ -195,172 +224,201 @@ export default function ProductDetailPage() {
               {/* Chat with Owner */}
               <Link
                 href="/dashboard"
-                className="w-full py-3 bg-white hover:bg-[#FBF7F0] border border-[#EDE8C8] text-[#18181B] font-bold rounded-2xl transition-all shadow-2xs flex items-center justify-center gap-2 text-xs sm:text-sm"
+                className="w-full py-3 bg-white hover:bg-[#FAF9F5] border border-[#DDD6C8] text-[#18181B] font-bold rounded-2xl transition-all duration-150 shadow-[0_2px_6px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.8)] border-b-2 border-[#CCC4B4] active:translate-y-0.5 flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer"
               >
                 <AppIcon name="message" size={16} />
                 <span>Chat with Owner</span>
               </Link>
 
-              {/* Save for later */}
+              {/* Wishlist Toggle */}
               <button
                 onClick={() => setIsSaved(!isSaved)}
-                className="w-full py-2.5 text-xs font-semibold text-[#52525B] hover:text-[#18181B] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                className="w-full py-2 text-xs font-bold text-[#52525B] hover:text-[#18181B] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               >
                 <span>{isSaved ? "❤️" : "🤍"}</span>
-                <span>{isSaved ? "Saved to Favorites" : "Save for Later"}</span>
+                <span>{isSaved ? "Saved to Wishlist" : "Save for Later"}</span>
               </button>
             </div>
           </div>
         </div>
 
         {/* ══════════════════════════════════════════════════════════
-           BOTTOM SECTION: "ABOUT THIS ITEM" (LEFT) + "LISTED BY" (RIGHT)
+           MIDDLE SECTION: DETAILS TABS (LEFT) + LISTED BY (RIGHT)
            ══════════════════════════════════════════════════════════ */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* ─── LEFT: About This Item Details Card (7 cols) ───── */}
-          <div className="lg:col-span-7 bg-white rounded-3xl border border-[#EDE8C8] p-6 sm:p-7 shadow-2xs space-y-6">
-            {/* Header & Overview */}
-            <div>
-              <h2 className="text-base sm:text-lg font-bold text-[#18181B] mb-2">
-                About this item
-              </h2>
-              <p className="text-xs sm:text-sm text-[#52525B] leading-relaxed">
-                {product.title} with standard accessories. Perfect for photography enthusiasts, project presentations, and campus coursework. Well maintained, clean, and lightly used. Delivers excellent output and reliability.
-              </p>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
+          {/* ─── LEFT: Interactive Tabbed Details (7 cols) ─────── */}
+          <div className="lg:col-span-7 bg-white rounded-3xl border border-[#EDE8C8] p-6 sm:p-7 shadow-xs space-y-5">
+            {/* Tab Navigation */}
+            <div className="flex items-center gap-2 border-b border-[#F0EAE0] pb-3">
+              {[
+                { id: "details", label: "About & Accessories" },
+                { id: "agreement", label: "Borrowing Rules" },
+                { id: "condition", label: "Condition Tracking" },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === tab.id
+                      ? "bg-[#8DBF43]/20 text-[#2E5E1C] border border-[#8DBF43]/40"
+                      : "text-[#71717A] hover:text-[#18181B] hover:bg-[#FAF7F0]"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
 
-            {/* Spec Attributes Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 py-3 border-y border-[#F0EAE0] text-xs">
-              <div>
-                <p className="text-[#71717A] text-[10.5px]">Category</p>
-                <p className="font-bold text-[#18181B]">{product.category}</p>
-              </div>
-              <div>
-                <p className="text-[#71717A] text-[10.5px]">Subcategory</p>
-                <p className="font-bold text-[#18181B]">Standard Gear</p>
-              </div>
-              <div>
-                <p className="text-[#71717A] text-[10.5px]">Condition</p>
-                <p className="font-bold text-[#16A34A]">{product.condition}</p>
-              </div>
-              <div>
-                <p className="text-[#71717A] text-[10.5px]">Usage</p>
-                <p className="font-bold text-[#18181B]">Lightly Used</p>
-              </div>
-              <div>
-                <p className="text-[#71717A] text-[10.5px]">Listed on</p>
-                <p className="font-bold text-[#18181B]">May 12, 2025</p>
-              </div>
-            </div>
+            {/* TAB 1: About & Accessories */}
+            {activeTab === "details" && (
+              <div className="space-y-5 animate-fadeIn">
+                <div>
+                  <h2 className="text-sm sm:text-base font-bold text-[#18181B] mb-2">
+                    Item Description
+                  </h2>
+                  <p className="text-xs sm:text-[13px] text-[#52525B] leading-relaxed">
+                    {product.title} in {product.condition.toLowerCase()} condition. Verified and maintained regularly by {product.owner}. Clean sensor, smooth operational mechanics, and includes all necessary cords and protective cases.
+                  </p>
+                </div>
 
-            {/* 3 Detail Subsections */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-1">
-              {/* 1. Included Accessories */}
-              <div>
-                <h3 className="text-xs font-bold text-[#18181B] mb-2.5">
-                  Included Accessories
-                </h3>
-                <div className="space-y-1.5 text-[11.5px] text-[#374151]">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[#16A34A]">✔</span>
-                    <span>18-55mm Lens</span>
+                {/* Attributes Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3 bg-[#FAF7F0] border border-[#EFE8D6] rounded-2xl text-xs">
+                  <div>
+                    <p className="text-[#71717A] text-[10.5px]">Category</p>
+                    <p className="font-bold text-[#18181B]">{product.category}</p>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[#16A34A]">✔</span>
-                    <span>Lens Cap</span>
+                  <div>
+                    <p className="text-[#71717A] text-[10.5px]">Condition</p>
+                    <p className="font-bold text-[#16A34A]">{product.condition}</p>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[#16A34A]">✔</span>
-                    <span>Battery (2x)</span>
+                  <div>
+                    <p className="text-[#71717A] text-[10.5px]">Max Duration</p>
+                    <p className="font-bold text-[#18181B]">7 Days</p>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[#16A34A]">✔</span>
-                    <span>Charger</span>
+                  <div>
+                    <p className="text-[#71717A] text-[10.5px]">Campus Location</p>
+                    <p className="font-bold text-[#18181B]">North Campus</p>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[#16A34A]">✔</span>
-                    <span>32GB SD Card</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[#16A34A]">✔</span>
-                    <span>Camera Bag</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[#16A34A]">✔</span>
-                    <span>USB Cable</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[#16A34A]">✔</span>
-                    <span>Neck Strap</span>
+                </div>
+
+                {/* Included Accessories */}
+                <div>
+                  <h3 className="text-xs font-bold text-[#18181B] uppercase tracking-wider mb-3">
+                    Included in this Bundle
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs text-[#374151]">
+                    {[
+                      "Primary Equipment",
+                      "Standard Mount Plate",
+                      "Heavy-Duty Padded Bag",
+                      "Connection Cable",
+                      "Protective Caps",
+                      "User Manual Sheet",
+                    ].map((item, idx) => (
+                      <div key={idx} className="flex items-center gap-2 p-2 bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl font-medium">
+                        <span className="text-[#16A34A] font-bold">✔</span>
+                        <span>{item}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
+            )}
 
-              {/* 2. Borrowing Conditions */}
-              <div>
-                <h3 className="text-xs font-bold text-[#18181B] mb-2.5">
-                  Borrowing Conditions
-                </h3>
-                <ul className="space-y-1.5 text-[11.5px] text-[#52525B] list-disc list-inside">
-                  <li>Handle with care and return in the same condition</li>
-                  <li>No water damage or rough usage</li>
-                  <li>Report any issues immediately</li>
-                  <li>Return on or before the due date</li>
-                </ul>
-              </div>
-
-              {/* 3. Previous Usage */}
-              <div>
-                <h3 className="text-xs font-bold text-[#18181B] mb-2.5">
-                  Previous Usage
-                </h3>
-                <div className="space-y-2 text-[11.5px] text-[#374151]">
-                  <div className="flex items-center gap-2">
-                    <AppIcon name="package" size={13} className="text-[#6B7280]" />
-                    <span>Rented 12 times</span>
+            {/* TAB 2: Borrowing Rules */}
+            {activeTab === "agreement" && (
+              <div className="space-y-4 animate-fadeIn text-xs">
+                <h2 className="text-sm sm:text-base font-bold text-[#18181B]">
+                  Community Borrowing Rules
+                </h2>
+                <div className="space-y-2.5">
+                  <div className="flex items-start gap-3 p-3 bg-[#FAF7F0] border border-[#EFE8D6] rounded-2xl">
+                    <span className="text-base">📸</span>
+                    <div>
+                      <p className="font-bold text-[#18181B]">Photo Condition Inspection</p>
+                      <p className="text-[11.5px] text-[#52525B] mt-0.5">
+                        Lender and borrower must snap 2 photos during physical handover to verify initial condition.
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <AppIcon name="star" size={13} className="text-[#F59E0B]" />
-                    <span>Positive reviews: 11</span>
+                  <div className="flex items-start gap-3 p-3 bg-[#FAF7F0] border border-[#EFE8D6] rounded-2xl">
+                    <span className="text-base">🛡️</span>
+                    <div>
+                      <p className="font-bold text-[#18181B]">Refundable Security Deposit</p>
+                      <p className="text-[11.5px] text-[#52525B] mt-0.5">
+                        ₹{deposit.toLocaleString()} is held safely in escrow and automatically released upon return approval.
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <AppIcon name="timer" size={13} className="text-[#10B981]" />
-                    <span>On-time returns: 100%</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <AppIcon name="calendar-clock" size={13} className="text-[#3B82F6]" />
-                    <span>Last rented: 2 weeks ago</span>
+                  <div className="flex items-start gap-3 p-3 bg-[#FAF7F0] border border-[#EFE8D6] rounded-2xl">
+                    <span className="text-base">⏰</span>
+                    <div>
+                      <p className="font-bold text-[#18181B]">On-Time Return Pledge</p>
+                      <p className="text-[11.5px] text-[#52525B] mt-0.5">
+                        Return the item before 8:00 PM on the due date. A 24-hour grace window applies before late fees begin.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* TAB 3: Condition Tracking */}
+            {activeTab === "condition" && (
+              <div className="space-y-4 animate-fadeIn text-xs">
+                <h2 className="text-sm sm:text-base font-bold text-[#18181B]">
+                  Before &amp; After Condition Protocol
+                </h2>
+                <div className="p-4 bg-[#F0FDF4] border border-[#BBF7D0] rounded-2xl space-y-2 text-[#166534]">
+                  <p className="font-bold text-sm">✓ Condition Guarantee Active</p>
+                  <p className="text-[11.5px] leading-relaxed">
+                    This item has undergone <strong>12 successful verified handovers</strong> with 0 disputes. Both parties confirm condition in the app before unlocking exchange completion.
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-3 pt-1">
+                  <div className="p-3 bg-[#FAF7F0] border border-[#EFE8D6] rounded-xl text-center">
+                    <p className="font-bold text-[#18181B]">Check-in Photo</p>
+                    <p className="text-[10.5px] text-[#71717A]">At Handover</p>
+                  </div>
+                  <div className="p-3 bg-[#FAF7F0] border border-[#EFE8D6] rounded-xl text-center">
+                    <p className="font-bold text-[#18181B]">Check-out Photo</p>
+                    <p className="text-[10.5px] text-[#71717A]">At Return</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* ─── RIGHT: "Listed by" Owner Card (5 cols) ────────── */}
-          <div className="lg:col-span-5 bg-white rounded-3xl border border-[#EDE8C8] p-6 shadow-2xs space-y-5">
-            <h2 className="text-xs font-bold text-[#71717A] uppercase tracking-wider">
-              Listed by
-            </h2>
+          <div className="lg:col-span-5 bg-white rounded-3xl border border-[#EDE8C8] p-6 sm:p-7 shadow-xs space-y-5">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xs font-bold text-[#71717A] uppercase tracking-wider">
+                Listed by Lender
+              </h2>
+              <span className="text-[10.5px] font-bold text-[#15803D] bg-[#DCFCE7] px-2.5 py-0.5 rounded-full">
+                Top 5% Lender
+              </span>
+            </div>
 
             {/* Owner Header */}
             <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-xs relative bg-amber-100 flex-shrink-0">
+              <div className="flex items-center gap-3.5">
+                <div className="relative w-14 h-14 rounded-full overflow-hidden bg-gradient-to-b from-[#E0F2FE] to-[#BAE6FD] border-2 border-white shadow-xs flex-shrink-0">
                   <Image
                     src="/mascots/blue_dress_hat.png"
                     alt={product.owner}
                     fill
-                    className="object-cover"
+                    className="object-cover object-top scale-110"
                   />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-[#18181B] leading-tight">
+                  <h3 className="text-base font-bold text-[#18181B] leading-tight">
                     {product.owner}
                   </h3>
-                  <p className="text-xs text-[#71717A]">{product.department}</p>
-                  <span className="inline-flex items-center gap-1 text-[10.5px] font-bold text-[#166534] mt-0.5">
-                    <span>✔</span> Verified
-                  </span>
+                  <p className="text-xs text-[#52525B] mt-0.5">{product.department}</p>
+                  <div className="flex items-center gap-1 text-[10.5px] font-bold text-[#166534] mt-1">
+                    <span>✔ Campus ID &amp; Email Verified</span>
+                  </div>
                 </div>
               </div>
 
@@ -376,55 +434,66 @@ export default function ProductDetailPage() {
 
             {/* Location Box */}
             <div className="p-3.5 bg-[#FAF7F0] border border-[#EFE8D6] rounded-2xl flex items-center justify-between text-xs">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
                 <AppIcon name="map-pin" size={16} className="text-[#16A34A] flex-shrink-0" />
                 <div>
-                  <p className="font-bold text-[#18181B]">Engineering Block, Room 204</p>
-                  <p className="text-[10.5px] text-[#71717A]">{product.distance} km from you</p>
+                  <p className="font-bold text-[#18181B]">Tech Block • Room 204</p>
+                  <p className="text-[10.5px] text-[#71717A]">{product.distance} km from your current campus location</p>
                 </div>
               </div>
-              <button className="text-[11px] font-bold text-[#2563EB] hover:underline cursor-pointer">
-                View on map
-              </button>
             </div>
 
-            {/* Response Time & Member Since */}
-            <div className="grid grid-cols-2 gap-4 pt-2 text-left">
-              <div>
-                <p className="text-[11px] text-[#71717A]">Usually responds in</p>
-                <p className="text-sm font-bold text-[#18181B] mt-0.5">30 mins</p>
+            {/* Response Time & Stats */}
+            <div className="grid grid-cols-2 gap-3 pt-1 text-left text-xs">
+              <div className="p-3 bg-[#FAF7F0] border border-[#EFE8D6] rounded-xl">
+                <p className="text-[10.5px] text-[#71717A]">Response Time</p>
+                <p className="text-xs font-bold text-[#18181B] mt-0.5">&lt; 15 mins</p>
               </div>
-              <div>
-                <p className="text-[11px] text-[#71717A]">Member since</p>
-                <p className="text-sm font-bold text-[#18181B] mt-0.5">Jan 2024</p>
+              <div className="p-3 bg-[#FAF7F0] border border-[#EFE8D6] rounded-xl">
+                <p className="text-[10.5px] text-[#71717A]">Total Exchanges</p>
+                <p className="text-xs font-bold text-[#18181B] mt-0.5">42 Loans (0 Disputes)</p>
               </div>
             </div>
+
+            {/* Link to Owner Trust Profile */}
+            <Link
+              href="/profile"
+              className="w-full py-2.5 bg-[#FAF7F0] hover:bg-[#F3EFE3] border border-[#EDE8C8] text-[#18181B] font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all"
+            >
+              <span>View Full Trust Profile</span>
+              <span>→</span>
+            </Link>
           </div>
         </div>
       </main>
 
       {/* ─── Interactive Borrow Request Modal ─────────────────── */}
       {isBorrowModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl border border-[#EDE8C8] p-6 max-w-md w-full shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl border border-[#EDE8C8] p-6 max-w-md w-full shadow-2xl space-y-4 animate-fadeInUp">
             {requestSubmitted ? (
               <div className="text-center py-6 space-y-3">
-                <div className="w-14 h-14 bg-[#DCFCE7] text-[#15803D] rounded-full flex items-center justify-center text-2xl mx-auto">
+                <div className="w-16 h-16 bg-[#DCFCE7] text-[#15803D] rounded-full flex items-center justify-center text-3xl mx-auto shadow-xs">
                   ✓
                 </div>
-                <h3 className="text-lg font-black text-[#18181B]">Borrow Request Sent!</h3>
-                <p className="text-xs text-[#52525B]">
-                  Your request has been delivered to <strong>{product.owner}</strong>. You will receive a notification once approved.
+                <h3 className="text-xl font-black text-[#18181B]">Borrow Request Sent!</h3>
+                <p className="text-xs text-[#52525B] leading-relaxed">
+                  Your request has been submitted to <strong>{product.owner}</strong>. You will receive an instant notification once approved.
                 </p>
+                <div className="p-3 bg-[#FAF7F0] border border-[#EFE8D6] rounded-xl text-xs text-left space-y-1">
+                  <p><strong>Item:</strong> {product.title}</p>
+                  <p><strong>Duration:</strong> {borrowDays} Days</p>
+                  <p><strong>Total Payable on Handover:</strong> ₹{totalPayable}</p>
+                </div>
                 <button
                   onClick={() => {
                     setRequestSubmitted(false);
                     setIsBorrowModalOpen(false);
                     router.push("/dashboard");
                   }}
-                  className="mt-4 px-6 py-2.5 bg-[#18181B] text-white font-bold text-xs rounded-xl hover:bg-[#27272A] cursor-pointer"
+                  className="mt-4 w-full py-3 bg-[#18181B] text-white font-bold text-xs rounded-xl hover:bg-[#27272A] cursor-pointer"
                 >
-                  View in My Loans
+                  View in My Loans Dashboard →
                 </button>
               </div>
             ) : (
@@ -440,28 +509,30 @@ export default function ProductDetailPage() {
                 </div>
 
                 <div className="space-y-3 text-xs">
-                  <div className="flex items-center gap-3 p-2 bg-[#FBF7F0] rounded-xl">
-                    <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-white flex-shrink-0">
-                      <Image src={product.image} alt={product.title} fill className="object-cover" />
+                  {/* Item Preview */}
+                  <div className="flex items-center gap-3 p-2.5 bg-[#FAF7F0] rounded-2xl border border-[#EFE8D6]">
+                    <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-white flex-shrink-0 border border-[#EDE8C8]">
+                      <Image src={product.image} alt={product.title} fill className="object-contain p-1" />
                     </div>
                     <div>
-                      <p className="font-bold text-[#18181B]">{product.title}</p>
-                      <p className="text-[#71717A]">{product.owner} • {product.department}</p>
+                      <p className="font-bold text-[#18181B] line-clamp-1">{product.title}</p>
+                      <p className="text-[#71717A] text-[11px]">{product.owner} • {product.department}</p>
                     </div>
                   </div>
 
+                  {/* Duration Selector */}
                   <div>
-                    <label className="font-bold text-[#18181B] block mb-1">Duration (Days)</label>
-                    <div className="flex items-center gap-3">
+                    <label className="font-bold text-[#18181B] block mb-1.5">Borrowing Duration</label>
+                    <div className="flex items-center gap-2">
                       {[1, 2, 3, 5, 7].map((d) => (
                         <button
                           key={d}
                           type="button"
                           onClick={() => setBorrowDays(d)}
-                          className={`flex-1 py-1.5 rounded-xl font-bold border transition-all cursor-pointer ${
+                          className={`flex-1 py-2 rounded-xl font-bold text-xs border transition-all cursor-pointer ${
                             borrowDays === d
-                              ? "bg-[#84CC16] text-[#18181B] border-[#84CC16]"
-                              : "bg-white text-[#52525B] border-[#EDE8C8]"
+                              ? "bg-[#6F9535] text-white border-[#6F9535] shadow-xs scale-102"
+                              : "bg-white text-[#52525B] border-[#EDE8C8] hover:bg-[#FAF7F0]"
                           }`}
                         >
                           {d}d
@@ -470,18 +541,23 @@ export default function ProductDetailPage() {
                     </div>
                   </div>
 
-                  <div className="p-3 bg-[#FAF5EC] rounded-xl space-y-1.5">
+                  {/* Pricing Breakdown */}
+                  <div className="p-3.5 bg-[#FAF5EC] rounded-2xl border border-[#E8DFC8] space-y-1.5">
                     <div className="flex justify-between text-[#52525B]">
                       <span>Rental Fee ({borrowDays} days × ₹{dailyRate}):</span>
                       <span className="font-bold text-[#18181B]">₹{rentalTotal}</span>
                     </div>
                     <div className="flex justify-between text-[#52525B]">
-                      <span>Refundable Deposit:</span>
-                      <span className="font-bold text-[#18181B]">₹{deposit}</span>
+                      <span>Campus Platform Fee (10%):</span>
+                      <span className="font-bold text-[#18181B]">₹{platformFee}</span>
                     </div>
-                    <div className="border-t border-[#E8DFC8] pt-1.5 flex justify-between font-bold text-sm text-[#18181B]">
-                      <span>Total Payable:</span>
-                      <span>₹{rentalTotal + deposit}</span>
+                    <div className="flex justify-between text-[#52525B]">
+                      <span>Refundable Security Deposit:</span>
+                      <span className="font-bold text-[#16A34A]">₹{deposit.toLocaleString()} (Refundable)</span>
+                    </div>
+                    <div className="border-t border-[#E8DFC8] pt-2 flex justify-between font-extrabold text-sm text-[#18181B]">
+                      <span>Total Amount:</span>
+                      <span className="text-base text-[#18181B]">₹{totalPayable}</span>
                     </div>
                   </div>
                 </div>
@@ -489,9 +565,9 @@ export default function ProductDetailPage() {
                 <button
                   type="button"
                   onClick={() => setRequestSubmitted(true)}
-                  className="w-full py-3 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold rounded-xl transition-all cursor-pointer text-xs sm:text-sm"
+                  className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-extrabold rounded-2xl transition-all shadow-md active:translate-y-0.5 cursor-pointer text-sm"
                 >
-                  Confirm & Send Request
+                  Confirm &amp; Send Request
                 </button>
               </>
             )}
