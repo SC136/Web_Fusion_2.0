@@ -136,31 +136,31 @@ export default function BrowsePage() {
                 Browse Resources
               </h1>
               {/* Sparkle decorative lines */}
-              <div className="text-[#18181B] flex items-center -mt-3">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <div className="text-[#6F9535] flex items-center -mt-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                   <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
                 </svg>
               </div>
             </div>
             <p className="text-xs sm:text-sm text-[#52525B] font-medium">
-              Discover and access resources shared by students across your campus.
+              Discover and access verified resources shared by students across your campus.
             </p>
           </div>
 
-          {/* Right Mascot with Heart Bubble */}
-          <div className="relative hidden md:flex items-center gap-2 flex-shrink-0 -mr-2">
-            <div className="relative w-32 h-32 lg:w-36 lg:h-36">
+          {/* Right Mascot with Clean Speech Bubble */}
+          <div className="relative hidden md:flex items-center gap-3 flex-shrink-0">
+            <div className="bg-[#FFF9EA] border border-[#F4E8CB] px-3.5 py-1.5 rounded-2xl text-xs font-bold text-[#78350F] shadow-2xs relative">
+              <span>{filteredResources.length} items nearby! 🎒</span>
+              <div className="absolute top-1/2 -right-1.5 -translate-y-1/2 w-2.5 h-2.5 bg-[#FFF9EA] border-t border-r border-[#F4E8CB] rotate-45" />
+            </div>
+            <div className="relative w-28 h-32 lg:w-32 lg:h-36">
               <Image
                 src="/mascots/blue_dress_hat.png"
                 alt="Browse Mascot"
                 fill
-                className="object-contain object-bottom select-none pointer-events-none drop-shadow-sm"
+                className="object-contain object-bottom select-none pointer-events-none scale-105"
                 priority
               />
-            </div>
-            {/* Floating Heart Thought Bubble */}
-            <div className="w-9 h-9 rounded-full bg-white border border-[#E5E7EB] shadow-sm flex items-center justify-center text-sm -ml-4 -mt-12 animate-pulse">
-              ❤️
             </div>
           </div>
         </div>
