@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Sidebar from "@/app/components/dashboard/Sidebar";
@@ -8,6 +8,12 @@ import AppNavbar from "@/app/components/layout/AppNavbar";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 import { LIFECYCLE_STAGES, mockExchanges } from "@/app/data/mockData";
 import { useApp } from "@/app/context/AppContext";
+import {
+  printOfficialTallyBill,
+  downloadOfficialTallyBill,
+  TallyBillData,
+} from "@/app/utils/printBill";
+import TallyBillModal from "@/app/components/modals/TallyBillModal";
 
 export default function BorrowingLifecyclePage() {
   const { exchanges, currentUser, advanceLoanStage } = useApp();
@@ -21,25 +27,126 @@ export default function BorrowingLifecyclePage() {
     return matched.length > 0 ? matched : exchanges;
   }, [exchanges, currentUser.id]);
 
-  const currentExchange = relevantExchanges[selectedExchangeIndex] || relevantExchanges[0] || exchanges[0];
+  const currentExchange = (relevantExchanges[selectedExchangeIndex] || relevantExchanges[0] || exchanges[0] || mockExchanges[0]) as any;
 
   // Current active stage state (0 to 8 corresponding to the 9 stages)
-  const activeStageIndex = currentExchange?.stageIndex ?? 3;
+  const [activeStageIndex, setActiveStageIndex] = useState<number>(
+    currentExchange?.stageIndex ?? currentExchange?.currentStageIndex ?? 0
+  );
+  const [isSettlementTallyModalOpen, setIsSettlementTallyModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (currentExchange) {
+      setActiveStageIndex(currentExchange.stageIndex ?? currentExchange.currentStageIndex ?? 0);
+    }
+  }, [selectedExchangeIndex, currentExchange]);
 
   // Inspection damage simulator toggle
   const [hasDamageReported, setHasDamageReported] = useState(false);
   const [damageAmount, setDamageAmount] = useState(250);
 
+  // Banking Portal & Settlement State
+  const [isSettlementExecuted, setIsSettlementExecuted] = useState(false);
+  const [isSettling, setIsSettling] = useState(false);
+  const [settlementStep, setSettlementStep] = useState(0);
+  const [refundChannel, setRefundChannel] = useState<"wallet" | "upi" | "bank">("wallet");
+  const [settlementTxnId, setSettlementTxnId] = useState("");
+
+  const handleExecuteSettlement = () => {
+    setIsSettling(true);
+    setSettlementStep(1);
+
+    setTimeout(() => {
+      setSettlementStep(2);
+    }, 600);
+
+    setTimeout(() => {
+      setSettlementStep(3);
+    }, 1200);
+
+    setTimeout(() => {
+      const netRefund = hasDamageReported
+        ? currentExchange.securityDeposit - damageAmount
+        : currentExchange.securityDeposit;
+      const newTxnId = `SETTLE-CC-${Math.floor(100000 + Math.random() * 900000)}`;
+      setSettlementTxnId(newTxnId);
+
+      // Save to localStorage wallet transactions
+      try {
+        const existingTxns = localStorage.getItem("campus_circular_wallet_transactions");
+        const parsed = existingTxns ? JSON.parse(existingTxns) : [];
+        const refundEntry = {
+          id: `REF-${newTxnId}`,
+          type: "escrow_refund",
+          title: `Deposit Refund: ${currentExchange.itemTitle}`,
+          amount: netRefund,
+          status: `Refunded to ${refundChannel === "wallet" ? "Campus Wallet" : refundChannel === "upi" ? "UPI Account" : "Bank Account"}`,
+          timestamp: new Date().toLocaleString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          }),
+          utrOrAuth: `UTR-ESC-${Math.floor(100000 + Math.random() * 900000)}`,
+        };
+        localStorage.setItem(
+          "campus_circular_wallet_transactions",
+          JSON.stringify([refundEntry, ...parsed])
+        );
+      } catch (e) {
+        console.error("Failed to log settlement in wallet:", e);
+      }
+
+      setIsSettling(false);
+      setIsSettlementExecuted(true);
+    }, 1800);
+  };
+
+  const getSettlementTallyData = (): TallyBillData => ({
+    voucherNo: `SETTLE/2026/${(settlementTxnId || currentExchange.settlement.transactionId).replace("SETTLE-", "").replace("TXN-", "")}`,
+    transactionId: settlementTxnId || currentExchange.settlement.transactionId,
+    authCode: `AUTH-ESC-${Math.floor(1000 + Math.random() * 9000)}`,
+    date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+    borrowerName: currentExchange.borrowerName,
+    borrowerRoll: "TCET-2023-CS-089",
+    borrowerDept: currentExchange.borrowerDept,
+    ownerName: currentExchange.ownerName,
+    ownerDept: currentExchange.ownerDept,
+    itemTitle: currentExchange.itemTitle,
+    category: currentExchange.category,
+    durationDays: currentExchange.durationDays,
+    dailyRate: currentExchange.dailyRate,
+    rentalFee: currentExchange.totalRentalFee,
+    platformFee: currentExchange.platformFee,
+    securityDeposit: currentExchange.securityDeposit,
+    totalAmount: currentExchange.totalPaid || (currentExchange.totalRentalFee + currentExchange.platformFee + currentExchange.securityDeposit),
+    paymentMethod: `Escrow Switch (Refund to ${refundChannel.toUpperCase()})`,
+    status: "SETTLED_REFUNDED",
+    refundAmount: hasDamageReported ? currentExchange.securityDeposit - damageAmount : currentExchange.securityDeposit,
+    damageDeduction: hasDamageReported ? damageAmount : 0,
+    utrNumber: `UTR-ESC-${Math.floor(100000 + Math.random() * 900000)}`,
+  });
+
   // Stepper helper
   const nextStage = () => {
     if (activeStageIndex < LIFECYCLE_STAGES.length - 1) {
-      advanceLoanStage(currentExchange.id, activeStageIndex + 1);
+      const next = activeStageIndex + 1;
+      setActiveStageIndex(next);
+      if (typeof advanceLoanStage === "function" && currentExchange?.id) {
+        advanceLoanStage(currentExchange.id, next);
+      }
     }
   };
 
   const prevStage = () => {
     if (activeStageIndex > 0) {
-      advanceLoanStage(currentExchange.id, activeStageIndex - 1);
+      const prev = activeStageIndex - 1;
+      setActiveStageIndex(prev);
+      if (typeof advanceLoanStage === "function" && currentExchange?.id) {
+        advanceLoanStage(currentExchange.id, prev);
+      }
     }
   };
 
@@ -148,7 +255,12 @@ export default function BorrowingLifecyclePage() {
                 return (
                   <button
                     key={stage.id}
-                    onClick={() => advanceLoanStage(currentExchange.id, idx)}
+                    onClick={() => {
+                      setActiveStageIndex(idx);
+                      if (typeof advanceLoanStage === "function" && currentExchange?.id) {
+                        advanceLoanStage(currentExchange.id, idx);
+                      }
+                    }}
                     className={`flex flex-col items-center text-center p-2 rounded-2xl transition-all cursor-pointer ${
                       isCurrent
                         ? "bg-[#F7FEE7] border-2 border-[#84CC16] shadow-sm scale-102"
@@ -357,7 +469,7 @@ export default function BorrowingLifecyclePage() {
                 <div className="space-y-3">
                   <h4 className="text-xs font-bold text-[#18181B]">Before-Condition Checklist (Handover Verification)</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {currentExchange.beforeCondition.checklist.map((item, idx) => (
+                    {currentExchange.beforeCondition?.checklist?.map((item: any, idx: number) => (
                       <div key={idx} className="p-3 bg-[#FAF7F0] border border-[#EFE8D6] rounded-xl flex items-center gap-2.5 text-xs text-[#18181B]">
                         <span className="text-[#16A34A] font-bold">✓</span>
                         <span>{item.item}</span>
@@ -573,57 +685,225 @@ export default function BorrowingLifecyclePage() {
               </div>
             )}
 
-            {/* ─── STAGE 8: SETTLEMENT ─── */}
+            {/* ─── STAGE 8: SETTLEMENT & ESCROW PAYOUT ─── */}
             {activeStageIndex === 7 && (
-              <div className="bg-white rounded-3xl border border-[#EDE8C8] p-6 sm:p-7 shadow-2xs space-y-5">
+              <div className="bg-white rounded-3xl border border-[#EDE8C8] p-6 sm:p-7 shadow-2xs space-y-5 animate-fadeIn">
+                {/* Header with Banking Portal Trust Shield */}
                 <div className="flex items-center justify-between pb-3 border-b border-[#F0EAE0]">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-[#DCFCE7] text-[#166534] flex items-center justify-center font-bold">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-b from-[#84CC16] to-[#65A30D] text-[#18181B] flex items-center justify-center font-black text-sm shadow-xs">
                       8
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-[#18181B]">Stage 8: Final Financial Settlement</h3>
-                      <p className="text-xs text-[#71717A]">Automatic deposit refund & lender payout (Section 6 & 10 of PS)</p>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-base font-black text-[#18181B]">Stage 8: Campus Escrow Banking Settlement</h3>
+                        <span className="text-[10px] font-extrabold bg-[#DCFCE7] text-[#166534] px-2 py-0.2 rounded-full border border-[#BBF7D0]">
+                          Live Banking Switch
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#71717A]">
+                        Automated smart escrow disbursement &amp; deposit refund protocol
+                      </p>
                     </div>
                   </div>
-                  <span className="text-xs font-bold text-[#166534] bg-[#DCFCE7] px-2.5 py-1 rounded-full">
-                    Settlement Executed
+
+                  <span
+                    className={`text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 ${
+                      isSettlementExecuted
+                        ? "bg-[#DCFCE7] text-[#166534] border border-[#BBF7D0]"
+                        : "bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]"
+                    }`}
+                  >
+                    <span>●</span>
+                    <span>{isSettlementExecuted ? "Funds Disbursed" : "Awaiting Authorization"}</span>
                   </span>
                 </div>
 
-                {/* Settlement Table */}
-                <div className="bg-[#FAF7F0] border border-[#EFE8D6] rounded-2xl p-4 space-y-2 text-xs">
-                  <div className="flex justify-between py-1 border-b border-[#E8DFC8]">
-                    <span className="text-[#71717A]">Total Security Deposit Paid:</span>
-                    <span className="font-bold text-[#18181B]">₹{currentExchange.securityDeposit}</span>
-                  </div>
-                  {hasDamageReported && (
-                    <div className="flex justify-between py-1 border-b border-[#E8DFC8] text-[#DC2626]">
-                      <span>Damage Assessment Deduction:</span>
-                      <span className="font-bold">-₹{damageAmount}</span>
+                {!isSettlementExecuted ? (
+                  <>
+                    {/* Escrow Vault Status Banner */}
+                    <div className="bg-gradient-to-r from-[#18181B] via-[#27272A] to-[#18181B] text-white p-4.5 rounded-2xl border border-[#3F3F46] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-[#84CC16] text-[#18181B] flex items-center justify-center font-black text-base shadow-xs">
+                          🏦
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-white tracking-tight">
+                            Campus Escrow Vault • Node #TCET-ESCROW-08
+                          </p>
+                          <p className="text-[11px] text-[#A1A1AA]">
+                            Holding ₹{currentExchange.securityDeposit} security deposit &amp; ₹{currentExchange.totalRentalFee} rental charge
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="text-left sm:text-right">
+                        <span className="text-[10px] uppercase font-bold text-[#A1A1AA]">Locked Escrow Bond</span>
+                        <p className="text-xl font-black text-[#4ADE80]">₹{currentExchange.securityDeposit + currentExchange.totalRentalFee}</p>
+                      </div>
                     </div>
-                  )}
-                  <div className="flex justify-between py-1 border-b border-[#E8DFC8] text-[#166534] font-bold text-sm">
-                    <span>Refund to Borrower (UPI):</span>
-                    <span>₹{hasDamageReported ? currentExchange.securityDeposit - damageAmount : currentExchange.securityDeposit}</span>
-                  </div>
-                  <div className="flex justify-between py-1 pt-2 font-bold text-[#18181B]">
-                    <span>Payout to Lender ({currentExchange.ownerName}):</span>
-                    <span>₹{currentExchange.totalRentalFee}</span>
-                  </div>
-                </div>
 
-                <div className="p-3 bg-[#F0FDF4] border border-[#DCFCE7] rounded-xl text-xs text-[#166534] font-semibold flex items-center gap-2">
-                  <AppIcon name="check" size={14} className="text-[#16A34A] flex-shrink-0" />
-                  <span>Refund transferred automatically to borrower UPI. Transaction ID: {currentExchange.settlement.transactionId}</span>
-                </div>
+                    {/* Interactive Refund Routing Options */}
+                    <div className="space-y-2">
+                      <label className="font-extrabold text-[#18181B] text-xs block">
+                        Select Borrower Deposit Refund Destination:
+                      </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                        {[
+                          { id: "wallet", label: "Campus Escrow Wallet", desc: "Instant credit (0% fee)", icon: "wallet" },
+                          { id: "upi", label: "UPI (anaya@okhdfc)", desc: "Instant IMPS Bank Node", icon: "zap" },
+                          { id: "bank", label: "Linked Bank A/C", desc: "HDFC •••• 9104", icon: "bank" },
+                        ].map((dest) => (
+                          <button
+                            key={dest.id}
+                            type="button"
+                            onClick={() => setRefundChannel(dest.id as any)}
+                            className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                              refundChannel === dest.id
+                                ? "bg-[#FAF7F0] border-[#18181B] shadow-2xs ring-1 ring-[#18181B]"
+                                : "bg-white border-[#EDE8C8] hover:bg-[#FAF7F0]"
+                            }`}
+                          >
+                            <div className="flex items-center justify-between mb-1">
+                              <AppIcon name={dest.icon} size={15} className={refundChannel === dest.id ? "text-[#16A34A]" : "text-[#71717A]"} />
+                              {refundChannel === dest.id && (
+                                <span className="text-[10px] font-black text-[#16A34A]">SELECTED</span>
+                              )}
+                            </div>
+                            <p className="font-bold text-xs text-[#18181B]">{dest.label}</p>
+                            <p className="text-[10.5px] text-[#71717A]">{dest.desc}</p>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
 
-                <button
-                  onClick={nextStage}
-                  className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
-                >
-                  Proceed to Trust Rating & Reviews →
-                </button>
+                    {/* Detailed Escrow Settlement Audit Table */}
+                    <div className="bg-[#FAF7F0] border border-[#EFE8D6] rounded-2xl p-4 space-y-2.5 text-xs">
+                      <div className="flex justify-between py-1 border-b border-[#E8DFC8]">
+                        <span className="text-[#71717A]">Initial Security Deposit in Escrow:</span>
+                        <span className="font-bold text-[#18181B]">₹{currentExchange.securityDeposit}</span>
+                      </div>
+
+                      {hasDamageReported ? (
+                        <div className="flex justify-between py-1 border-b border-[#E8DFC8] text-[#DC2626]">
+                          <span className="flex items-center gap-1">
+                            <span>⚠ Stage 7 Damage Assessment Deduction:</span>
+                          </span>
+                          <span className="font-bold">-₹{damageAmount}</span>
+                        </div>
+                      ) : (
+                        <div className="flex justify-between py-1 border-b border-[#E8DFC8] text-[#166534]">
+                          <span>Stage 7 Inspection Status:</span>
+                          <span className="font-bold">Passed (Pristine • Full 100% Refund)</span>
+                        </div>
+                      )}
+
+                      <div className="flex justify-between py-1 border-b border-[#E8DFC8] text-[#16A34A] font-bold text-sm">
+                        <span>Net Deposit Refund to Borrower:</span>
+                        <span>₹{hasDamageReported ? currentExchange.securityDeposit - damageAmount : currentExchange.securityDeposit}</span>
+                      </div>
+
+                      <div className="flex justify-between py-1 pt-1 font-bold text-[#18181B]">
+                        <span>Lender Payout Disbursed ({currentExchange.ownerName}):</span>
+                        <span className="text-[#2563EB] font-black">₹{currentExchange.totalRentalFee}</span>
+                      </div>
+                    </div>
+
+                    {/* Settlement Authorization Button / Processing State */}
+                    {isSettling ? (
+                      <div className="py-6 text-center space-y-3 bg-[#FAF7F0] border border-[#EDE8C8] rounded-2xl">
+                        <div className="w-8 h-8 rounded-full border-3 border-[#EDE8C8] border-t-[#84CC16] animate-spin mx-auto"></div>
+                        <p className="text-xs font-bold text-[#18181B]">
+                          {settlementStep === 1
+                            ? "Connecting to Campus Banking Gateway Switch..."
+                            : settlementStep === 2
+                            ? `Unlocking Escrow Bond & Transferring ₹${currentExchange.totalRentalFee} to ${currentExchange.ownerName}...`
+                            : `Crediting ₹${hasDamageReported ? currentExchange.securityDeposit - damageAmount : currentExchange.securityDeposit} refund to ${refundChannel.toUpperCase()}...`}
+                        </p>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleExecuteSettlement}
+                        className="w-full py-4 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-black rounded-2xl text-xs sm:text-sm transition-all shadow-md hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5 flex items-center justify-center gap-2"
+                      >
+                        <AppIcon name="wallet" size={16} />
+                        <span>Authorize Escrow Settlement &amp; Release Payouts →</span>
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  /* POST-SETTLEMENT COMPLETED STATE */
+                  <div className="space-y-4 animate-fadeIn">
+                    <div className="p-4 bg-[#F0FDF4] border border-[#BBF7D0] rounded-2xl flex items-start gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-[#DCFCE7] text-[#16A34A] flex items-center justify-center text-lg font-black flex-shrink-0">
+                        ✓
+                      </div>
+                      <div className="text-xs space-y-1">
+                        <p className="font-black text-[#15803D] text-sm">
+                          Escrow Settlement Successfully Executed!
+                        </p>
+                        <p className="text-[#166534] leading-relaxed">
+                          Security deposit of <strong>₹{hasDamageReported ? currentExchange.securityDeposit - damageAmount : currentExchange.securityDeposit}</strong> has been credited to your <strong>{refundChannel.toUpperCase()} account</strong>. Lender payout of <strong>₹{currentExchange.totalRentalFee}</strong> transferred to <strong>{currentExchange.ownerName}</strong>.
+                        </p>
+                        <p className="font-mono text-[10.5px] text-[#166534] pt-1">
+                          Settlement Voucher Reference: <strong>{settlementTxnId || currentExchange.settlement.transactionId}</strong>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const data = getSettlementTallyData();
+                            printOfficialTallyBill(data);
+                          }}
+                          className="flex-1 py-3 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold text-xs rounded-xl shadow-xs hover:from-[#8AC538] hover:to-[#72A627] border-b-2 border-[#557F1C] active:translate-y-0.5 cursor-pointer flex items-center justify-center gap-1.5"
+                        >
+                          <span>🖨️ Print Official Tally Bill</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setIsSettlementTallyModalOpen(true)}
+                          className="py-3 px-4 bg-white hover:bg-[#FAF7F0] border border-[#EDE8C8] text-[#18181B] font-bold text-xs rounded-xl transition-all shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
+                        >
+                          <AppIcon name="receipt" size={14} />
+                          <span>Preview Bill</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const data = getSettlementTallyData();
+                            downloadOfficialTallyBill(data);
+                          }}
+                          className="py-3 px-3 bg-[#FAF7F0] hover:bg-[#F3EFE3] border border-[#EDE8C8] text-[#18181B] font-bold text-xs rounded-xl transition-all shadow-2xs cursor-pointer flex items-center justify-center gap-1"
+                          title="Download Invoice HTML"
+                        >
+                          <span>⬇ Save</span>
+                        </button>
+
+                        <Link
+                          href="/wallet"
+                          className="py-3 px-4 bg-[#18181B] hover:bg-[#27272A] text-white font-bold text-xs rounded-xl transition-all shadow-2xs text-center flex items-center justify-center gap-1.5"
+                        >
+                          <AppIcon name="wallet" size={14} />
+                          <span>Escrow Wallet</span>
+                        </Link>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={nextStage}
+                      className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
+                    >
+                      Proceed to Trust Rating &amp; Reviews →
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
@@ -780,6 +1060,33 @@ export default function BorrowingLifecyclePage() {
               </div>
             </div>
 
+            {/* Escrow Banking Portal Card */}
+            <div className="bg-[#FAF7F0] border border-[#EDE8C8] rounded-3xl p-5 text-xs space-y-3 shadow-2xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-[#18181B] text-[#84CC16] flex items-center justify-center font-bold">
+                    <AppIcon name="wallet" size={16} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-[#18181B]">Student Escrow Portal</p>
+                    <p className="text-[10px] text-[#71717A]">Node: #TCET-ESCROW-08</p>
+                  </div>
+                </div>
+                <span className="text-[10px] font-black bg-[#DCFCE7] text-[#166534] px-2 py-0.5 rounded-full border border-[#BBF7D0]">
+                  ACTIVE BOND
+                </span>
+              </div>
+              <p className="text-[11.5px] text-[#52525B] leading-relaxed">
+                Deposit of <strong>₹{currentExchange.securityDeposit}</strong> is locked in smart escrow until Stage 8 settlement.
+              </p>
+              <Link
+                href="/wallet"
+                className="w-full py-2.5 bg-white hover:bg-[#F3EFE3] border border-[#EDE8C8] text-[#18181B] font-bold rounded-xl text-center block transition-all shadow-2xs text-xs"
+              >
+                Open Escrow Wallet Ledger →
+              </Link>
+            </div>
+
             {/* Quick Helper Card */}
             <div className="bg-[#FAF5EA] border border-[#EAE1CB] rounded-3xl p-5 text-xs space-y-2">
               <h4 className="font-bold text-[#18181B] flex items-center gap-1.5">
@@ -795,6 +1102,13 @@ export default function BorrowingLifecyclePage() {
       </main>
       </div>
       </div>
+
+      {/* ─── Tally Bill Settlement Modal ───────────────────────── */}
+      <TallyBillModal
+        isOpen={isSettlementTallyModalOpen}
+        onClose={() => setIsSettlementTallyModalOpen(false)}
+        billData={getSettlementTallyData()}
+      />
     </div>
   );
 }

@@ -18,6 +18,7 @@ const drawerNavItems = [
   { label: "AI Smart Assistant", icon: "sparkles", href: "/ai-assistant" },
   { label: "My Active Loans", icon: "arrow-up-right", href: "/loans" },
   { label: "My Listed Resources", icon: "list", href: "/listings" },
+  { label: "Escrow Wallet & P2P Banking", icon: "wallet", href: "/wallet" },
   { label: "Wanted Requests", icon: "inbox", href: "/requests" },
   { label: "Meetup Messages", icon: "message", href: "/messages" },
   { label: "Trust Profile", icon: "shield-check", href: "/profile" },

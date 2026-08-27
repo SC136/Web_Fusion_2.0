@@ -13,6 +13,7 @@ const navItems = [
   { label: "Requests", icon: "inbox", href: "/requests" },
   { label: "My Loans", icon: "arrow-up-right", href: "/loans" },
   { label: "My Listings", icon: "list", href: "/listings" },
+  { label: "Escrow Wallet", icon: "wallet", href: "/wallet" },
   { label: "Messages", icon: "message", href: "/messages" },
   { label: "Trust Profile", icon: "shield-check", href: "/profile" },
   { label: "Admin Panel", icon: "shield", href: "/admin" },
@@ -38,6 +39,8 @@ export default function Sidebar() {
             isActive = pathname.startsWith("/loans");
           } else if (item.label === "My Listings") {
             isActive = pathname.startsWith("/listings");
+          } else if (item.label === "Escrow Wallet") {
+            isActive = pathname.startsWith("/wallet");
           } else if (item.label === "Messages") {
             isActive = pathname.startsWith("/messages");
           } else if (item.label === "Trust Profile") {

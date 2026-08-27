@@ -8,6 +8,7 @@ import Sidebar from "@/app/components/dashboard/Sidebar";
 import AppNavbar from "@/app/components/layout/AppNavbar";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 import { mockAiBundles, browseResources } from "@/app/data/mockData";
+import PaymentGatewayModal, { PaymentReceipt } from "@/app/components/modals/PaymentGatewayModal";
 
 export default function AiAssistantPage() {
   const router = useRouter();
@@ -38,6 +39,7 @@ export default function AiAssistantPage() {
 
   // Modal confirmation state
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isPaymentGatewayOpen, setIsPaymentGatewayOpen] = useState(false);
   const [agreementChecked, setAgreementChecked] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -56,7 +58,6 @@ export default function AiAssistantPage() {
     }, 700);
 
     setTimeout(() => {
-      // Find matching bundle or default to creator
       let matched = mockAiBundles.find((b) =>
         b.matchKeywords.some((kw) => textToMatch.includes(kw))
       );
@@ -108,8 +109,9 @@ export default function AiAssistantPage() {
   const platformFee = 25;
   const totalEscrowPayable = totalRentalFee + totalDeposit + platformFee;
 
-  const handleConfirmBundleBorrow = () => {
+  const handleConfirmBundleBorrow = (receipt?: PaymentReceipt) => {
     setIsSubmitting(true);
+    const txnId = receipt?.transactionId || `TXN-CC-${Math.floor(100000 + Math.random() * 900000)}`;
     const bundleExchange = {
       id: `EX-KIT-${Math.floor(1000 + Math.random() * 9000)}`,
       itemTitle: activeBundle.title,
@@ -156,7 +158,7 @@ export default function AiAssistantPage() {
         refundedDeposit: totalDeposit,
         lenderPayout: totalRentalFee,
         refundStatus: "Transferred to Student Escrow Account",
-        transactionId: `TXN-CC-${Math.floor(100000 + Math.random() * 900000)}`,
+        transactionId: txnId,
       },
       ratingData: {
         borrowerGivenRating: 5,
@@ -180,8 +182,7 @@ export default function AiAssistantPage() {
     setTimeout(() => {
       setIsSubmitting(false);
       setIsConfirmModalOpen(false);
-      router.push("/loans");
-    }, 600);
+    }, 400);
   };
 
   return (
@@ -591,15 +592,40 @@ export default function AiAssistantPage() {
               <button
                 type="button"
                 disabled={!agreementChecked || isSubmitting}
-                onClick={handleConfirmBundleBorrow}
+                onClick={() => {
+                  setIsConfirmModalOpen(false);
+                  setIsPaymentGatewayOpen(true);
+                }}
                 className="flex-1 py-2.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white hover:from-[#8AC538] hover:to-[#72A627] disabled:opacity-40 font-bold text-xs rounded-xl shadow-xs cursor-pointer text-center border-b-2 border-[#557F1C] active:translate-y-0.5"
               >
-                {isSubmitting ? "Submitting to Lenders..." : "Confirm & Open Lifecycle Tracker →"}
+                Proceed to Escrow Checkout (₹{totalEscrowPayable}) →
               </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* ─── AI Bundle Payment Gateway Modal ────────────────────── */}
+      <PaymentGatewayModal
+        isOpen={isPaymentGatewayOpen}
+        onClose={() => {
+          setIsPaymentGatewayOpen(false);
+          router.push("/loans");
+        }}
+        itemTitle={activeBundle.title}
+        itemImage={activeItems[0]?.image || "/products/camera.jpg"}
+        category="AI Smart Bundle"
+        ownerName="Campus Verified Collective"
+        ownerDept="Multidisciplinary Resource Pool"
+        durationDays={borrowDuration}
+        dailyRate={discountedDailyRate}
+        platformFee={platformFee}
+        securityDeposit={totalDeposit}
+        totalPayable={totalEscrowPayable}
+        onPaymentSuccess={(receipt) => {
+          handleConfirmBundleBorrow(receipt);
+        }}
+      />
     </div>
   );
 }

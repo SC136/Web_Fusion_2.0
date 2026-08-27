@@ -23,6 +23,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const { currentUser, listings, exchanges } = useApp();
   const [searchQuery, setSearchQuery] = useState("");
+  const [isCo2TooltipPinned, setIsCo2TooltipPinned] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#FEFEFE] flex flex-col select-none">
@@ -272,21 +273,22 @@ export default function DashboardPage() {
           </main>
 
           {/* ─── RIGHT SIDEBAR ─────────────────────────────────── */}
-          <aside className="hidden xl:flex w-[280px] 2xl:w-[290px] border-l border-[#EDE8C8] p-4 flex-col gap-3.5 flex-shrink-0 bg-[#FEFEFE] h-[calc(100vh-56px)] justify-between overflow-hidden">
+          <aside className="hidden xl:flex w-[280px] 2xl:w-[290px] border-l border-[#EDE8C8] p-4 flex-col gap-3.5 flex-shrink-0 bg-[#FEFEFE] h-[calc(100vh-56px)] justify-between overflow-visible relative z-20">
             {/* Trust Score */}
             <Link href="/profile" className="bg-white rounded-2xl border border-[#EDE8C8] p-4 shadow-2xs hover:shadow-sm transition-all block group">
               <div className="flex items-center justify-between mb-2.5">
                 <h3 className="text-[13px] font-bold text-[#18181B] group-hover:text-[#16A34A] transition-colors">Your Trust Score</h3>
                 <span className="text-[11px] text-[#16A34A] font-semibold">View Profile →</span>
               </div>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-[#F0FDF4] border border-[#BBF7D0] flex items-center justify-center text-[#16A34A] flex-shrink-0">
-                  <AppIcon name="shield-check" size={22} />
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#16A34A] to-[#15803D] flex items-center justify-center text-white font-extrabold text-lg shadow-xs">
+                  {currentUser.trustScore}
                 </div>
                 <div>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-extrabold text-[#18181B]">{currentUser.trustScore}</span>
-                    <span className="text-xs text-[#9CA3AF] font-medium">/ 5</span>
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span key={star} className="text-[#EAB308] text-xs">★</span>
+                    ))}
                   </div>
                   <span className="text-[10.5px] font-semibold text-[#166534] bg-[#DCFCE7] px-2 py-0.5 rounded-full inline-block">
                     Excellent
@@ -338,24 +340,140 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Impact Card with Tree */}
-            <div className="bg-[#F5F8E9] border border-[#D8E8B8] rounded-2xl p-4 shadow-2xs relative overflow-hidden flex items-center justify-between">
+            {/* Impact Card with Tree & Interactive Calculation Tooltip */}
+            <div
+              className="bg-[#F5F8E9] border border-[#D8E8B8] rounded-2xl p-4 shadow-2xs relative flex items-center justify-between group cursor-pointer hover:border-[#A6D560] hover:shadow-xs transition-all select-none"
+              onClick={() => setIsCo2TooltipPinned(!isCo2TooltipPinned)}
+            >
               <div className="flex-1 min-w-0 pr-2">
-                <p className="text-[12px] font-bold text-[#2E5E1C] leading-tight">Every share counts!</p>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-[12px] font-bold text-[#2E5E1C] leading-tight">Every share counts!</p>
+                  <span
+                    className="w-4 h-4 rounded-full bg-[#E2EFCD] text-[#2E5E1C] flex items-center justify-center text-[9.5px] font-extrabold cursor-pointer group-hover:bg-[#2E5E1C] group-hover:text-white transition-colors"
+                    title="View calculation methodology"
+                  >
+                    ⓘ
+                  </span>
+                </div>
                 <p className="text-[10.5px] text-[#4B5563] mt-0.5">You&apos;ve helped save</p>
                 <p className="text-2xl font-extrabold text-[#18181B] mt-0.5 leading-none">
                   {currentUser.co2Saved} kg CO<sub className="text-xs font-normal">2</sub>
                 </p>
-                <p className="text-[10.5px] text-[#4B5563] mt-1.5">this month 🌱</p>
+                <div className="flex items-center gap-1 mt-1.5">
+                  <p className="text-[10.5px] text-[#4B5563]">this month 🌱</p>
+                  <span className="text-[9px] font-bold text-[#2E5E1C] underline decoration-dotted opacity-75 group-hover:opacity-100">
+                    Hover for formula
+                  </span>
+                </div>
               </div>
               <div className="w-[120px] h-[115px] relative flex-shrink-0 -mr-2 -my-2">
                 <Image
                   src="/tree.png"
                   alt="Environmental tree impact"
                   fill
-                  className="object-contain object-bottom scale-110 select-none pointer-events-none drop-shadow-sm"
+                  className="object-contain object-bottom scale-110 select-none pointer-events-none drop-shadow-sm group-hover:scale-115 transition-transform duration-300"
                   priority
                 />
+              </div>
+
+              {/* ─── Hover & Pinned Calculation Tooltip Popover (Contained 100% inside right column) ──── */}
+              <div
+                className={`absolute bottom-full left-0 right-0 mb-2 w-full bg-white border-2 border-[#18181B] rounded-2xl p-3.5 shadow-2xl z-50 text-xs font-sans transition-all duration-200 cursor-default ${
+                  isCo2TooltipPinned
+                    ? "opacity-100 scale-100 pointer-events-auto"
+                    : "opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto"
+                }`}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Tooltip Header */}
+                <div className="flex items-start justify-between pb-1.5 border-b border-[#EDE8C8]">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <div className="w-6 h-6 rounded-lg bg-[#DCFCE7] text-[#16A34A] flex items-center justify-center text-xs font-bold flex-shrink-0">
+                      🌿
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="font-black text-[#18181B] text-[11.5px] leading-tight truncate">
+                        How 12.4 kg CO₂ is calculated
+                      </h4>
+                      <p className="text-[9px] text-[#71717A]">Campus Carbon Model (CSCM v2.4)</p>
+                    </div>
+                  </div>
+                  {isCo2TooltipPinned && (
+                    <button
+                      type="button"
+                      onClick={() => setIsCo2TooltipPinned(false)}
+                      className="text-[#71717A] hover:text-[#18181B] text-xs font-bold px-1"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
+                {/* Calculation Methodology Formula */}
+                <div className="bg-[#FAF7F0] border border-[#EFE8D6] rounded-xl p-2 my-2 space-y-0.5 text-[10px]">
+                  <p className="font-bold text-[#2E5E1C]">Formula:</p>
+                  <p className="text-[#374151] font-mono leading-tight bg-white/90 p-1 rounded border border-[#EDE8C8] text-[9.5px]">
+                    CO₂e = Mfg Avoidance + Zero-Mile Transit
+                  </p>
+                  <p className="text-[9px] text-[#71717A] leading-tight">
+                    Every share prevents purchasing new hardware and avoids factory emissions.
+                  </p>
+                </div>
+
+                {/* Itemized Contribution Breakdown */}
+                <div className="space-y-1 text-[10.5px] pb-2 border-b border-[#EDE8C8]">
+                  <p className="font-extrabold text-[9.5px] uppercase text-[#71717A] tracking-wider">
+                    Your Active Shares This Month:
+                  </p>
+
+                  <div className="flex justify-between items-center py-0.5">
+                    <span className="text-[#374151] truncate pr-1">📷 Sony Alpha A7 III</span>
+                    <span className="font-black text-[#16A34A] whitespace-nowrap">+6.2 kg</span>
+                  </div>
+
+                  <div className="flex justify-between items-center py-0.5">
+                    <span className="text-[#374151] truncate pr-1">🎙️ Rode Mic (2 shares)</span>
+                    <span className="font-black text-[#16A34A] whitespace-nowrap">+3.8 kg</span>
+                  </div>
+
+                  <div className="flex justify-between items-center py-0.5">
+                    <span className="text-[#374151] truncate pr-1">🔭 Digitek 65&quot; Tripod</span>
+                    <span className="font-black text-[#16A34A] whitespace-nowrap">+1.8 kg</span>
+                  </div>
+
+                  <div className="flex justify-between items-center py-0.5">
+                    <span className="text-[#374151] truncate pr-1">📦 Zero-Mile Handover</span>
+                    <span className="font-black text-[#16A34A] whitespace-nowrap">+0.6 kg</span>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-1 border-t border-[#EDE8C8] font-black text-[11px] text-[#18181B]">
+                    <span>Total Prevented:</span>
+                    <span className="text-[#15803D]">12.4 kg CO₂</span>
+                  </div>
+                </div>
+
+                {/* Real-World Equivalence */}
+                <div className="pt-1.5 text-[9.5px] text-[#52525B] space-y-1">
+                  <div className="grid grid-cols-2 gap-1">
+                    <div className="bg-[#F0FDF4] p-1 rounded-lg border border-[#DCFCE7] text-center">
+                      🚗 <strong>52 km</strong> drive
+                    </div>
+                    <div className="bg-[#F0FDF4] p-1 rounded-lg border border-[#DCFCE7] text-center">
+                      📱 <strong>1,510</strong> charges
+                    </div>
+                  </div>
+                </div>
+
+                {/* Navigation Link */}
+                <Link
+                  href="/impact"
+                  className="mt-2 block w-full py-1.5 bg-[#18181B] hover:bg-[#27272A] text-white text-center rounded-xl font-bold text-[10px] transition-all shadow-2xs"
+                >
+                  View Full Impact Dashboard →
+                </Link>
+
+                {/* Downward Arrow Pointer */}
+                <div className="absolute -bottom-2 right-8 w-4 h-4 bg-white border-r-2 border-b-2 border-[#18181B] rotate-45" />
               </div>
             </div>
           </aside>

@@ -598,6 +598,7 @@ interface AppContextType {
   listings: Listing[];
   addListing: (newListing: Omit<Listing, "id" | "ownerId" | "ownerName" | "ownerDept" | "ownerAvatar" | "ownerAvatarBg" | "rating" | "reviewsCount" | "createdAt">) => Listing;
   removeListing: (id: string) => void;
+  deleteListing: (id: string) => void;
   updateListingImage: (id: string, imageDataUrl: string) => void;
 
   // Borrow Requests & Loan Lifecycle
@@ -811,9 +812,35 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return newListing;
   }, [currentUser]);
 
-  // Remove Listing
+  // Remove / Delete Listing
   const removeListing = useCallback((id: string) => {
     setListings((prev) => prev.filter((item) => item.id !== id));
+    try {
+      if (typeof window !== "undefined") {
+        const saved = localStorage.getItem("campus_circular_my_listings");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            localStorage.setItem(
+              "campus_circular_my_listings",
+              JSON.stringify(parsed.filter((l: any) => l.id !== id))
+            );
+          }
+        }
+        const browseSaved = localStorage.getItem("campus_circular_browse_resources");
+        if (browseSaved) {
+          const parsed = JSON.parse(browseSaved);
+          if (Array.isArray(parsed)) {
+            localStorage.setItem(
+              "campus_circular_browse_resources",
+              JSON.stringify(parsed.filter((l: any) => l.id !== id))
+            );
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Failed to remove listing from localStorage:", e);
+    }
   }, []);
 
   // Update Listing Image (quick upload from listing card)
@@ -1135,6 +1162,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         listings,
         addListing,
         removeListing,
+        deleteListing: removeListing,
         updateListingImage,
         exchanges,
         createBorrowRequest,

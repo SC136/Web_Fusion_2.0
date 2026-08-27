@@ -8,12 +8,13 @@ import AppNavbar from "@/app/components/layout/AppNavbar";
 import { browseResources, recommendedItems } from "@/app/data/mockData";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 import { useApp } from "@/app/context/AppContext";
+import PaymentGatewayModal, { PaymentReceipt } from "@/app/components/modals/PaymentGatewayModal";
 
 export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params?.id as string;
-  const { listings, currentUser, createBorrowRequest, getOrCreateThread } = useApp();
+  const { listings, currentUser, createBorrowRequest, getOrCreateThread, removeListing } = useApp();
 
   // Find listing from dynamic listings store first
   const dynamicListing = listings.find((l) => l.id === id);
@@ -94,6 +95,9 @@ export default function ProductDetailPage() {
   // States
   const [isSaved, setIsSaved] = useState(false);
   const [isBorrowModalOpen, setIsBorrowModalOpen] = useState(false);
+  const [isPaymentGatewayOpen, setIsPaymentGatewayOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [borrowDays, setBorrowDays] = useState(3);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
   const [activeTab, setActiveTab] = useState<"details" | "agreement" | "condition">("details");
@@ -108,9 +112,85 @@ export default function ProductDetailPage() {
   const rentalTotal = dailyRate * borrowDays;
   const totalPayable = rentalTotal + platformFee + deposit;
 
-  const handleBorrowConfirm = () => {
+  const handleBorrowConfirm = (receipt?: PaymentReceipt) => {
+    const txnId = receipt?.transactionId || `TXN-CC-${Math.floor(100000 + Math.random() * 900000)}`;
+    const newExchange = {
+      id: `EX-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+      itemTitle: product.title,
+      itemImage: product.image,
+      category: product.category,
+      ownerName: product.owner,
+      ownerDept: product.department,
+      ownerAvatarBg: product.avatarBg || "bg-amber-100 text-amber-800",
+      borrowerName: currentUser?.name || "Anaya Sharma",
+      borrowerDept: `${currentUser?.year || "3rd Year"}, ${currentUser?.department || "Computer Engg"}`,
+      borrowerAvatarBg: "bg-emerald-100 text-emerald-800",
+      currentStageIndex: 0, // Starts at Stage 1: "Requested"
+      requestedDate: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      startDate: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      returnDueDate: new Date(Date.now() + borrowDays * 86400000).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + ", 6:00 PM",
+      durationDays: borrowDays,
+      dailyRate: dailyRate,
+      platformFee: platformFee,
+      securityDeposit: deposit,
+      totalRentalFee: rentalTotal,
+      totalPaid: totalPayable,
+      handoverOtp: `CC-${Math.floor(1000 + Math.random() * 9000)}`,
+      handoverLocation: "Campus Central Library Plaza",
+      returnLocation: "Engineering Block Quad",
+      beforeCondition: {
+        photo: product.image,
+        date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + " • 10:00 AM",
+        rating: "Very Good",
+        checklist: [
+          { item: "Item powers on & all essential features verified", verified: true },
+          { item: "Accessories and original parts complete", verified: true },
+          { item: "Clean surface condition without damage", verified: true },
+          { item: "Carrying strap & pouch verified", verified: true },
+        ],
+        notes: `${product.title} handed over in clean condition with all included accessories.`,
+      },
+      afterCondition: {
+        photo: product.image,
+        date: new Date(Date.now() + borrowDays * 86400000).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + " • 5:30 PM",
+        rating: "Very Good",
+        checklist: [
+          { item: "Item powers on & all essential features verified", verified: true },
+          { item: "Accessories and original parts complete", verified: true },
+          { item: "Clean surface condition without damage", verified: true },
+          { item: "Carrying strap & pouch verified", verified: true },
+        ],
+        notes: "Returned clean and in pristine working condition. No damages.",
+      },
+      settlement: {
+        borrowingCharge: rentalTotal,
+        platformFee: platformFee,
+        lateFeeDeduction: 0,
+        damageDeduction: 0,
+        refundedDeposit: deposit,
+        lenderPayout: rentalTotal,
+        refundStatus: "Transferred to Student Escrow Account",
+        transactionId: txnId,
+      },
+      ratingData: {
+        borrowerGivenRating: 5,
+        borrowerReview: `Smooth and friendly borrowing experience from ${product.owner}! The item was in great condition.`,
+        lenderGivenRating: 5,
+        lenderReview: `Anaya took great care of the ${product.title} and returned it right on time. Highly recommended!`,
+        trustPointsEarned: 15,
+      },
+    };
+
     try {
-      createBorrowRequest(product.id, borrowDays);
+      const existingStr = localStorage.getItem("campus_circular_exchanges");
+      const existing = existingStr ? JSON.parse(existingStr) : [];
+      const updated = [newExchange, ...existing.filter((e: any) => e.id !== newExchange.id)];
+      localStorage.setItem("campus_circular_exchanges", JSON.stringify(updated));
+      localStorage.setItem("campus_circular_selected_exchange", newExchange.id);
+
+      if (typeof createBorrowRequest === "function") {
+        createBorrowRequest(product.id, borrowDays);
+      }
     } catch (err) {
       console.error("Failed to save borrow request:", err);
     }
@@ -268,14 +348,24 @@ export default function ProductDetailPage() {
             {/* Action Buttons */}
             <div className="space-y-2.5 pt-1">
               {isOwner ? (
-                <Link
-                  href="/listings"
-                  id="manage-listing-cta"
-                  className="w-full py-3.5 bg-[#F5F8E9] hover:bg-[#EAF5DA] text-[#2E5E1C] border border-[#D8E8B8] font-extrabold rounded-2xl transition-all duration-150 shadow-2xs flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer tracking-wide"
-                >
-                  <AppIcon name="list" size={16} />
-                  <span>You Own This Resource (Manage in Listings)</span>
-                </Link>
+                <div className="space-y-2">
+                  <Link
+                    href="/listings"
+                    id="manage-listing-cta"
+                    className="w-full py-3.5 bg-[#F5F8E9] hover:bg-[#EAF5DA] text-[#2E5E1C] border border-[#D8E8B8] font-extrabold rounded-2xl transition-all duration-150 shadow-2xs flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer tracking-wide"
+                  >
+                    <AppIcon name="list" size={16} />
+                    <span>You Own This Resource (Manage in Listings)</span>
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setIsDeleteDialogOpen(true)}
+                    className="w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold rounded-2xl transition-all duration-150 shadow-2xs flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer"
+                  >
+                    <AppIcon name="trash" size={15} className="text-rose-600" />
+                    <span>Delete My Listing</span>
+                  </button>
+                </div>
               ) : (
                 <button
                   onClick={() => setIsBorrowModalOpen(true)}
@@ -723,13 +813,112 @@ export default function ProductDetailPage() {
 
                 <button
                   type="button"
-                  onClick={handleBorrowConfirm}
-                  className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold rounded-2xl transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] border-b-2 border-[#557F1C] active:translate-y-0.5 cursor-pointer text-sm"
+                  onClick={() => {
+                    setIsBorrowModalOpen(false);
+                    setIsPaymentGatewayOpen(true);
+                  }}
+                  className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold rounded-2xl transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] border-b-2 border-[#557F1C] active:translate-y-0.5 cursor-pointer text-sm flex items-center justify-center gap-1.5"
                 >
-                  Confirm &amp; Send Request
+                  <span>Proceed to Escrow Payment (₹{totalPayable}) →</span>
                 </button>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ─── Mock Escrow Payment Gateway ───────────────────────── */}
+      <PaymentGatewayModal
+        isOpen={isPaymentGatewayOpen}
+        onClose={() => {
+          setIsPaymentGatewayOpen(false);
+          router.push("/loans");
+        }}
+        itemTitle={product.title}
+        itemImage={product.image}
+        category={product.category}
+        ownerName={product.owner}
+        ownerDept={product.department}
+        durationDays={borrowDays}
+        dailyRate={dailyRate}
+        platformFee={platformFee}
+        securityDeposit={deposit}
+        totalPayable={totalPayable}
+        onPaymentSuccess={(receipt) => {
+          handleBorrowConfirm(receipt);
+        }}
+      />
+
+      {/* ─── Delete Listing Confirmation Modal ──────────────────── */}
+      {isDeleteDialogOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-3xl border-2 border-[#18181B] max-w-md w-full p-6 shadow-2xl space-y-4 animate-scaleUp">
+            <div className="flex items-center justify-between pb-3 border-b border-[#F0EAE0]">
+              <div className="flex items-center gap-2 text-rose-600">
+                <div className="w-8 h-8 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 font-bold">
+                  🗑️
+                </div>
+                <h3 className="font-black text-base text-[#18181B]">Delete This Listing?</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsDeleteDialogOpen(false)}
+                className="text-[#71717A] hover:text-[#18181B] text-lg font-bold cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Item Preview */}
+            <div className="flex items-center gap-3 p-3 bg-[#FAF7F0] rounded-2xl border border-[#EDE8C8]">
+              <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-white border border-[#E0D8C8] flex-shrink-0">
+                <Image src={product.image} alt={product.title} fill className="object-cover" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="text-[10px] font-bold text-[#71717A]">{product.category}</span>
+                <p className="font-bold text-xs text-[#18181B] truncate">{product.title}</p>
+                <p className="text-[11px] text-[#16A34A] font-extrabold">₹{dailyRate}/day • ₹{deposit} deposit</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-[#52525B] leading-relaxed">
+              Are you sure you want to delete <strong>{product.title}</strong>? It will be removed from the <strong>Campus Circular</strong> marketplace immediately and other students will no longer be able to borrow it.
+            </p>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setIsDeleteDialogOpen(false)}
+                className="flex-1 py-3 bg-[#FAF7F0] hover:bg-[#EFE8D6] text-[#18181B] font-bold text-xs rounded-xl border border-[#EDE8C8] transition-all cursor-pointer"
+              >
+                Cancel (Keep Listing)
+              </button>
+              <button
+                type="button"
+                disabled={isDeleting}
+                onClick={() => {
+                  setIsDeleting(true);
+                  if (typeof removeListing === "function") {
+                    removeListing(product.id);
+                  }
+                  setTimeout(() => {
+                    setIsDeleting(false);
+                    setIsDeleteDialogOpen(false);
+                    router.push("/listings");
+                  }, 500);
+                }}
+                className="flex-1 py-3 bg-gradient-to-b from-[#EF4444] to-[#DC2626] hover:from-[#F87171] hover:to-[#EF4444] text-white font-black text-xs rounded-xl shadow-xs border-b-2 border-[#B91C1C] active:translate-y-0.5 transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
+              >
+                {isDeleting ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <AppIcon name="trash" size={14} className="text-white" />
+                    <span>Yes, Delete Listing</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

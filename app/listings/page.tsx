@@ -16,6 +16,8 @@ export default function MyListingsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pausedListings, setPausedListings] = useState<{ [key: string]: boolean }>({});
   const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<any | null>(null);
+  const [deletedToast, setDeletedToast] = useState<string | null>(null);
   const fileInputRefs = useRef<{ [id: string]: HTMLInputElement | null }>({});
 
   const handleImageUpload = (itemId: string, file: File) => {
@@ -48,6 +50,15 @@ export default function MyListingsPage() {
 
   const togglePause = (itemId: string) => {
     setPausedListings((prev) => ({ ...prev, [itemId]: !prev[itemId] }));
+  };
+
+  const confirmDelete = () => {
+    if (!itemToDelete) return;
+    const title = itemToDelete.title;
+    removeListing(itemToDelete.id);
+    setItemToDelete(null);
+    setDeletedToast(`"${title}" has been successfully deleted from your listings.`);
+    setTimeout(() => setDeletedToast(null), 4000);
   };
 
   return (
@@ -95,6 +106,23 @@ export default function MyListingsPage() {
                 </button>
               </div>
             </div>
+
+            {/* Deleted Success Notification Banner */}
+            {deletedToast && (
+              <div className="mt-4 p-3.5 bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold rounded-2xl flex items-center justify-between shadow-2xs animate-fadeIn">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-base">🗑️</span>
+                  <span>{deletedToast}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setDeletedToast(null)}
+                  className="text-rose-600 hover:text-rose-900 font-black cursor-pointer px-2"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
 
             {/* ─── 4 Metrics Strip ─────────────────────────────────── */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mt-5">
@@ -314,11 +342,12 @@ export default function MyListingsPage() {
                           </button>
                           <button
                             type="button"
-                            onClick={() => removeListing(item.id)}
-                            className="p-1.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 rounded-xl transition-all"
-                            title="Delete Listing"
+                            onClick={() => setItemToDelete(item)}
+                            className="px-2 py-1.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 rounded-xl transition-all cursor-pointer flex items-center gap-1 group/del"
+                            title="Delete this listing"
                           >
-                            ✕
+                            <AppIcon name="trash" size={13} className="text-rose-500 group-hover/del:text-rose-700" />
+                            <span className="text-[10px] font-bold text-rose-600">Delete</span>
                           </button>
                           <Link
                             href={`/browse/${item.id}`}
@@ -354,6 +383,63 @@ export default function MyListingsPage() {
           </main>
         </div>
       </div>
+
+      {/* ─── Delete Listing Confirmation Modal ──────────────────── */}
+      {itemToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-3xl border-2 border-[#18181B] max-w-md w-full p-6 shadow-2xl space-y-4 animate-scaleUp">
+            <div className="flex items-center justify-between pb-3 border-b border-[#F0EAE0]">
+              <div className="flex items-center gap-2 text-rose-600">
+                <div className="w-8 h-8 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 font-bold">
+                  🗑️
+                </div>
+                <h3 className="font-black text-base text-[#18181B]">Delete Listing?</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setItemToDelete(null)}
+                className="text-[#71717A] hover:text-[#18181B] text-lg font-bold cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Item Preview Card */}
+            <div className="flex items-center gap-3 p-3 bg-[#FAF7F0] rounded-2xl border border-[#EDE8C8]">
+              <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-white border border-[#E0D8C8] flex-shrink-0">
+                <Image src={itemToDelete.image} alt={itemToDelete.title} fill className="object-cover" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="text-[10px] font-bold text-[#71717A]">{itemToDelete.category}</span>
+                <p className="font-bold text-xs text-[#18181B] truncate">{itemToDelete.title}</p>
+                <p className="text-[11px] text-[#16A34A] font-extrabold">₹{itemToDelete.dailyRate}/day • ₹{itemToDelete.securityDeposit} deposit</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-[#52525B] leading-relaxed">
+              Are you sure you want to permanently delete this resource? It will be removed from the <strong>Campus Circular</strong> marketplace immediately and other students will no longer be able to borrow it.
+            </p>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setItemToDelete(null)}
+                className="flex-1 py-3 bg-[#FAF7F0] hover:bg-[#EFE8D6] text-[#18181B] font-bold text-xs rounded-xl border border-[#EDE8C8] transition-all cursor-pointer"
+              >
+                Cancel (Keep Item)
+              </button>
+              <button
+                type="button"
+                onClick={confirmDelete}
+                className="flex-1 py-3 bg-gradient-to-b from-[#EF4444] to-[#DC2626] hover:from-[#F87171] hover:to-[#EF4444] text-white font-black text-xs rounded-xl shadow-xs border-b-2 border-[#B91C1C] active:translate-y-0.5 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <AppIcon name="trash" size={14} className="text-white" />
+                <span>Yes, Delete Listing</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ─── 3-Step List Modal ─────────────────────────────────── */}
       <ListResourceModal
