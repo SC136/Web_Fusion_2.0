@@ -166,9 +166,6 @@ export default function AiAssistantPage() {
                   priority
                 />
               </div>
-              <div className="absolute top-0 right-0 bg-white border border-[#DDD6FE] px-2.5 py-1 rounded-full shadow-2xs text-[11px] font-bold text-[#6D28D9] animate-pulse">
-                ⚡ 15% Kit Discount
-              </div>
             </div>
           </div>
         </div>
