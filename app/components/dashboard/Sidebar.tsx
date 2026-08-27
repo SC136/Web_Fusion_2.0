@@ -8,7 +8,6 @@ import { currentUser } from "@/app/data/mockData";
 /* ─── Sidebar Navigation Items ────────────────────────────────── */
 const navItems = [
   { label: "Dashboard", icon: "grid", href: "/dashboard" },
-  { label: "Browse", icon: "search", href: "/browse" },
   { label: "AI Assistant", icon: "sparkles", href: "/ai-assistant" },
   { label: "Requests", icon: "inbox", href: "/requests" },
   { label: "My Loans", icon: "arrow-up-right", href: "/loans" },
@@ -109,8 +108,6 @@ export default function Sidebar() {
           let isActive = false;
           if (item.label === "Dashboard") {
             isActive = pathname === "/dashboard" || pathname === "/";
-          } else if (item.label === "Browse") {
-            isActive = pathname.startsWith("/browse");
           } else if (item.label === "AI Assistant") {
             isActive = pathname.startsWith("/ai-assistant");
           } else if (item.label === "Requests") {
