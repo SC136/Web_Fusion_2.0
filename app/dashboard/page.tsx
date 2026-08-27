@@ -104,7 +104,7 @@ export default function DashboardPage() {
                     <div className="flex items-center gap-2.5 mb-2">
                       <div
                         className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                        style={{ backgroundColor: stat.bgColor, color: stat.textColor }}
+                        style={{ backgroundColor: stat.iconBg || "#E0F2FE", color: stat.iconColor || "#0284C7" }}
                       >
                         <AppIcon name={stat.icon} size={18} />
                       </div>
