@@ -4,24 +4,24 @@ import Image from "next/image";
 import { useState } from "react";
 import { profileUser, publicProfileMaya } from "@/app/data/mockData";
 import { AppIcon } from "@/app/components/dashboard/Icons";
-import AppNavbar from "@/app/components/layout/AppNavbar";
+import TopBar from "@/app/components/dashboard/TopBar";
 import Sidebar from "@/app/components/dashboard/Sidebar";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<"dashboard" | "public">("dashboard");
 
   return (
-    <div className="min-h-screen bg-[#FBF7F0] text-[#18181B] flex flex-col select-none">
-      {/* ─── UNIFIED TOP NAVBAR ───────────────────────────────── */}
-      <AppNavbar variant="auth" />
+    <div className="flex min-h-screen bg-[#FEFEFE] text-[#18181B] select-none">
+      {/* ─── UNIFIED MASTER LEFT SIDEBAR (Desktop) ────────────── */}
+      <Sidebar />
 
-      {/* ─── MAIN CONTENT BODY ────────────────────────────────── */}
-      <div className="flex-1 flex max-w-[1550px] w-full mx-auto">
-        {/* ─── UNIFIED LEFT SIDEBAR ───────────────────────────── */}
-        <Sidebar />
+      {/* ─── MAIN AREA ────────────────────────────────────────── */}
+      <div className="flex-1 lg:ml-[240px] flex flex-col min-h-screen">
+        {/* Top Bar */}
+        <TopBar />
 
         {/* ─── CENTER PROFILE CONTENT ─────────────────────────── */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-h-[calc(100vh-56px)] bg-[#FEFEFE]">
           {/* Top Row: Page Title + View Switcher */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
             <div className="relative">

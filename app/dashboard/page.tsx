@@ -14,6 +14,8 @@ import {
   sidebarNav,
 } from "@/app/data/mockData";
 import { AppIcon } from "@/app/components/dashboard/Icons";
+import Sidebar from "@/app/components/dashboard/Sidebar";
+import TopBar from "@/app/components/dashboard/TopBar";
 import { useState } from "react";
 
 export default function DashboardPage() {
@@ -342,122 +344,5 @@ export default function DashboardPage() {
   );
 }
 
-/* ─── SIDEBAR ────────────────────────────────────────────────── */
-function SidebarIcon({ name }: { name: string }) {
-  const p: Record<string, string> = {
-    grid: "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z",
-    search: "M11 3a8 8 0 100 16 8 8 0 000-16zM21 21l-4.3-4.3",
-    sparkles: "M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5z",
-    inbox: "M22 12l-6 0-2 3h-4l-2-3-6 0",
-    "arrow-up-right": "M7 17L17 7M7 7h10v10",
-    list: "M8 6h13M8 12h13M8 18h13",
-    message: "M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z",
-    star: "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01z",
-    leaf: "M11 20A7 7 0 019.8 6.9C15.5 4.9 17 3.5 19 2c1 2 2 4.5 2 8 0 5.5-4.5 10-10 10z",
-    shield: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
-  };
-  return (
-    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-      <path d={p[name] || ""} />
-    </svg>
-  );
-}
 
-function Sidebar() {
-  return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[240px] bg-[#FDFBF1] border-r border-[#E8E4D8] flex flex-col z-40 hidden lg:flex">
-      {/* Logo */}
-      <div className="px-5 py-5 flex items-center gap-2.5">
-        <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#3B82F6] via-[#10B981] to-[#84CC16] p-[2px] flex items-center justify-center">
-          <div className="w-full h-full bg-[#FDFBF1] rounded-full flex items-center justify-center">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38" />
-            </svg>
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-[10px] font-black tracking-tight text-[#18181B] leading-none">CAMPUS</span>
-          <span className="text-[10px] font-black tracking-tight text-[#18181B] leading-none">CIRCULAR</span>
-        </div>
-      </div>
 
-      {/* Nav */}
-      <nav className="flex-1 px-3.5 py-2 space-y-1 overflow-y-auto">
-        {sidebarNav.map((item) => (
-          <Link
-            key={item.label}
-            href={item.href}
-            id={`sidebar-${item.label.toLowerCase().replace(/\s/g, "-")}`}
-            className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[13.5px] transition-all ${
-              item.active
-                ? "bg-[#EAF7EE] text-[#14532D] font-bold shadow-2xs"
-                : "text-[#374151] font-semibold hover:bg-[#F5F2E8] hover:text-[#18181B]"
-            }`}
-          >
-            <span className={item.active ? "text-[#16A34A]" : "text-[#6B7280]"}>
-              <SidebarIcon name={item.icon} />
-            </span>
-            {item.label}
-          </Link>
-        ))}
-      </nav>
-
-      {/* User Profile Card */}
-      <div className="px-3.5 pt-2 pb-1">
-        <div className="p-2.5 bg-[#FFF9EA] border border-[#F4E8CB] rounded-2xl flex items-center gap-2.5 shadow-2xs">
-          <div className="w-10 h-10 rounded-full overflow-hidden relative flex-shrink-0 bg-[#E0F2FE] border border-[#BAE6FD]">
-            <Image
-              src="/dashboard.png"
-              alt={currentUser.name}
-              fill
-              className="object-cover object-top scale-175 translate-y-1"
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[12.5px] font-bold text-[#18181B] truncate flex items-center gap-1">
-              <span>Hey, {currentUser.name}!</span>
-              <span className="text-xs">👋</span>
-            </p>
-            <p className="text-[11px] text-[#78716C] font-medium hover:underline cursor-pointer">
-              View Profile
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Mascot */}
-      <div className="relative w-full h-[225px] mt-auto overflow-hidden">
-        <Image
-          src="/sidebar.png"
-          alt="Sidebar mascot"
-          fill
-          className="object-cover object-top select-none pointer-events-none"
-          priority
-        />
-      </div>
-    </aside>
-  );
-}
-
-/* ─── TOP BAR ────────────────────────────────────────────────── */
-function TopBar() {
-  return (
-    <header className="h-14 border-b border-[#EDE9DA] bg-[#FEFEFE] px-5 flex items-center justify-end gap-4 flex-shrink-0 sticky top-0 z-30">
-      <button id="topbar-notifications" className="w-9 h-9 rounded-xl bg-[#F9FAFB] flex items-center justify-center hover:bg-[#F3F4F6] transition-colors relative">
-        <svg width="18" height="18" fill="none" stroke="#6B7280" strokeWidth="2" viewBox="0 0 24 24">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-        </svg>
-        <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-[#EF4444] rounded-full border-2 border-white" />
-      </button>
-      <button id="topbar-messages" className="w-9 h-9 rounded-xl bg-[#F9FAFB] flex items-center justify-center hover:bg-[#F3F4F6] transition-colors">
-        <svg width="18" height="18" fill="none" stroke="#6B7280" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg>
-      </button>
-      <div className={`w-9 h-9 rounded-full ${currentUser.avatarBg} flex items-center justify-center font-bold text-xs cursor-pointer hover:ring-2 hover:ring-[#16A34A] transition-all`}>
-        {currentUser.initials}
-      </div>
-    </header>
-  );
-}
