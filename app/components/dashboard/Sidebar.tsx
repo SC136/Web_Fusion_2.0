@@ -10,9 +10,9 @@ const navItems = [
   { label: "Dashboard", icon: "grid", href: "/dashboard" },
   { label: "Browse", icon: "search", href: "/browse" },
   { label: "AI Assistant", icon: "sparkles", href: "/dashboard" },
-  { label: "My Requests", icon: "inbox", href: "/dashboard" },
-  { label: "My Loans", icon: "arrow-up-right", href: "/dashboard" },
-  { label: "My Listings", icon: "list", href: "/dashboard" },
+  { label: "My Requests", icon: "inbox", href: "/loans" },
+  { label: "My Loans", icon: "arrow-up-right", href: "/loans" },
+  { label: "My Listings", icon: "list", href: "/listings" },
   { label: "Messages", icon: "message", href: "/dashboard" },
   { label: "Trust Profile", icon: "shield-check", href: "/profile" },
   { label: "Reviews", icon: "star", href: "/profile#reviews" },
@@ -130,6 +130,10 @@ export default function Sidebar() {
             isActive = pathname === "/profile";
           } else if (item.label === "Admin Panel") {
             isActive = pathname.startsWith("/admin");
+          } else if (item.label === "My Loans" || item.label === "My Requests") {
+            isActive = pathname.startsWith("/loans");
+          } else if (item.label === "My Listings") {
+            isActive = pathname.startsWith("/listings");
           }
 
           return (

@@ -6,8 +6,13 @@ import { useState, useMemo } from "react";
 import AppNavbar from "@/app/components/layout/AppNavbar";
 import { browseCategories, browseResources } from "@/app/data/mockData";
 import { AppIcon } from "@/app/components/dashboard/Icons";
+import ListResourceModal from "@/app/components/modals/ListResourceModal";
 
 export default function BrowsePage() {
+  // Modal state
+  const [isListModalOpen, setIsListModalOpen] = useState(false);
+  const [modalTab, setModalTab] = useState<"list" | "request">("list");
+
   // Search & Filter States
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -142,9 +147,28 @@ export default function BrowsePage() {
                 </svg>
               </div>
             </div>
-            <p className="text-xs sm:text-sm text-[#52525B] font-medium">
+            <p className="text-xs sm:text-sm text-[#52525B] font-medium mb-3">
               Discover and access verified resources shared by students across your campus.
             </p>
+            <div className="flex flex-wrap items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  setModalTab("list");
+                  setIsListModalOpen(true);
+                }}
+                className="px-4 py-2 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold text-xs rounded-xl transition-all shadow-xs cursor-pointer flex items-center gap-1.5"
+              >
+                <span>+ List a Resource</span>
+              </button>
+              <Link
+                href="/requests"
+                className="px-3.5 py-2 bg-white hover:bg-[#FAF7F0] border border-[#EDE8C8] text-[#18181B] font-bold text-xs rounded-xl transition-all shadow-2xs flex items-center gap-1.5"
+              >
+                <span>📢 Wanted Requests</span>
+                <span className="bg-[#FEF3C7] text-[#92400E] text-[10px] px-1.5 py-0.2 rounded-full font-bold">4</span>
+              </Link>
+            </div>
           </div>
 
           {/* Right Mascot with Clean Speech Bubble */}
@@ -672,6 +696,13 @@ export default function BrowsePage() {
           </main>
         </div>
       </div>
+
+      {/* ─── 3-Step List / Request Modal ──────────────────────── */}
+      <ListResourceModal
+        isOpen={isListModalOpen}
+        onClose={() => setIsListModalOpen(false)}
+        initialTab={modalTab}
+      />
     </div>
   );
 }

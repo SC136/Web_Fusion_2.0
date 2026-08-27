@@ -518,11 +518,11 @@ export default function ProductDetailPage() {
                   onClick={() => {
                     setRequestSubmitted(false);
                     setIsBorrowModalOpen(false);
-                    router.push("/dashboard");
+                    router.push("/loans");
                   }}
-                  className="mt-4 w-full py-3 bg-[#18181B] text-white font-bold text-xs rounded-xl hover:bg-[#27272A] cursor-pointer"
+                  className="mt-4 w-full py-3 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold text-xs rounded-xl cursor-pointer shadow-xs"
                 >
-                  View in My Loans Dashboard →
+                  Track in Lifecycle Tracker →
                 </button>
               </div>
             ) : (
