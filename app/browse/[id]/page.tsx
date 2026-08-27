@@ -494,6 +494,89 @@ export default function ProductDetailPage() {
             </Link>
           </div>
         </div>
+
+        {/* ══════════════════════════════════════════════════════════
+           3. SIMILAR AVAILABLE ALTERNATIVES NEARBY (Section 5 of PS)
+           ══════════════════════════════════════════════════════════ */}
+        <div className="mt-10 pt-8 border-t border-[#EDE8C8] space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-black bg-[#DCFCE7] text-[#166534] px-2.5 py-0.5 rounded-full">
+                  Smart Alternatives • Section 5
+                </span>
+              </div>
+              <h2 className="text-lg sm:text-xl font-black text-[#18181B] mt-1">
+                Similar Available Items Nearby
+              </h2>
+              <p className="text-xs text-[#71717A]">
+                Alternative equipment matching this category and proximity.
+              </p>
+            </div>
+
+            <Link
+              href="/browse"
+              className="text-xs font-bold text-[#16A34A] hover:underline"
+            >
+              View All Campus Resources →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {browseResources
+              .filter((item) => item.id !== product.id)
+              .slice(0, 4)
+              .map((item) => (
+                <Link
+                  key={item.id}
+                  href={`/browse/${item.id}`}
+                  className="bg-white rounded-3xl border border-[#EDE8C8] overflow-hidden shadow-2xs hover:shadow-md transition-all group flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="relative aspect-[4/3] bg-[#F9FAFB] overflow-hidden">
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute top-2.5 left-2.5">
+                        <span
+                          className={`text-[9.5px] font-bold px-2 py-0.5 rounded-full shadow-2xs ${
+                            item.statusType === "now"
+                              ? "bg-[#DEF7EC] text-[#03543F]"
+                              : "bg-[#FEF3C7] text-[#92400E]"
+                          }`}
+                        >
+                          {item.status}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-3.5 space-y-1.5">
+                      <span className="text-[10px] font-bold text-[#71717A]">{item.category}</span>
+                      <h3 className="text-xs font-bold text-[#18181B] line-clamp-2 group-hover:text-[#16A34A] transition-colors leading-snug">
+                        {item.title}
+                      </h3>
+                      <p className="text-[11px] text-[#71717A]">
+                        Shared by <strong>{item.owner}</strong>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 pt-0 flex items-center justify-between border-t border-[#F5EFE6] mt-2">
+                    <span className="text-xs font-black text-[#18181B]">
+                      ₹{item.dailyRate || 100} <span className="text-[10px] font-normal text-[#71717A]">/ day</span>
+                    </span>
+                    <span className="text-[10.5px] text-[#16A34A] font-bold">
+                      {item.distance} km away
+                    </span>
+                  </div>
+                </Link>
+              ))}
+          </div>
+        </div>
       </main>
 
       {/* ─── Interactive Borrow Request Modal ─────────────────── */}

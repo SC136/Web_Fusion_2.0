@@ -57,7 +57,7 @@ export default function DashboardPage() {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    router.push(`/browse?search=${encodeURIComponent(searchQuery || "Camera and tripod")}`);
+                    router.push(`/ai-assistant`);
                   }}
                   className="bg-[#F5F8E9] border border-[#D8E8B8] rounded-2xl p-4 shadow-2xs"
                 >
@@ -78,21 +78,21 @@ export default function DashboardPage() {
                       id="dashboard-ai-search-btn"
                       className="bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 hover:from-[#8AC538] hover:to-[#72A627] transition-all shadow-xs active:translate-y-0.5 cursor-pointer whitespace-nowrap"
                     >
-                      <span>Search with AI</span>
+                      <span>Build Smart Kit</span>
                       <AppIcon name="sparkles" size={15} />
                     </button>
                   </div>
 
                   {/* Popular Tags */}
                   <div className="flex items-center gap-2 flex-wrap text-xs text-[#6B7280] mt-3">
-                    <span className="font-medium text-[#4B5563]">Popular:</span>
-                    {["Camera + Tripod", "Projector", "Mic", "Lighting", "Calculator"].map((tag) => (
+                    <span className="font-medium text-[#4B5563]">Popular Kits:</span>
+                    {["Reel Shoot Kit", "IoT Lab Exam", "Camping Gear", "Placement Interview"].map((tag) => (
                       <Link
                         key={tag}
-                        href={`/browse?search=${encodeURIComponent(tag)}`}
+                        href="/ai-assistant"
                         className="text-[11px] px-3 py-1 bg-white/90 border border-[#E0E7D5] rounded-xl text-[#374151] hover:bg-white hover:border-[#6F9535] hover:text-[#18181B] transition-colors cursor-pointer shadow-2xs"
                       >
-                        {tag}
+                        ✨ {tag}
                       </Link>
                     ))}
                   </div>
