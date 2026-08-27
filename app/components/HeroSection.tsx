@@ -80,7 +80,7 @@ export default function HeroSection() {
         {/* CTA Buttons */}
         <div className="flex items-center justify-center gap-3 sm:gap-4">
           <a
-            href="#"
+            href="/dashboard"
             id="cta-find-resource"
             className="group inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-[#18181B] text-white font-semibold text-xs sm:text-sm rounded-xl hover:bg-[#27272A] transition-all duration-200 shadow-md hover:shadow-lg"
           >
@@ -100,7 +100,7 @@ export default function HeroSection() {
             </svg>
           </a>
           <a
-            href="#"
+            href="/dashboard"
             id="cta-lend"
             className="group inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-[#9DC05B] text-[#18181B] font-bold text-xs sm:text-sm rounded-xl hover:bg-[#8eb34e] transition-all duration-200 shadow-md hover:shadow-lg"
           >
