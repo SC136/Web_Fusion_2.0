@@ -148,13 +148,13 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Far Right: Clean 3D Mascot Character */}
-                <div className="relative w-36 h-40 lg:w-44 lg:h-44 hidden md:block flex-shrink-0 z-0">
-                  <div className="absolute inset-0 bg-[#F5F8E9] rounded-full blur-xl -z-10" />
+                <div className="relative w-36 h-44 lg:w-44 lg:h-48 hidden md:block flex-shrink-0 z-0">
                   <Image
                     src="/mascots/blue_dress_hat.png"
                     alt="Profile mascot"
                     fill
-                    className="object-contain object-right-bottom scale-110 select-none pointer-events-none drop-shadow-sm"
+                    className="object-contain object-bottom scale-105 select-none pointer-events-none"
+                    priority
                   />
                 </div>
               </div>
