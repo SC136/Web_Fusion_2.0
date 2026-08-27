@@ -8,33 +8,43 @@ import { browseCategories, browseResources } from "@/app/data/mockData";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 import ListResourceModal from "@/app/components/modals/ListResourceModal";
 
-export default function BrowsePage() {
-  const [resources, setResources] = useState<typeof browseResources>(browseResources);
+import { useApp } from "@/app/context/AppContext";
 
-  // Load custom resources from localStorage
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("campus_circular_browse_resources");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          const existingIds = new Set(parsed.map((p: any) => p.id));
-          const combined = [...parsed, ...browseResources.filter((b) => !existingIds.has(b.id))];
-          setResources(combined);
-        }
-      }
-    } catch (e) {
-      console.error("Failed to load browse resources:", e);
-    }
-  }, []);
+export default function BrowsePage() {
+  const { listings, currentUser } = useApp();
 
   // Modal state
   const [isListModalOpen, setIsListModalOpen] = useState(false);
-  const [modalTab, setModalTab] = useState<"list" | "request">(listTabFallback());
+  const [modalTab, setModalTab] = useState<"list" | "request">("list");
 
-  function listTabFallback(): "list" | "request" {
-    return "list";
-  }
+  // Dynamic merged resources
+  const resources = useMemo(() => {
+    const appMapped = listings.map((l) => ({
+      id: l.id,
+      title: l.title,
+      category: l.category,
+      image: l.image,
+      status: l.status,
+      statusType: l.statusType,
+      isFavorite: false,
+      owner: l.ownerName,
+      department: l.ownerDept,
+      avatarBg: l.ownerAvatarBg,
+      initials: l.ownerName.split(" ").map(n => n[0]).join("").substring(0, 2),
+      rating: l.rating,
+      reviews: l.reviewsCount,
+      distance: l.distance,
+      condition: l.condition,
+      dailyRate: l.dailyRate,
+      deposit: l.securityDeposit,
+      lateFee: Math.round(l.dailyRate * 0.25),
+      ownerId: l.ownerId,
+    }));
+
+    const existingIds = new Set(appMapped.map((m) => m.id));
+    const fallbackMapped = browseResources.filter((b) => !existingIds.has(b.id));
+    return [...appMapped, ...fallbackMapped];
+  }, [listings]);
 
   // Search & Filter States
   const [searchQuery, setSearchQuery] = useState("");
@@ -714,29 +724,7 @@ export default function BrowsePage() {
         onClose={() => setIsListModalOpen(false)}
         initialTab={modalTab}
         onSuccess={(newItem) => {
-          if (modalTab === "list" || newItem.dailyRate) {
-            const newBrowseItem = {
-              id: newItem.id || `b-${Date.now()}`,
-              title: newItem.title || "Custom Equipment",
-              category: newItem.category || "Electronics",
-              image: newItem.image || "/products/camera.jpg",
-              status: "Available Now",
-              statusType: "now",
-              isFavorite: false,
-              owner: "Anaya Sharma (You)",
-              department: "Computer Engineering • 3rd Year",
-              avatarBg: "bg-emerald-100 text-emerald-800",
-              initials: "AS",
-              rating: 5.0,
-              reviews: 0,
-              distance: 0.1,
-              condition: newItem.condition || "Like New",
-              dailyRate: newItem.dailyRate || 120,
-              deposit: newItem.deposit || newItem.securityDeposit || 1000,
-              lateFee: 30,
-            };
-            setResources((prev) => [newBrowseItem, ...prev.filter((r) => r.id !== newBrowseItem.id)]);
-          }
+          // resources auto-updates via useMemo from AppContext listings
         }}
       />
     </div>

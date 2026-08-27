@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AppIcon } from "@/app/components/dashboard/Icons";
+import { useApp } from "@/app/context/AppContext";
 
 interface ListResourceModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export default function ListResourceModal({
   initialTab = "list",
   onSuccess,
 }: ListResourceModalProps) {
+  const { currentUser, addListing, addWantedRequest } = useApp();
   const [activeTab, setActiveTab] = useState<"list" | "request">(initialTab);
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -26,7 +28,7 @@ export default function ListResourceModal({
   const [listForm, setListForm] = useState({
     title: "",
     category: "Electronics",
-    condition: "Like New",
+    condition: "Like New" as "Like New" | "Very Good" | "Good" | "Fair",
     description: "",
     accessories: ["Charger", "Original Box"],
     newAccessory: "",
@@ -41,7 +43,10 @@ export default function ListResourceModal({
       "No water or physical damage",
       "Return by due date",
     ],
+    imageDataUrl: "", // base64 data URL from user upload
   });
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [imageDragOver, setImageDragOver] = useState(false);
 
   // Form State for "Post Community Request"
   const [requestForm, setRequestForm] = useState({
@@ -52,11 +57,20 @@ export default function ListResourceModal({
     budget: 150,
     depositOffered: 1000,
     location: "Design Block C",
-    urgency: "High",
+    urgency: "High" as const,
     description: "Need a pressure-sensitive drawing tablet with stylus for semester submission.",
   });
 
   if (!isOpen) return null;
+
+  const handleImageFile = (file: File) => {
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setListForm((prev) => ({ ...prev, imageDataUrl: e.target?.result as string }));
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleNext = () => {
     if (currentStep < 3) {
@@ -66,111 +80,46 @@ export default function ListResourceModal({
       if (activeTab === "list") {
         const categoryImages: Record<string, string> = {
           Electronics: "/products/camera.jpg",
-          Books: "/mascots/books_camera.png",
-          Sports: "/products/tripod.jpg",
+          Books: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80",
+          Sports: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&auto=format&fit=crop&q=80",
           Tools: "/products/ringlight.jpg",
           Music: "/products/mic.jpg",
           Others: "/products/camera.jpg",
         };
 
-        const newItem = {
-          id: `my-${Date.now()}`,
+        const created = addListing({
           title: listForm.title || "Custom Campus Equipment",
           category: listForm.category || "Electronics",
-          image: categoryImages[listForm.category] || "/products/camera.jpg",
+          description: listForm.description || "Shared with campus members.",
           dailyRate: Number(listForm.dailyRate) || 120,
-          deposit: Number(listForm.securityDeposit) || 1000,
-          status: "Available",
-          statusType: "active",
-          timesRented: 0,
-          totalEarned: 0,
-          rating: 5.0,
-          reviewsCount: 0,
+          securityDeposit: Number(listForm.securityDeposit) || 1000,
+          image: listForm.imageDataUrl || categoryImages[listForm.category] || "/products/camera.jpg",
+          location: listForm.pickupLocation || `${currentUser.location}`,
+          distance: 0.2,
           condition: listForm.condition || "Like New",
-          incomingRequests: [],
-          description: listForm.description,
-          accessories: listForm.accessories,
-          pickupLocation: listForm.pickupLocation,
-        };
-
-        const newBrowseResource = {
-          id: `b-${Date.now()}`,
-          title: listForm.title || "Custom Campus Equipment",
-          category: listForm.category || "Electronics",
-          image: categoryImages[listForm.category] || "/products/camera.jpg",
           status: "Available Now",
           statusType: "now",
-          isFavorite: false,
-          owner: "Anaya Sharma (You)",
-          department: "Computer Engineering • 3rd Year",
-          avatarBg: "bg-emerald-100 text-emerald-800",
-          initials: "AS",
-          rating: 5.0,
-          reviews: 0,
-          distance: 0.1,
-          condition: listForm.condition || "Like New",
-          dailyRate: Number(listForm.dailyRate) || 120,
-          deposit: Number(listForm.securityDeposit) || 1000,
-          lateFee: Number(listForm.lateFee) || 30,
-        };
-
-        try {
-          // Save to user listings
-          const existingListings = localStorage.getItem("campus_circular_my_listings");
-          const parsedListings = existingListings ? JSON.parse(existingListings) : [];
-          localStorage.setItem(
-            "campus_circular_my_listings",
-            JSON.stringify([newItem, ...parsedListings.filter((l: any) => l.id !== newItem.id)])
-          );
-
-          // Save to browse resources
-          const existingBrowse = localStorage.getItem("campus_circular_browse_resources");
-          const parsedBrowse = existingBrowse ? JSON.parse(existingBrowse) : [];
-          localStorage.setItem(
-            "campus_circular_browse_resources",
-            JSON.stringify([newBrowseResource, ...parsedBrowse.filter((b: any) => b.id !== newBrowseResource.id)])
-          );
-        } catch (e) {
-          console.error("Failed to save listing:", e);
-        }
+          includedAccessories: listForm.accessories,
+        });
 
         if (onSuccess) {
-          onSuccess(newItem);
+          onSuccess(created);
         }
       } else {
         // Wanted request
-        const createdReq = {
-          id: `CR-${Date.now()}`,
+        addWantedRequest({
           title: requestForm.title,
           category: requestForm.category,
-          requesterName: "Anaya Sharma",
-          requesterDept: "3rd Year, Computer Engg",
-          requesterAvatarBg: "bg-emerald-100 text-emerald-800",
           neededBy: requestForm.neededBy || "Tomorrow",
-          duration: requestForm.duration || "2 Days",
           budget: `₹${requestForm.budget || 100} / day`,
-          depositOffered: `₹${requestForm.depositOffered || 800}`,
-          description: requestForm.description || "Campus coursework requirement.",
-          responsesCount: 0,
+          depositOffered: `₹${requestForm.depositOffered || 800} Escrow Ready`,
+          description: requestForm.description || "Campus requirement.",
           urgency: requestForm.urgency || "High",
-          status: "Open",
-          postedAgo: "Just now",
-          location: requestForm.location || "Main Campus Quad",
-        };
-
-        try {
-          const existingReqs = localStorage.getItem("campus_circular_requests");
-          const parsedReqs = existingReqs ? JSON.parse(existingReqs) : [];
-          localStorage.setItem(
-            "campus_circular_requests",
-            JSON.stringify([createdReq, ...parsedReqs.filter((r: any) => r.id !== createdReq.id)])
-          );
-        } catch (e) {
-          console.error("Failed to save request:", e);
-        }
+          location: requestForm.location || `${currentUser.location}`,
+        });
 
         if (onSuccess) {
-          onSuccess(createdReq);
+          onSuccess(requestForm);
         }
       }
 
@@ -355,6 +304,67 @@ export default function ListResourceModal({
               {/* STEP 1: ITEM DETAILS */}
               {currentStep === 1 && (
                 <div className="space-y-3.5">
+                  {/* ── Item Photo Upload ───────────────────── */}
+                  <div>
+                    <label className="block font-bold text-[#18181B] mb-1.5">Item Photo</label>
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      onDragOver={(e) => { e.preventDefault(); setImageDragOver(true); }}
+                      onDragLeave={() => setImageDragOver(false)}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        setImageDragOver(false);
+                        const file = e.dataTransfer.files?.[0];
+                        if (file) handleImageFile(file);
+                      }}
+                      className={`relative w-full h-32 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-2 cursor-pointer transition-all overflow-hidden ${
+                        imageDragOver
+                          ? "border-[#84CC16] bg-[#F7FEE7]"
+                          : listForm.imageDataUrl
+                          ? "border-[#84CC16] bg-[#F7FEE7]"
+                          : "border-[#DDD6C8] bg-[#FAF7F0] hover:border-[#84CC16] hover:bg-[#F7FEE7]"
+                      }`}
+                    >
+                      {listForm.imageDataUrl ? (
+                        <>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={listForm.imageDataUrl}
+                            alt="Item preview"
+                            className="absolute inset-0 w-full h-full object-cover rounded-2xl"
+                          />
+                          <div className="absolute inset-0 bg-black/30 flex items-center justify-center rounded-2xl opacity-0 hover:opacity-100 transition-opacity">
+                            <span className="text-white text-xs font-bold bg-black/50 px-3 py-1.5 rounded-lg">Change Photo</span>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="w-9 h-9 rounded-full bg-[#EDE8C8] flex items-center justify-center">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#71717A]">
+                              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                              <polyline points="17 8 12 3 7 8" />
+                              <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-xs font-bold text-[#52525B]">Click or drag &amp; drop to upload</p>
+                            <p className="text-[10px] text-[#9C9588]">JPG, PNG, WEBP up to 10MB</p>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleImageFile(file);
+                      }}
+                    />
+                  </div>
+
                   <div>
                     <label className="block font-bold text-[#18181B] mb-1">Resource Title *</label>
                     <input
@@ -391,7 +401,7 @@ export default function ListResourceModal({
                       <label className="block font-bold text-[#18181B] mb-1">Item Condition *</label>
                       <select
                         value={listForm.condition}
-                        onChange={(e) => setListForm({ ...listForm, condition: e.target.value })}
+                        onChange={(e) => setListForm({ ...listForm, condition: e.target.value as "Like New" | "Very Good" | "Good" | "Fair" })}
                         className="w-full px-3 py-2 rounded-xl border border-[#EDE8C8] bg-[#FAF7F0] text-xs font-semibold"
                       >
                         <option value="Like New">Like New (Mint)</option>

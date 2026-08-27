@@ -3,15 +3,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import AppNavbar from "@/app/components/layout/AppNavbar";
 import { browseResources, recommendedItems } from "@/app/data/mockData";
 import { AppIcon } from "@/app/components/dashboard/Icons";
+import { useApp } from "@/app/context/AppContext";
 
 export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params?.id as string;
+  const { listings, currentUser, createBorrowRequest, getOrCreateThread } = useApp();
+
+  // Find listing from dynamic listings store first
+  const dynamicListing = listings.find((l) => l.id === id);
 
   // Map recommendedItems to full product shape if needed
   const foundRec = recommendedItems.find((r) => r.id === id);
@@ -19,12 +24,13 @@ export default function ProductDetailPage() {
     ? {
         id: foundRec.id,
         title: foundRec.name,
-        category: "Photography & Media",
+        category: "Electronics",
         image: foundRec.image,
         status: "Available Now",
         statusType: "now",
         isFavorite: false,
         owner: foundRec.owner,
+        ownerId: "u2",
         department: "Campus Verified Lender",
         avatarBg: "bg-blue-100 text-blue-800",
         initials: foundRec.owner
@@ -38,14 +44,41 @@ export default function ProductDetailPage() {
         dailyRate: parseInt(foundRec.pricePerDay.replace(/[^0-9]/g, "")) || 150,
         deposit: parseInt(foundRec.deposit.replace(/[^0-9]/g, "")) || 1000,
         lateFee: 40,
+        description: "High-performance campus equipment available for student projects.",
       }
     : null;
 
-  // Find product or fallback to first item
-  const product =
-    browseResources.find((p) => p.id === id) ||
-    normalizedRec ||
-    browseResources[0];
+  // Find product or fallback
+  const product = useMemo(() => {
+    if (dynamicListing) {
+      return {
+        id: dynamicListing.id,
+        title: dynamicListing.title,
+        category: dynamicListing.category,
+        image: dynamicListing.image,
+        status: dynamicListing.status,
+        statusType: dynamicListing.statusType,
+        isFavorite: false,
+        owner: dynamicListing.ownerName,
+        ownerId: dynamicListing.ownerId,
+        department: dynamicListing.ownerDept,
+        avatarBg: dynamicListing.ownerAvatarBg,
+        initials: dynamicListing.ownerName.split(" ").map((n) => n[0]).join(""),
+        rating: dynamicListing.rating,
+        reviews: dynamicListing.reviewsCount,
+        distance: dynamicListing.distance,
+        condition: dynamicListing.condition,
+        dailyRate: dynamicListing.dailyRate,
+        deposit: dynamicListing.securityDeposit,
+        lateFee: Math.round(dynamicListing.dailyRate * 0.25),
+        description: dynamicListing.description,
+      };
+    }
+    const fromBrowse = browseResources.find((p) => p.id === id);
+    if (fromBrowse) return { ...fromBrowse, ownerId: "u2", description: "Mint condition equipment for campus projects." };
+    if (normalizedRec) return normalizedRec;
+    return { ...browseResources[0], ownerId: "u2", description: "Campus equipment." };
+  }, [dynamicListing, id, normalizedRec]);
 
   // Gallery active images
   const galleryImages = [
@@ -59,98 +92,28 @@ export default function ProductDetailPage() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   // States
-  const [isSaved, setIsSaved] = useState(product.isFavorite || false);
+  const [isSaved, setIsSaved] = useState(false);
   const [isBorrowModalOpen, setIsBorrowModalOpen] = useState(false);
   const [borrowDays, setBorrowDays] = useState(3);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
   const [activeTab, setActiveTab] = useState<"details" | "agreement" | "condition">("details");
 
+  const isOwner = currentUser.id === product.ownerId;
+
   // Dynamic pricing
-  const dailyRate = (product as any).dailyRate || 150;
-  const deposit = (product as any).deposit || 1500;
-  const lateFee = (product as any).lateFee || 50;
+  const dailyRate = product.dailyRate || 150;
+  const deposit = product.deposit || 1500;
+  const lateFee = product.lateFee || 50;
   const platformFee = Math.round(dailyRate * borrowDays * 0.1);
   const rentalTotal = dailyRate * borrowDays;
   const totalPayable = rentalTotal + platformFee + deposit;
 
   const handleBorrowConfirm = () => {
-    const newExchange = {
-      id: `EX-2026-${Math.floor(1000 + Math.random() * 9000)}`,
-      itemTitle: product.title,
-      itemImage: product.image,
-      category: product.category,
-      ownerName: product.owner,
-      ownerDept: product.department,
-      ownerAvatarBg: product.avatarBg || "bg-amber-100 text-amber-800",
-      borrowerName: "Anaya Sharma",
-      borrowerDept: "3rd Year, Computer Engg",
-      borrowerAvatarBg: "bg-emerald-100 text-emerald-800",
-      currentStageIndex: 0, // Starts at Stage 1: "Requested"
-      requestedDate: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-      startDate: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-      returnDueDate: new Date(Date.now() + borrowDays * 86400000).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + ", 6:00 PM",
-      durationDays: borrowDays,
-      dailyRate: dailyRate,
-      platformFee: platformFee,
-      securityDeposit: deposit,
-      totalRentalFee: rentalTotal,
-      totalPaid: totalPayable,
-      handoverOtp: `CC-${Math.floor(1000 + Math.random() * 9000)}`,
-      handoverLocation: "Campus Central Library Plaza",
-      returnLocation: "Engineering Block Quad",
-      beforeCondition: {
-        photo: product.image,
-        date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + " • 10:00 AM",
-        rating: "Very Good",
-        checklist: [
-          { item: "Item powers on & all essential features verified", verified: true },
-          { item: "Accessories and original parts complete", verified: true },
-          { item: "Clean surface condition without damage", verified: true },
-          { item: "Carrying strap & pouch verified", verified: true },
-        ],
-        notes: `${product.title} handed over in clean condition with all included accessories.`,
-      },
-      afterCondition: {
-        photo: product.image,
-        date: new Date(Date.now() + borrowDays * 86400000).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + " • 5:30 PM",
-        rating: "Very Good",
-        checklist: [
-          { item: "Item powers on & all essential features verified", verified: true },
-          { item: "Accessories and original parts complete", verified: true },
-          { item: "Clean surface condition without damage", verified: true },
-          { item: "Carrying strap & pouch verified", verified: true },
-        ],
-        notes: "Returned clean and in pristine working condition. No damages.",
-      },
-      settlement: {
-        borrowingCharge: rentalTotal,
-        platformFee: platformFee,
-        lateFeeDeduction: 0,
-        damageDeduction: 0,
-        refundedDeposit: deposit,
-        lenderPayout: rentalTotal,
-        refundStatus: "Transferred to Student Escrow Account",
-        transactionId: `TXN-CC-${Math.floor(100000 + Math.random() * 900000)}`,
-      },
-      ratingData: {
-        borrowerGivenRating: 5,
-        borrowerReview: `Smooth and friendly borrowing experience from ${product.owner}! The item was in great condition.`,
-        lenderGivenRating: 5,
-        lenderReview: `Anaya took great care of the ${product.title} and returned it right on time. Highly recommended!`,
-        trustPointsEarned: 15,
-      },
-    };
-
     try {
-      const existingStr = localStorage.getItem("campus_circular_exchanges");
-      const existing = existingStr ? JSON.parse(existingStr) : [];
-      const updated = [newExchange, ...existing.filter((e: any) => e.id !== newExchange.id)];
-      localStorage.setItem("campus_circular_exchanges", JSON.stringify(updated));
-      localStorage.setItem("campus_circular_selected_exchange", newExchange.id);
+      createBorrowRequest(product.id, borrowDays);
     } catch (err) {
       console.error("Failed to save borrow request:", err);
     }
-
     setRequestSubmitted(true);
   };
 
@@ -304,24 +267,40 @@ export default function ProductDetailPage() {
 
             {/* Action Buttons */}
             <div className="space-y-2.5 pt-1">
-              {/* Primary CTA with 3D Tactile Styling */}
-              <button
-                onClick={() => setIsBorrowModalOpen(true)}
-                id="borrow-now-cta"
-                className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] hover:from-[#8AC538] hover:to-[#72A627] text-white font-extrabold rounded-2xl transition-all duration-150 shadow-[0_4px_14px_rgba(104,154,36,0.3),inset_0_1px_1px_rgba(255,255,255,0.4)] border-b-2 border-[#547C1C] active:translate-y-0.5 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer tracking-wide"
-              >
-                <span>Request to Borrow</span>
-                <span>→</span>
-              </button>
+              {isOwner ? (
+                <Link
+                  href="/listings"
+                  id="manage-listing-cta"
+                  className="w-full py-3.5 bg-[#F5F8E9] hover:bg-[#EAF5DA] text-[#2E5E1C] border border-[#D8E8B8] font-extrabold rounded-2xl transition-all duration-150 shadow-2xs flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer tracking-wide"
+                >
+                  <AppIcon name="list" size={16} />
+                  <span>You Own This Resource (Manage in Listings)</span>
+                </Link>
+              ) : (
+                <button
+                  onClick={() => setIsBorrowModalOpen(true)}
+                  id="borrow-now-cta"
+                  className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] hover:from-[#8AC538] hover:to-[#72A627] text-white font-extrabold rounded-2xl transition-all duration-150 shadow-[0_4px_14px_rgba(104,154,36,0.3),inset_0_1px_1px_rgba(255,255,255,0.4)] border-b-2 border-[#547C1C] active:translate-y-0.5 flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer tracking-wide"
+                >
+                  <span>Request to Borrow</span>
+                  <span>→</span>
+                </button>
+              )}
 
               {/* Chat with Owner */}
-              <Link
-                href="/dashboard"
-                className="w-full py-3 bg-white hover:bg-[#FAF9F5] border border-[#DDD6C8] text-[#18181B] font-bold rounded-2xl transition-all duration-150 shadow-[0_2px_6px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.8)] border-b-2 border-[#CCC4B4] active:translate-y-0.5 flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer"
-              >
-                <AppIcon name="message" size={16} />
-                <span>Chat with Owner</span>
-              </Link>
+              {!isOwner && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    getOrCreateThread(product.ownerId, product.title, product.image);
+                    router.push("/messages");
+                  }}
+                  className="w-full py-3 bg-white hover:bg-[#FAF9F5] border border-[#DDD6C8] text-[#18181B] font-bold rounded-2xl transition-all duration-150 shadow-[0_2px_6px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.8)] border-b-2 border-[#CCC4B4] active:translate-y-0.5 flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer"
+                >
+                  <AppIcon name="message" size={16} />
+                  <span>Chat with Owner ({product.owner.split(" ")[0]})</span>
+                </button>
+              )}
 
               {/* Wishlist Toggle */}
               <button

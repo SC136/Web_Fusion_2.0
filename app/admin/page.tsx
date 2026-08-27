@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import AppNavbar from "@/app/components/layout/AppNavbar";
 import { AppIcon } from "@/app/components/dashboard/Icons";
+import { useApp } from "@/app/context/AppContext";
 import {
   adminOverviewStats,
   adminOverdueReturns,

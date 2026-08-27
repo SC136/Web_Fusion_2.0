@@ -1,10 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  currentUser,
   overviewStats,
   activityStages,
   recommendedItems,
@@ -17,10 +17,11 @@ import {
 import { AppIcon } from "@/app/components/dashboard/Icons";
 import Sidebar from "@/app/components/dashboard/Sidebar";
 import AppNavbar from "@/app/components/layout/AppNavbar";
-import { useState } from "react";
+import { useApp } from "@/app/context/AppContext";
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { currentUser, listings, exchanges } = useApp();
   const [searchQuery, setSearchQuery] = useState("");
 
   return (

@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import NotificationDropdown from "@/app/components/dashboard/NotificationDropdown";
 import MobileDrawer from "@/app/components/dashboard/MobileDrawer";
+import { useApp } from "@/app/context/AppContext";
+import { AppIcon } from "@/app/components/dashboard/Icons";
 
 interface AppNavbarProps {
   variant?: "auth" | "guest";
@@ -20,7 +22,21 @@ const navLinks = [
 
 export default function AppNavbar({ variant = "auth" }: AppNavbarProps) {
   const pathname = usePathname();
+  const { currentUser, allUsers, switchUser } = useApp();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+  const accountMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close account menu on click outside
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(e.target as Node)) {
+        setIsAccountMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <>
@@ -93,44 +109,98 @@ export default function AppNavbar({ variant = "auth" }: AppNavbarProps) {
               {/* Notification Dropdown Bell */}
               <NotificationDropdown />
 
-              {/* Log Out Pill Button (Hidden on very small mobile) */}
-              <Link
-                href="/login"
-                id="nav-logout-btn"
-                className="hidden sm:inline-flex px-4 sm:px-5 py-2 text-xs sm:text-sm font-bold text-[#18181B] bg-white border border-[#E5E7EB] rounded-2xl hover:bg-[#F9FAFB] transition-all shadow-xs items-center justify-center cursor-pointer"
-              >
-                Log out
-              </Link>
-
-              {/* Avatar with Dropdown Arrow */}
-              <Link
-                href="/profile"
-                id="nav-avatar-btn"
-                className="flex items-center gap-1.5 cursor-pointer group select-none ml-0.5"
-              >
-                <div className="w-10 h-10 rounded-full bg-white border border-[#E5E7EB] relative overflow-hidden flex items-center justify-center shadow-xs group-hover:ring-2 group-hover:ring-[#16A34A] transition-all flex-shrink-0">
-                  <Image
-                    src="/mascots/mascot_character.png"
-                    alt="User avatar"
-                    fill
-                    className="object-contain object-center scale-110 p-0.5"
-                    priority
-                  />
-                </div>
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#52525B"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="transition-transform group-hover:translate-y-0.5 hidden sm:block"
+              {/* 1-Click Fast Account Switcher Pill */}
+              <div className="relative" ref={accountMenuRef}>
+                <button
+                  type="button"
+                  onClick={() => setIsAccountMenuOpen(!isAccountMenuOpen)}
+                  className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 bg-white hover:bg-[#FAF7F0] border border-[#EDE8C8] rounded-2xl shadow-2xs transition-all cursor-pointer select-none"
+                  title="Switch Active Account"
                 >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </Link>
+                  <div className={`w-7 h-7 rounded-full ${currentUser.avatarBg} flex items-center justify-center font-black text-[11px] flex-shrink-0 shadow-2xs`}>
+                    {currentUser.initials}
+                  </div>
+                  <div className="text-left hidden sm:block">
+                    <p className="text-xs font-bold text-[#18181B] leading-tight truncate max-w-[100px]">
+                      {currentUser.name}
+                    </p>
+                    <p className="text-[9.5px] font-semibold text-[#16A34A] leading-none">
+                      Trust {currentUser.trustScore}★
+                    </p>
+                  </div>
+                  <AppIcon name="chevron-down" size={13} className="text-[#71717A]" />
+                </button>
+
+                {/* Switcher Dropdown Menu */}
+                {isAccountMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-72 bg-white rounded-3xl border border-[#EDE8C8] shadow-2xl p-2.5 z-50 animate-fadeInUp space-y-1">
+                    <div className="px-3 py-2 border-b border-[#F0EAE0]">
+                      <p className="text-[10.5px] font-extrabold uppercase text-[#71717A] tracking-wider">
+                        Switch Active Campus Profile
+                      </p>
+                      <p className="text-[11px] text-[#52525B] mt-0.5">
+                        Test multi-party borrows, messages & handovers in real-time
+                      </p>
+                    </div>
+
+                    <div className="py-1 space-y-1">
+                      {allUsers.map((user) => {
+                        const isCurrent = user.id === currentUser.id;
+                        return (
+                          <button
+                            key={user.id}
+                            type="button"
+                            onClick={() => {
+                              switchUser(user.id);
+                              setIsAccountMenuOpen(false);
+                            }}
+                            className={`w-full p-2.5 rounded-2xl flex items-center justify-between text-left transition-all cursor-pointer ${
+                              isCurrent
+                                ? "bg-[#F0FDF4] border border-[#BBF7D0]"
+                                : "hover:bg-[#FAF7F0]"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <div className={`w-8 h-8 rounded-full ${user.avatarBg} flex items-center justify-center font-bold text-xs flex-shrink-0`}>
+                                {user.initials}
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-xs font-bold text-[#18181B] truncate">{user.fullName}</p>
+                                <p className="text-[10px] text-[#71717A] truncate">{user.department}</p>
+                              </div>
+                            </div>
+                            <div className="text-right flex-shrink-0">
+                              <span className="text-[10px] font-bold text-[#16A34A] bg-white border border-[#EDE8C8] px-2 py-0.5 rounded-full">
+                                {user.trustScore}★
+                              </span>
+                              {isCurrent && (
+                                <p className="text-[9.5px] font-bold text-[#16A34A] mt-0.5">Active ✓</p>
+                              )}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div className="pt-2 border-t border-[#F0EAE0] flex items-center justify-between px-2">
+                      <Link
+                        href="/profile"
+                        onClick={() => setIsAccountMenuOpen(false)}
+                        className="text-xs font-bold text-[#2563EB] hover:underline"
+                      >
+                        View Full Profile →
+                      </Link>
+                      <Link
+                        href="/login"
+                        onClick={() => setIsAccountMenuOpen(false)}
+                        className="text-xs font-semibold text-[#71717A] hover:text-[#18181B]"
+                      >
+                        Sign out
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
             </>
           ) : (
             <>

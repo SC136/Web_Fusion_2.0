@@ -3,13 +3,147 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { profileUser, publicProfileMaya } from "@/app/data/mockData";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 import AppNavbar from "@/app/components/layout/AppNavbar";
 import Sidebar from "@/app/components/dashboard/Sidebar";
+import { useApp } from "@/app/context/AppContext";
 
 export default function ProfilePage() {
+  const { currentUser, allUsers, switchUser } = useApp();
   const [activeTab, setActiveTab] = useState<"dashboard" | "public">("dashboard");
+
+  // ── Derived profile data from live currentUser ──────────────────────────
+  const profileUser = {
+    metrics: [
+      {
+        label: "Successful Exchanges",
+        value: currentUser.successfulExchanges,
+        icon: "package",
+        bgColor: "#DCFCE7",
+        color: "#15803D",
+        cardBg: "#F0FDF4",
+        cardBorder: "#BBF7D0",
+      },
+      {
+        label: "Trust Score",
+        value: `${currentUser.trustScore}/5`,
+        icon: "shield-check",
+        bgColor: "#D1FAE5",
+        color: "#065F46",
+        cardBg: "#F0FDF4",
+        cardBorder: "#6EE7B7",
+      },
+      {
+        label: "Reviews Received",
+        value: currentUser.reviewsCount,
+        icon: "star",
+        bgColor: "#FEF3C7",
+        color: "#B45309",
+        cardBg: "#FFFBEB",
+        cardBorder: "#FDE68A",
+      },
+      {
+        label: "Late Returns",
+        value: currentUser.lateReturns,
+        icon: "clock",
+        bgColor: "#FEE2E2",
+        color: "#B91C1C",
+        cardBg: "#FFF5F5",
+        cardBorder: "#FCA5A5",
+      },
+      {
+        label: "CO₂ Saved (kg)",
+        value: currentUser.co2Saved,
+        icon: "leaf",
+        bgColor: "#D1FAE5",
+        color: "#166534",
+        cardBg: "#F0FDF4",
+        cardBorder: "#BBF7D0",
+      },
+    ],
+    reviews: [
+      {
+        id: "r1",
+        name: "Aarav Mehta",
+        initials: "AM",
+        avatarBg: "bg-amber-100 text-amber-800",
+        role: "Lender",
+        rating: 5,
+        date: "Aug 27, 2026",
+        comment: `${currentUser.name} handled the gear with care and returned it right on time. Highly recommended!`,
+      },
+      {
+        id: "r2",
+        name: "Kabir Singh",
+        initials: "KS",
+        avatarBg: "bg-blue-100 text-blue-800",
+        role: "Borrower",
+        rating: 5,
+        date: "Aug 22, 2026",
+        comment: "Super smooth handover, clear communication, and the item was in perfect shape.",
+      },
+      {
+        id: "r3",
+        name: "Maya Ortiz",
+        initials: "MO",
+        avatarBg: "bg-purple-100 text-purple-800",
+        role: "Lender",
+        rating: 5,
+        date: "Aug 18, 2026",
+        comment: "Returned well before deadline with everything packed. A model borrower on campus!",
+      },
+    ],
+    breakdown: [
+      { label: "On-Time Returns", score: "5.0 / 5", progress: 100 },
+      { label: "Item Condition", score: "4.9 / 5", progress: 98 },
+      { label: "Communication", score: "4.8 / 5", progress: 96 },
+      { label: "Escrow Compliance", score: "5.0 / 5", progress: 100 },
+    ],
+  };
+
+  // ── Public profile data (uses currentUser but styled as a peer view) ─────
+  const publicProfileMaya = {
+    name: currentUser.fullName,
+    department: currentUser.department,
+    year: currentUser.year,
+    memberSince: "Member since Aug 2024",
+    trustScore: currentUser.trustScore,
+    rank: "Top 5% on Campus",
+    stats: {
+      exchanges: currentUser.successfulExchanges,
+      rating: currentUser.trustScore,
+      lateReturns: currentUser.lateReturns,
+      disputes: currentUser.disputes,
+    },
+    ratingDistribution: [
+      { stars: 5, percentage: 88, count: 25 },
+      { stars: 4, percentage: 10, count: 3 },
+      { stars: 3, percentage: 2, count: 1 },
+      { stars: 2, percentage: 0, count: 0 },
+      { stars: 1, percentage: 0, count: 0 },
+    ],
+    badges: [
+      { label: "Top Sharer", icon: "trophy" },
+      { label: "Eco Champion", icon: "leaf" },
+      { label: "100% On-Time", icon: "clock" },
+      { label: "Zero Disputes", icon: "shield-check" },
+    ],
+    exchangeHistory: [
+      { icon: "package", item: "Canon EOS 80D Camera Kit", detail: "Lent to Anaya Sharma • 3 days", status: "Returned On-Time", statusType: "success" },
+      { icon: "book", item: "Thomas Calculus 14th Ed.", detail: "Lent to Kabir Singh • 5 days", status: "Returned On-Time", statusType: "success" },
+      { icon: "zap", item: "Sony WH-1000XM4 Headphones", detail: "Borrowed from Maya Ortiz • 2 days", status: "Active Borrow", statusType: "info" },
+    ],
+    ratingsReviews: [
+      { initials: "AS", avatarBg: "bg-emerald-100 text-emerald-800", name: "Anaya Sharma", date: "Aug 27, 2026", rating: 5, comment: "Aarav was super helpful! The camera was in pristine shape." },
+      { initials: "KS", avatarBg: "bg-blue-100 text-blue-800", name: "Kabir Singh", date: "Aug 22, 2026", rating: 5, comment: "Great lender — clear instructions, fast response, and fair pricing." },
+    ],
+    verificationChecklist: [
+      { label: "Campus Email Verified", date: "Aug 2024" },
+      { label: "Student ID Verified", date: "Aug 2024" },
+      { label: "Escrow Account Active", date: "Sep 2024" },
+      { label: "Zero Dispute History", date: "Ongoing" },
+    ],
+  };
 
   return (
     <div className="min-h-screen bg-[#FEFEFE] text-[#18181B] select-none flex flex-col">
@@ -35,12 +169,6 @@ export default function ProfilePage() {
               >
                 {activeTab === "dashboard" ? "User & Trust Profile" : "Public Member Profile"}
               </h1>
-              {/* Hand-drawn burst accent lines */}
-              <div className="inline-block ml-1 align-top text-[#18181B]">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <path d="M12 2v4M4.93 4.93l2.83 2.83M2 12h4M19.07 4.93l-2.83 2.83M22 12h-4" />
-                </svg>
-              </div>
             </div>
 
             {/* Design View Switcher Pill */}
@@ -54,7 +182,7 @@ export default function ProfilePage() {
                     : "text-[#71717A] hover:text-[#18181B]"
                 }`}
               >
-                My Trust Profile
+                My Trust Profile ({currentUser.name})
               </button>
               <button
                 onClick={() => setActiveTab("public")}
@@ -82,8 +210,8 @@ export default function ProfilePage() {
                   {/* Large Circular Avatar */}
                   <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-gradient-to-b from-[#E0F2FE] to-[#BAE6FD] border-4 border-white shadow-md flex-shrink-0">
                     <Image
-                      src="/mascots/blue_dress_hat.png"
-                      alt={profileUser.name}
+                      src={currentUser.avatar || "/mascots/blue_dress_hat.png"}
+                      alt={currentUser.fullName}
                       fill
                       className="object-cover object-top scale-115 translate-y-1"
                       priority
@@ -96,11 +224,11 @@ export default function ProfilePage() {
                     <div>
                       <div className="flex items-center justify-center sm:justify-start gap-2">
                         <h2 className="text-xl sm:text-2xl font-bold text-[#18181B]">
-                          {profileUser.name}
+                          {currentUser.fullName}
                         </h2>
                       </div>
                       <p className="text-xs sm:text-[13px] font-semibold text-[#52525B] mt-0.5">
-                        {profileUser.department} • {profileUser.year}
+                        {currentUser.department} • {currentUser.year}
                       </p>
                     </div>
 
@@ -108,7 +236,7 @@ export default function ProfilePage() {
                     <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-xs text-[#71717A]">
                       <span className="flex items-center gap-1 bg-[#F9FAFB] border border-[#E5E7EB] px-2.5 py-1 rounded-lg font-medium text-[11.5px]">
                         <AppIcon name="map-pin" size={12} className="text-[#9CA3AF]" />
-                        <span>{profileUser.location}</span>
+                        <span>{currentUser.location}</span>
                       </span>
                       <span className="flex items-center gap-1 bg-[#F9FAFB] border border-[#E5E7EB] px-2.5 py-1 rounded-lg font-medium text-[11.5px]">
                         <AppIcon name="calendar" size={12} className="text-[#9CA3AF]" />
@@ -128,7 +256,7 @@ export default function ProfilePage() {
                       </span>
                       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-[#FEF3C7] text-[#B45309] border border-[#FDE68A]">
                         <AppIcon name="shield-check" size={12} />
-                        <span>Top Lender</span>
+                        <span>Top Sharer</span>
                       </span>
                     </div>
                   </div>
@@ -143,7 +271,7 @@ export default function ProfilePage() {
                     </span>
                     <div className="flex items-baseline gap-1 my-0.5">
                       <span className="text-3xl font-extrabold text-[#18181B] leading-none">
-                        {profileUser.trustScore}
+                        {currentUser.trustScore}
                       </span>
                       <span className="text-xs text-[#71717A] font-bold">/ 5</span>
                     </div>
@@ -156,7 +284,7 @@ export default function ProfilePage() {
                       ))}
                     </div>
                     <span className="text-[10px] text-[#71717A] font-medium mt-0.5">
-                      {profileUser.reviewsCount} reviews
+                      {currentUser.reviewsCount} reviews
                     </span>
                   </div>
 
@@ -180,7 +308,7 @@ export default function ProfilePage() {
                       <AppIcon name="leaf" size={16} className="text-[#16A34A]" />
                       <div>
                         <p className="text-[10px] text-[#78716C] font-semibold">CO₂ Saved</p>
-                        <p className="text-xs font-bold text-[#18181B]">12.4 kg CO₂</p>
+                        <p className="text-xs font-bold text-[#18181B]">{currentUser.co2Saved} kg CO₂</p>
                       </div>
                     </div>
                   </div>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import MobileBottomNav from "@/app/components/dashboard/MobileBottomNav";
+import { AppProvider } from "@/app/context/AppContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -27,8 +28,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col pb-16 lg:pb-0">
-        {children}
-        <MobileBottomNav />
+        <AppProvider>
+          {children}
+          <MobileBottomNav />
+        </AppProvider>
       </body>
     </html>
   );

@@ -1,49 +1,30 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
 import Sidebar from "@/app/components/dashboard/Sidebar";
 import AppNavbar from "@/app/components/layout/AppNavbar";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 import { LIFECYCLE_STAGES, mockExchanges } from "@/app/data/mockData";
+import { useApp } from "@/app/context/AppContext";
 
 export default function BorrowingLifecyclePage() {
-  const [exchanges, setExchanges] = useState<typeof mockExchanges>(mockExchanges);
+  const { exchanges, currentUser, advanceLoanStage } = useApp();
   const [selectedExchangeIndex, setSelectedExchangeIndex] = useState(0);
 
-  const currentExchange = exchanges[selectedExchangeIndex] || mockExchanges[0];
+  // Filter exchanges where currentUser is either borrower or lender, or show all if none
+  const relevantExchanges = useMemo(() => {
+    const matched = exchanges.filter(
+      (e) => e.borrowerId === currentUser.id || e.ownerId === currentUser.id
+    );
+    return matched.length > 0 ? matched : exchanges;
+  }, [exchanges, currentUser.id]);
+
+  const currentExchange = relevantExchanges[selectedExchangeIndex] || relevantExchanges[0] || exchanges[0];
 
   // Current active stage state (0 to 8 corresponding to the 9 stages)
-  const [activeStageIndex, setActiveStageIndex] = useState(
-    currentExchange.currentStageIndex ?? 0
-  );
-
-  // Load dynamically added exchanges from localStorage
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("campus_circular_exchanges");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          const existingIds = new Set(parsed.map((p: any) => p.id));
-          const combined = [...parsed, ...mockExchanges.filter((m) => !existingIds.has(m.id))];
-          setExchanges(combined);
-
-          const selectedId = localStorage.getItem("campus_circular_selected_exchange");
-          if (selectedId) {
-            const foundIdx = combined.findIndex((c: any) => c.id === selectedId);
-            if (foundIdx !== -1) {
-              setSelectedExchangeIndex(foundIdx);
-              setActiveStageIndex(combined[foundIdx].currentStageIndex ?? 0);
-            }
-          }
-        }
-      }
-    } catch (e) {
-      console.error("Failed to load exchanges:", e);
-    }
-  }, []);
+  const activeStageIndex = currentExchange?.stageIndex ?? 3;
 
   // Inspection damage simulator toggle
   const [hasDamageReported, setHasDamageReported] = useState(false);
@@ -52,13 +33,13 @@ export default function BorrowingLifecyclePage() {
   // Stepper helper
   const nextStage = () => {
     if (activeStageIndex < LIFECYCLE_STAGES.length - 1) {
-      setActiveStageIndex(activeStageIndex + 1);
+      advanceLoanStage(currentExchange.id, activeStageIndex + 1);
     }
   };
 
   const prevStage = () => {
     if (activeStageIndex > 0) {
-      setActiveStageIndex(activeStageIndex - 1);
+      advanceLoanStage(currentExchange.id, activeStageIndex - 1);
     }
   };
 
@@ -105,12 +86,11 @@ export default function BorrowingLifecyclePage() {
           <div className="flex items-center gap-2 max-w-full">
             <span className="text-xs font-bold text-[#71717A] hidden md:inline flex-shrink-0">Exchange:</span>
             <div className="flex bg-white p-1 rounded-2xl border border-[#EDE8C8] shadow-2xs overflow-x-auto max-w-full gap-1">
-              {exchanges.map((ex, idx) => (
+              {relevantExchanges.map((ex, idx) => (
                 <button
                   key={ex.id}
                   onClick={() => {
                     setSelectedExchangeIndex(idx);
-                    setActiveStageIndex(ex.currentStageIndex ?? 0);
                     try {
                       localStorage.setItem("campus_circular_selected_exchange", ex.id);
                     } catch {}
@@ -121,7 +101,7 @@ export default function BorrowingLifecyclePage() {
                       : "text-[#52525B] hover:text-[#18181B]"
                   }`}
                 >
-                  {ex.id} ({ex.itemTitle.split(" ")[0]})
+                  {ex.id} ({(ex.listingTitle ?? ex.id).split(" ")[0]})
                 </button>
               ))}
             </div>
@@ -168,7 +148,7 @@ export default function BorrowingLifecyclePage() {
                 return (
                   <button
                     key={stage.id}
-                    onClick={() => setActiveStageIndex(idx)}
+                    onClick={() => advanceLoanStage(currentExchange.id, idx)}
                     className={`flex flex-col items-center text-center p-2 rounded-2xl transition-all cursor-pointer ${
                       isCurrent
                         ? "bg-[#F7FEE7] border-2 border-[#84CC16] shadow-sm scale-102"
@@ -471,7 +451,7 @@ export default function BorrowingLifecyclePage() {
                     <AppIcon name="alert-circle" size={15} className="text-[#92400E]" />
                     <span>Return Deadline: Today, 6:00 PM</span>
                   </p>
-                  <p>Drop-off location: <strong>{currentExchange.returnLocation}</strong>. Please ensure all included accessories (lens cap, SD card, battery, bag) are packed.</p>
+                  <p>Drop-off location: <strong>{currentExchange.handoverLocation}</strong>. Please ensure all included accessories (lens cap, SD card, battery, bag) are packed.</p>
                 </div>
 
                 <button
@@ -706,7 +686,7 @@ export default function BorrowingLifecyclePage() {
 
                 <div className="flex gap-3">
                   <button
-                    onClick={() => setActiveStageIndex(0)}
+                    onClick={() => advanceLoanStage(currentExchange.id, 0)}
                     className="flex-1 py-3 bg-[#18181B] text-white font-bold text-xs rounded-xl hover:bg-[#27272A] cursor-pointer"
                   >
                     ↺ Restart Simulation
@@ -732,8 +712,8 @@ export default function BorrowingLifecyclePage() {
 
               <div className="relative aspect-video rounded-2xl overflow-hidden bg-[#F9FAFB]">
                 <Image
-                  src={currentExchange.itemImage}
-                  alt={currentExchange.itemTitle}
+                  src={currentExchange.listingImage || "/products/camera.jpg"}
+                  alt={currentExchange.listingTitle || "Exchange Item"}
                   fill
                   className="object-cover"
                 />
@@ -744,7 +724,7 @@ export default function BorrowingLifecyclePage() {
                   {currentExchange.category}
                 </span>
                 <h4 className="text-sm font-black text-[#18181B] mt-1 leading-snug">
-                  {currentExchange.itemTitle}
+                  {currentExchange.listingTitle}
                 </h4>
               </div>
 
