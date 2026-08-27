@@ -16,7 +16,20 @@ export default function TopBar() {
   const pathname = usePathname();
 
   return (
-    <header className="h-16 border-b border-[#EDE8C8] bg-[#FDFBF1] px-6 lg:px-8 flex items-center justify-between gap-4 flex-shrink-0 sticky top-0 z-30 select-none">
+    <header className="h-16 border-b border-[#EDE8C8] bg-[#FDFBF1] px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 flex-shrink-0 sticky top-0 z-30 select-none">
+      {/* ─── Mobile Logo (Visible when Sidebar is hidden) ─────── */}
+      <Link href="/dashboard" className="flex lg:hidden items-center group flex-shrink-0" id="topbar-mobile-logo">
+        <div className="relative w-[160px] sm:w-[180px] h-[46px]">
+          <Image
+            src="/named_logo.png"
+            alt="Campus Circular"
+            fill
+            className="object-contain object-left transition-transform group-hover:scale-105"
+            priority
+          />
+        </div>
+      </Link>
+
       {/* ─── Center / Left Nav Links ────────────────────────── */}
       <nav className="hidden md:flex items-center gap-7">
         {navLinks.map((item) => {
