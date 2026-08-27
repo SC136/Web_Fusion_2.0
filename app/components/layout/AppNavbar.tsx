@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 
 interface AppNavbarProps {
@@ -9,6 +10,8 @@ interface AppNavbarProps {
 }
 
 export default function AppNavbar({ variant = "auth" }: AppNavbarProps) {
+  const pathname = usePathname();
+
   return (
     <header className="h-16 px-6 md:px-10 flex items-center justify-between border-b border-[#EDE8C8] bg-[#FDFBF1] sticky top-0 z-40 w-full select-none flex-shrink-0">
       {/* ─── Logo ────────────────────────────────────────────── */}
@@ -27,20 +30,28 @@ export default function AppNavbar({ variant = "auth" }: AppNavbarProps) {
       {/* ─── Center Nav Links ─────────────────────────────────── */}
       <nav className="hidden md:flex items-center gap-7">
         {[
-          { label: "Browse", href: "/dashboard" },
-          { label: "How it Works", href: "/dashboard" },
+          { label: "Browse", href: "/browse" },
+          { label: "How it Works", href: "/#how-it-works" },
           { label: "For You", href: "/dashboard" },
           { label: "Impact", href: "/dashboard" },
           { label: "Help", href: "/dashboard" },
-        ].map((item) => (
-          <Link
-            key={item.label}
-            href={item.href}
-            className="text-xs lg:text-sm font-semibold text-[#52525B] hover:text-[#18181B] transition-colors"
-          >
-            {item.label}
-          </Link>
-        ))}
+        ].map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.label}
+              href={item.href}
+              className={`text-xs lg:text-sm font-semibold transition-all relative py-1 ${
+                isActive ? "text-[#18181B] font-bold" : "text-[#52525B] hover:text-[#18181B]"
+              }`}
+            >
+              {item.label}
+              {isActive && (
+                <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#16A34A] rounded-full" />
+              )}
+            </Link>
+          );
+        })}
       </nav>
 
       {/* ─── Right Section (Profile Page Style) ───────────────── */}

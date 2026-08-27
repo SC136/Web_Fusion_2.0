@@ -8,7 +8,7 @@ import { currentUser } from "@/app/data/mockData";
 /* ─── Sidebar Navigation Items ────────────────────────────────── */
 const navItems = [
   { label: "Dashboard", icon: "grid", href: "/dashboard" },
-  { label: "Browse", icon: "search", href: "/dashboard" },
+  { label: "Browse", icon: "search", href: "/browse" },
   { label: "AI Assistant", icon: "sparkles", href: "/dashboard" },
   { label: "My Requests", icon: "inbox", href: "/dashboard" },
   { label: "My Loans", icon: "arrow-up-right", href: "/dashboard" },
@@ -17,7 +17,7 @@ const navItems = [
   { label: "Trust Profile", icon: "shield-check", href: "/profile" },
   { label: "Reviews", icon: "star", href: "/profile#reviews" },
   { label: "Impact", icon: "leaf", href: "/dashboard" },
-  { label: "Admin Panel", icon: "shield", href: "/dashboard" },
+  { label: "Admin Panel", icon: "shield", href: "/admin" },
 ];
 
 /* ─── Precise Sidebar Icons ───────────────────────────────────── */
@@ -124,8 +124,12 @@ export default function Sidebar() {
           let isActive = false;
           if (item.label === "Dashboard") {
             isActive = pathname === "/dashboard" || pathname === "/";
+          } else if (item.label === "Browse") {
+            isActive = pathname.startsWith("/browse");
           } else if (item.label === "Trust Profile") {
             isActive = pathname === "/profile";
+          } else if (item.label === "Admin Panel") {
+            isActive = pathname.startsWith("/admin");
           }
 
           return (
