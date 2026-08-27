@@ -45,7 +45,7 @@ export default function HowItWorksPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FDFBF1] text-[#18181B] flex flex-col select-none">
+    <div className="min-h-screen bg-[#FDFBF1] text-[#18181B] flex flex-col select-none animate-fadeIn">
       {/* ─── Top Navbar ───────────────────────────────────────── */}
       <AppNavbar variant="auth" />
 
@@ -54,6 +54,7 @@ export default function HowItWorksPage() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 pb-10 border-b border-[#EDE8C8]">
           <div className="max-w-xl text-center md:text-left">
             <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#F5F8E9] border border-[#D8E8B8] rounded-full text-xs font-bold text-[#2E5E1C] mb-3 shadow-2xs">
+              <AppIcon name="sparkles" size={14} className="text-[#6F9535]" />
               <span>HOW CAMPUS CIRCULAR WORKS</span>
               <span>✦</span>
             </div>
@@ -78,7 +79,8 @@ export default function HowItWorksPage() {
                 href="/listings"
                 className="px-6 py-3 bg-white hover:bg-[#F9FAFB] text-[#18181B] font-bold text-xs sm:text-sm rounded-2xl transition-all border border-[#E5E7EB] shadow-xs flex items-center gap-2 cursor-pointer active:translate-y-0.5"
               >
-                <span>List an Item 📦</span>
+                <span>List an Item</span>
+                <AppIcon name="package" size={15} />
               </Link>
             </div>
           </div>
@@ -113,7 +115,7 @@ export default function HowItWorksPage() {
             {steps.map((step) => (
               <div
                 key={step.num}
-                className="bg-white rounded-3xl border border-[#EDE8C8] p-6 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group"
+                className="bg-white rounded-3xl border border-[#EDE8C8] p-6 shadow-2xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -159,50 +161,52 @@ export default function HowItWorksPage() {
             <div className="inline-flex p-1 bg-[#F5F2E8] rounded-2xl border border-[#EDE8C8]">
               <button
                 onClick={() => setUserRole("borrower")}
-                className={`px-5 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer ${
+                className={`px-5 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
                   userRole === "borrower"
                     ? "bg-white text-[#18181B] shadow-xs"
                     : "text-[#71717A] hover:text-[#18181B]"
                 }`}
               >
-                🎒 For Borrowers
+                <AppIcon name="package" size={15} className={userRole === "borrower" ? "text-[#6F9535]" : "text-[#71717A]"} />
+                <span>For Borrowers</span>
               </button>
               <button
                 onClick={() => setUserRole("lender")}
-                className={`px-5 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer ${
+                className={`px-5 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
                   userRole === "lender"
                     ? "bg-white text-[#18181B] shadow-xs"
                     : "text-[#71717A] hover:text-[#18181B]"
                 }`}
               >
-                💰 For Lenders
+                <AppIcon name="coins" size={15} className={userRole === "lender" ? "text-[#6F9535]" : "text-[#71717A]"} />
+                <span>For Lenders</span>
               </button>
             </div>
           </div>
 
           {userRole === "borrower" ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-[#FDFBF1] p-5 rounded-2xl border border-[#EDE8C8] space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fadeIn">
+              <div className="bg-[#FDFBF1] p-5 rounded-2xl border border-[#EDE8C8] space-y-2 hover:shadow-xs transition-all">
                 <div className="w-10 h-10 rounded-xl bg-[#DCFCE7] text-[#15803D] flex items-center justify-center font-bold">
-                  ₹
+                  <AppIcon name="rupee" size={18} />
                 </div>
                 <h4 className="text-sm font-bold text-[#18181B]">Save up to 90%</h4>
                 <p className="text-xs text-[#52525B] leading-relaxed">
                   Rent cameras, lab calculators, or studio lighting for days instead of paying thousands for equipment you use once.
                 </p>
               </div>
-              <div className="bg-[#FDFBF1] p-5 rounded-2xl border border-[#EDE8C8] space-y-2">
+              <div className="bg-[#FDFBF1] p-5 rounded-2xl border border-[#EDE8C8] space-y-2 hover:shadow-xs transition-all">
                 <div className="w-10 h-10 rounded-xl bg-[#DBEAFE] text-[#1D4ED8] flex items-center justify-center font-bold">
-                  🛡️
+                  <AppIcon name="shield-check" size={18} />
                 </div>
                 <h4 className="text-sm font-bold text-[#18181B]">Safe Campus Pickups</h4>
                 <p className="text-xs text-[#52525B] leading-relaxed">
                   Every member is authenticated via university email and campus ID badge before making requests.
                 </p>
               </div>
-              <div className="bg-[#FDFBF1] p-5 rounded-2xl border border-[#EDE8C8] space-y-2">
+              <div className="bg-[#FDFBF1] p-5 rounded-2xl border border-[#EDE8C8] space-y-2 hover:shadow-xs transition-all">
                 <div className="w-10 h-10 rounded-xl bg-[#FEF3C7] text-[#D97706] flex items-center justify-center font-bold">
-                  ⚡
+                  <AppIcon name="sparkles" size={18} />
                 </div>
                 <h4 className="text-sm font-bold text-[#18181B]">Fast Approvals</h4>
                 <p className="text-xs text-[#52525B] leading-relaxed">
@@ -211,28 +215,28 @@ export default function HowItWorksPage() {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-[#FDFBF1] p-5 rounded-2xl border border-[#EDE8C8] space-y-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fadeIn">
+              <div className="bg-[#FDFBF1] p-5 rounded-2xl border border-[#EDE8C8] space-y-2 hover:shadow-xs transition-all">
                 <div className="w-10 h-10 rounded-xl bg-[#DCFCE7] text-[#15803D] flex items-center justify-center font-bold">
-                  📈
+                  <AppIcon name="coins" size={18} />
                 </div>
                 <h4 className="text-sm font-bold text-[#18181B]">Monetize Idle Assets</h4>
                 <p className="text-xs text-[#52525B] leading-relaxed">
                   Turn dust-gathering cameras, drones, textbooks, and monitors into regular monthly campus income.
                 </p>
               </div>
-              <div className="bg-[#FDFBF1] p-5 rounded-2xl border border-[#EDE8C8] space-y-2">
+              <div className="bg-[#FDFBF1] p-5 rounded-2xl border border-[#EDE8C8] space-y-2 hover:shadow-xs transition-all">
                 <div className="w-10 h-10 rounded-xl bg-[#FEF3C7] text-[#D97706] flex items-center justify-center font-bold">
-                  🔒
+                  <AppIcon name="shield-check" size={18} />
                 </div>
                 <h4 className="text-sm font-bold text-[#18181B]">100% Deposit Guarantee</h4>
                 <p className="text-xs text-[#52525B] leading-relaxed">
                   Lender security deposit escrow guarantees you are fully compensated in case of late returns or damage.
                 </p>
               </div>
-              <div className="bg-[#FDFBF1] p-5 rounded-2xl border border-[#EDE8C8] space-y-2">
+              <div className="bg-[#FDFBF1] p-5 rounded-2xl border border-[#EDE8C8] space-y-2 hover:shadow-xs transition-all">
                 <div className="w-10 h-10 rounded-xl bg-[#F3E8FF] text-[#6B21A8] flex items-center justify-center font-bold">
-                  ⭐
+                  <AppIcon name="star" size={18} />
                 </div>
                 <h4 className="text-sm font-bold text-[#18181B]">Build Campus Reputation</h4>
                 <p className="text-xs text-[#52525B] leading-relaxed">

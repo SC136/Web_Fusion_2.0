@@ -30,7 +30,7 @@ export default function ImpactPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FDFBF1] text-[#18181B] flex flex-col select-none">
+    <div className="min-h-screen bg-[#FDFBF1] text-[#18181B] flex flex-col select-none animate-fadeIn">
       {/* ─── Top Navbar ───────────────────────────────────────── */}
       <AppNavbar variant="auth" />
 
@@ -40,8 +40,9 @@ export default function ImpactPage() {
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 pb-10 border-b border-[#EDE8C8]">
           <div className="max-w-xl text-center lg:text-left">
             <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#F5F8E9] border border-[#D8E8B8] rounded-full text-xs font-bold text-[#2E5E1C] mb-3 shadow-2xs">
+              <AppIcon name="leaf" size={14} className="text-[#16A34A]" />
               <span>SUSTAINABILITY &amp; IMPACT LEDGER</span>
-              <span>🌱</span>
+              <span>✦</span>
             </div>
             <h1
               className="text-3xl sm:text-5xl font-extrabold text-[#18181B] tracking-tight leading-[1.1] mb-3"
@@ -53,11 +54,11 @@ export default function ImpactPage() {
               When students share equipment instead of buying brand new for brief assignments, we cut electronic manufacturing demand, save lakhs of rupees, and eliminate unnecessary packaging waste.
             </p>
             <div className="flex items-center justify-center lg:justify-start gap-4">
-              <div className="bg-[#FEFAEE] border border-[#EDE8C8] px-4 py-2 rounded-2xl">
+              <div className="bg-[#FEFAEE] border border-[#EDE8C8] px-4 py-2 rounded-2xl shadow-2xs">
                 <p className="text-2xl font-black text-[#18181B]">1,280 kg</p>
                 <p className="text-[11px] text-[#71717A] font-semibold">Total CO₂ Averted</p>
               </div>
-              <div className="bg-[#FEFAEE] border border-[#EDE8C8] px-4 py-2 rounded-2xl">
+              <div className="bg-[#FEFAEE] border border-[#EDE8C8] px-4 py-2 rounded-2xl shadow-2xs">
                 <p className="text-2xl font-black text-[#16A34A]">₹4.85 L+</p>
                 <p className="text-[11px] text-[#71717A] font-semibold">Student Money Saved</p>
               </div>
@@ -65,7 +66,7 @@ export default function ImpactPage() {
           </div>
 
           {/* Right Hero Illustration with Tree */}
-          <div className="bg-white rounded-3xl border border-[#EDE8C8] p-6 shadow-2xs flex items-center gap-6 max-w-sm w-full">
+          <div className="bg-white rounded-3xl border border-[#EDE8C8] p-6 shadow-2xs flex items-center gap-6 max-w-sm w-full hover:shadow-md transition-all">
             <div className="w-28 h-28 relative flex-shrink-0">
               <Image
                 src="/tree.png"
@@ -87,38 +88,38 @@ export default function ImpactPage() {
           </div>
         </div>
 
-        {/* ─── 4 Metric Highlights ─────────────────────────────── */}
+        {/* ─── 4 Metric Highlights (Professional Icons) ─────────── */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 my-8">
-          <div className="bg-white p-5 rounded-3xl border border-[#EDE8C8] shadow-2xs space-y-1">
+          <div className="bg-white p-5 rounded-3xl border border-[#EDE8C8] shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 space-y-1">
             <div className="w-10 h-10 rounded-2xl bg-[#DCFCE7] text-[#15803D] flex items-center justify-center font-bold mb-2">
-              🌿
+              <AppIcon name="leaf" size={20} />
             </div>
             <p className="text-2xl font-black text-[#18181B]">1,280 kg</p>
             <p className="text-xs font-bold text-[#52525B]">CO₂ Emissions Saved</p>
             <p className="text-[10.5px] text-[#71717A]">Equivalent to 64 planted trees</p>
           </div>
 
-          <div className="bg-white p-5 rounded-3xl border border-[#EDE8C8] shadow-2xs space-y-1">
+          <div className="bg-white p-5 rounded-3xl border border-[#EDE8C8] shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 space-y-1">
             <div className="w-10 h-10 rounded-2xl bg-[#FEF3C7] text-[#D97706] flex items-center justify-center font-bold mb-2">
-              💰
+              <AppIcon name="coins" size={20} />
             </div>
             <p className="text-2xl font-black text-[#18181B]">₹4,85,000</p>
             <p className="text-xs font-bold text-[#52525B]">Direct Student Savings</p>
             <p className="text-[10.5px] text-[#71717A]">Compared to retail purchase</p>
           </div>
 
-          <div className="bg-white p-5 rounded-3xl border border-[#EDE8C8] shadow-2xs space-y-1">
+          <div className="bg-white p-5 rounded-3xl border border-[#EDE8C8] shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 space-y-1">
             <div className="w-10 h-10 rounded-2xl bg-[#DBEAFE] text-[#1D4ED8] flex items-center justify-center font-bold mb-2">
-              📦
+              <AppIcon name="package" size={20} />
             </div>
             <p className="text-2xl font-black text-[#18181B]">410+ Items</p>
             <p className="text-xs font-bold text-[#52525B]">Circulating Equipment</p>
             <p className="text-[10.5px] text-[#71717A]">Zero single-use packaging</p>
           </div>
 
-          <div className="bg-white p-5 rounded-3xl border border-[#EDE8C8] shadow-2xs space-y-1">
+          <div className="bg-white p-5 rounded-3xl border border-[#EDE8C8] shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 space-y-1">
             <div className="w-10 h-10 rounded-2xl bg-[#F3E8FF] text-[#6B21A8] flex items-center justify-center font-bold mb-2">
-              ⚡
+              <AppIcon name="sparkles" size={20} />
             </div>
             <p className="text-2xl font-black text-[#18181B]">98.4%</p>
             <p className="text-xs font-bold text-[#52525B]">On-Time Return Rate</p>
@@ -130,6 +131,7 @@ export default function ImpactPage() {
         <div className="bg-white rounded-3xl border border-[#EDE8C8] p-6 sm:p-10 shadow-2xs my-8">
           <div className="max-w-2xl mb-8">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F5F8E9] border border-[#D8E8B8] rounded-full text-xs font-bold text-[#2E5E1C] mb-2">
+              <AppIcon name="calculator" size={13} className="text-[#6F9535]" />
               <span>INTERACTIVE CALCULATOR</span>
               <span>✦</span>
             </div>
@@ -154,21 +156,22 @@ export default function ImpactPage() {
                 </label>
                 <div className="grid grid-cols-2 gap-2.5">
                   {[
-                    { id: "camera", label: "📸 DSLR Camera" },
-                    { id: "projector", label: "📽️ Projector" },
-                    { id: "tent", label: "⛺ Camping Tent" },
-                    { id: "calculator", label: "📐 Lab Calculator" },
+                    { id: "camera", label: "DSLR Camera", icon: "camera" },
+                    { id: "projector", label: "Projector", icon: "video" },
+                    { id: "tent", label: "Camping Tent", icon: "tent" },
+                    { id: "calculator", label: "Lab Calculator", icon: "calculator" },
                   ].map((btn) => (
                     <button
                       key={btn.id}
                       onClick={() => setSelectedItemType(btn.id as any)}
-                      className={`p-3 rounded-2xl text-xs font-bold border transition-all text-left cursor-pointer ${
+                      className={`p-3 rounded-2xl text-xs font-bold border transition-all text-left cursor-pointer flex items-center gap-2.5 ${
                         selectedItemType === btn.id
-                          ? "bg-[#F5F8E9] border-[#6F9535] text-[#18181B] shadow-2xs"
+                          ? "bg-[#F5F8E9] border-[#6F9535] text-[#18181B] shadow-2xs scale-102"
                           : "bg-white border-[#EDE8C8] text-[#52525B] hover:bg-[#FDFBF1]"
                       }`}
                     >
-                      {btn.label}
+                      <AppIcon name={btn.icon} size={16} className={selectedItemType === btn.id ? "text-[#6F9535]" : "text-[#9CA3AF]"} />
+                      <span>{btn.label}</span>
                     </button>
                   ))}
                 </div>
