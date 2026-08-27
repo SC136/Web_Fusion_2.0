@@ -15,7 +15,7 @@ const navItems = [
   { label: "My Listings", icon: "list", href: "/dashboard" },
   { label: "Messages", icon: "message", href: "/dashboard" },
   { label: "Trust Profile", icon: "shield-check", href: "/profile" },
-  { label: "Reviews", icon: "star", href: "/profile" },
+  { label: "Reviews", icon: "star", href: "/profile#reviews" },
   { label: "Impact", icon: "leaf", href: "/dashboard" },
   { label: "Admin Panel", icon: "shield", href: "/dashboard" },
 ];
@@ -122,10 +122,13 @@ export default function Sidebar() {
       {/* ─── 2. Navigation Links ────────────────────────────── */}
       <nav className="flex-1 px-3.5 py-1 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => {
-          const isActive =
-            item.href === "/dashboard"
-              ? (pathname === "/dashboard" || pathname === "/") && item.label === "Dashboard"
-              : pathname === item.href && (item.label === "Trust Profile" ? pathname === "/profile" : true);
+          // Precise single item active matching:
+          let isActive = false;
+          if (item.label === "Dashboard") {
+            isActive = pathname === "/dashboard" || pathname === "/";
+          } else if (item.label === "Trust Profile") {
+            isActive = pathname === "/profile";
+          }
 
           return (
             <Link

@@ -202,9 +202,9 @@ export const popularSearches = [
 ];
 
 export const profileUser = {
-  name: "Aarav Sharma",
-  initials: "AS",
-  department: "Computer Science Engineering",
+  name: "Anaya Patel",
+  initials: "AP",
+  department: "Computer Engineering",
   year: "3rd Year",
   location: "North Campus",
   verifiedId: true,
@@ -212,11 +212,11 @@ export const profileUser = {
   trustScore: 4.7,
   reviewsCount: 28,
   metrics: [
-    { label: "Successful Exchanges", value: "32", icon: "repeat", color: "#10B981", bgColor: "#D1FAE5" },
-    { label: "Late Returns", value: "1", icon: "clock", color: "#3B82F6", bgColor: "#DBEAFE" },
-    { label: "Disputes Raised", value: "0", icon: "alert-circle", color: "#EF4444", bgColor: "#FEE2E2" },
-    { label: "Reviews Received", value: "28", icon: "message", color: "#8B5CF6", bgColor: "#EDE9FE" },
-    { label: "Response Rate", value: "97%", icon: "heart", color: "#F59E0B", bgColor: "#FEF3C7" },
+    { label: "Successful Exchanges", value: "32", icon: "repeat", color: "#3F6212", bgColor: "#DEF2A3", cardBg: "#F2F9E5", cardBorder: "#DEF0BC" },
+    { label: "Late Returns", value: "0", icon: "timer", color: "#2563EB", bgColor: "#D6E8FE", cardBg: "#EBF3FE", cardBorder: "#D1E3FC" },
+    { label: "Disputes Raised", value: "0", icon: "alert-circle", color: "#EA580C", bgColor: "#FDE2D2", cardBg: "#FFF1E8", cardBorder: "#FDD9C5" },
+    { label: "Reviews Received", value: "28", icon: "message", color: "#9333EA", bgColor: "#EEDCFA", cardBg: "#F6EEFD", cardBorder: "#E8D7FA" },
+    { label: "Response Rate", value: "97%", icon: "heart", color: "#0D9488", bgColor: "#CEF5EC", cardBg: "#E8FAF6", cardBorder: "#C8F3EA" },
   ],
   reviews: [
     {

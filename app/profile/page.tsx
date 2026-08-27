@@ -73,16 +73,16 @@ export default function ProfilePage() {
           {activeTab === "dashboard" && (
             <div className="space-y-6 animate-fadeInUp">
               {/* Top Main Hero Card */}
-              <div className="bg-white rounded-3xl border border-[#F0EAE0] p-6 lg:p-7 shadow-xs relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-6">
+              <div className="bg-white rounded-3xl border border-[#EDE8C8] p-6 lg:p-7 shadow-xs relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-6">
                 {/* Left Side: Avatar + Details */}
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left z-10">
                   {/* Large Circular Avatar */}
-                  <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden bg-[#FEF3C7] border-4 border-white shadow-md flex-shrink-0">
+                  <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-[#E0F2FE] border-4 border-white shadow-md flex-shrink-0">
                     <Image
-                      src="/mascots/blue_dress_hat.png"
+                      src="/dashboard.png"
                       alt={profileUser.name}
                       fill
-                      className="object-cover object-top scale-110"
+                      className="object-cover object-top scale-175 translate-y-1"
                       priority
                     />
                   </div>
@@ -109,11 +109,11 @@ export default function ProfilePage() {
 
                     {/* Verification Badges */}
                     <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#DCFCE7] text-[#15803D]">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-[#DCFCE7] text-[#15803D] border border-[#BBF7D0]">
                         <AppIcon name="check" size={11} />
                         <span>ID Verified</span>
                       </span>
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-[#DBEAFE] text-[#1D4ED8]">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-[#DBEAFE] text-[#1D4ED8] border border-[#BFDBFE]">
                         <AppIcon name="check" size={11} />
                         <span>College Email Verified</span>
                       </span>
@@ -122,16 +122,19 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Center-Right: Trust Score Card */}
-                <div className="border-t lg:border-t-0 lg:border-l border-[#F0EAE0] pt-4 lg:pt-0 lg:pl-8 flex flex-col items-center text-center z-10 min-w-[170px]">
+                <div className="border-t lg:border-t-0 lg:border-l border-[#EDE8C8] pt-4 lg:pt-0 lg:pl-8 flex flex-col items-center text-center z-10 min-w-[180px]">
                   <span className="text-xs font-bold text-[#52525B] mb-2 uppercase tracking-wide">
                     Trust Score
                   </span>
                   {/* Shield Badge */}
-                  <div className="w-20 h-24 border-2 border-[#16A34A] rounded-2xl flex flex-col items-center justify-center bg-[#F0FDF4] shadow-xs relative mb-2">
+                  <div className="w-24 h-24 border-2 border-[#16A34A] rounded-2xl flex flex-col items-center justify-center bg-[#F0FDF4] shadow-xs relative mb-2">
                     <span className="text-3xl font-black text-[#18181B] leading-none">
                       {profileUser.trustScore}
                     </span>
                     <span className="text-[11px] font-bold text-[#71717A]">/5</span>
+                    <span className="text-[9.5px] font-bold text-[#166534] bg-[#DCFCE7] px-2 py-0.2 rounded-full mt-1">
+                      Excellent
+                    </span>
                   </div>
                   {/* Stars */}
                   <div className="flex items-center gap-1 text-amber-400 mb-1">
@@ -144,30 +147,25 @@ export default function ProfilePage() {
                   </span>
                 </div>
 
-                {/* Far Right: Thumbs Up Mascot Artwork */}
+                {/* Far Right: Clean 3D Mascot Character */}
                 <div className="relative w-36 h-40 lg:w-44 lg:h-44 hidden md:block flex-shrink-0 z-0">
-                  <div className="absolute inset-0 bg-[#E2F0CB]/60 rounded-full blur-xl -z-10" />
+                  <div className="absolute inset-0 bg-[#F5F8E9] rounded-full blur-xl -z-10" />
                   <Image
                     src="/mascots/blue_dress_hat.png"
-                    alt="Thumbs up mascot"
+                    alt="Profile mascot"
                     fill
-                    className="object-contain object-right-bottom scale-110"
+                    className="object-contain object-right-bottom scale-110 select-none pointer-events-none drop-shadow-sm"
                   />
-                  {/* Burst Accent */}
-                  <div className="absolute top-2 left-2 text-[#18181B]">
-                    <svg width="24" height="24" viewBox="0 0 28 28" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                      <path d="M4 18 L9 10 L14 19 L19 9 L24 16" />
-                    </svg>
-                  </div>
                 </div>
               </div>
 
-              {/* Middle Metrics Row (5 White Cards) */}
+              {/* Middle Metrics Row (5 Distinct Pastel Cards) */}
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
                 {profileUser.metrics.map((m) => (
                   <div
                     key={m.label}
-                    className="bg-white rounded-2xl border border-[#F0EAE0] p-4 flex items-center gap-3.5 shadow-2xs hover:shadow-xs transition-shadow"
+                    style={{ backgroundColor: m.cardBg, borderColor: m.cardBorder }}
+                    className="rounded-2xl border p-4 flex items-center gap-3.5 shadow-2xs hover:shadow-xs transition-shadow"
                   >
                     <div
                       className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -179,7 +177,7 @@ export default function ProfilePage() {
                       <p className="text-xl sm:text-2xl font-black text-[#18181B] leading-none mb-1">
                         {m.value}
                       </p>
-                      <p className="text-[11px] font-semibold text-[#71717A] leading-tight">
+                      <p className="text-[11px] font-semibold text-[#52525B] leading-tight">
                         {m.label}
                       </p>
                     </div>
@@ -190,7 +188,7 @@ export default function ProfilePage() {
               {/* Bottom Two Columns: Recent Reviews & Trust Breakdown */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* 1. Recent Reviews */}
-                <div className="bg-white rounded-3xl border border-[#F0EAE0] p-6 shadow-2xs flex flex-col justify-between">
+                <div className="bg-white rounded-3xl border border-[#EDE8C8] p-6 shadow-2xs flex flex-col justify-between">
                   <div>
                     <h3 className="text-base sm:text-lg font-bold text-[#18181B] mb-4">
                       Recent Reviews
@@ -239,10 +237,10 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  <div className="pt-5 mt-4 border-t border-[#F4EFE6] flex justify-end">
+                  <div className="pt-5 mt-4 border-t border-[#EDE8C8] flex justify-end">
                     <button
                       id="view-all-reviews-btn"
-                      className="px-4 py-2 bg-[#8DBF43] hover:bg-[#7EAC3B] text-[#18181B] font-bold text-xs rounded-full transition-all shadow-2xs hover:shadow-xs flex items-center gap-1.5 cursor-pointer"
+                      className="px-4 py-2 bg-[#6F9535] hover:bg-[#5E802B] text-white font-bold text-xs rounded-full transition-all shadow-2xs hover:shadow-xs flex items-center gap-1.5 cursor-pointer"
                     >
                       <span>View All Reviews</span>
                       <AppIcon name="arrow-right" size={13} />
@@ -251,7 +249,7 @@ export default function ProfilePage() {
                 </div>
 
                 {/* 2. Trust Breakdown */}
-                <div className="bg-white rounded-3xl border border-[#F0EAE0] p-6 shadow-2xs flex flex-col justify-between">
+                <div className="bg-white rounded-3xl border border-[#EDE8C8] p-6 shadow-2xs flex flex-col justify-between">
                   <div>
                     <h3 className="text-base sm:text-lg font-bold text-[#18181B] mb-5">
                       Trust Breakdown
@@ -261,11 +259,11 @@ export default function ProfilePage() {
                         <div key={item.label}>
                           <div className="flex items-center justify-between text-xs font-semibold text-[#18181B] mb-1.5">
                             <span>{item.label}</span>
-                            <span className="font-bold text-[#2D5A1E]">{item.score}</span>
+                            <span className="font-bold text-[#2E5E1C]">{item.score}</span>
                           </div>
-                          <div className="w-full h-2.5 bg-[#F4EFE6] rounded-full overflow-hidden">
+                          <div className="w-full h-2.5 bg-[#F5F8E9] border border-[#D8E8B8] rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-[#8DBF43] rounded-full transition-all duration-500"
+                              className="h-full bg-gradient-to-r from-[#84CC16] to-[#16A34A] rounded-full transition-all duration-500"
                               style={{ width: `${item.progress}%` }}
                             />
                           </div>
@@ -274,10 +272,10 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  <div className="pt-5 mt-4 border-t border-[#F4EFE6] flex justify-end">
+                  <div className="pt-5 mt-4 border-t border-[#EDE8C8] flex justify-end">
                     <button
                       id="how-trust-works-btn"
-                      className="px-4 py-2 bg-[#8DBF43] hover:bg-[#7EAC3B] text-[#18181B] font-bold text-xs rounded-full transition-all shadow-2xs hover:shadow-xs flex items-center gap-1.5 cursor-pointer"
+                      className="px-4 py-2 bg-[#6F9535] hover:bg-[#5E802B] text-white font-bold text-xs rounded-full transition-all shadow-2xs hover:shadow-xs flex items-center gap-1.5 cursor-pointer"
                     >
                       <span>How Trust Score Works</span>
                       <AppIcon name="arrow-right" size={13} />
