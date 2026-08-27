@@ -103,22 +103,9 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[240px] bg-[#FDFBF1] border-r border-[#E8E4D8] flex flex-col z-40 hidden lg:flex select-none">
-      {/* ─── 1. Logo ────────────────────────────────────────── */}
-      <Link href="/dashboard" className="px-4 py-4 flex items-center flex-shrink-0 cursor-pointer group">
-        <div className="relative w-[190px] h-[54px]">
-          <Image
-            src="/named_logo.png"
-            alt="Campus Circular"
-            fill
-            className="object-contain object-left transition-transform group-hover:scale-[1.02]"
-            priority
-          />
-        </div>
-      </Link>
-
-      {/* ─── 2. Navigation Links ────────────────────────────── */}
-      <nav className="flex-1 px-3.5 py-1 space-y-0.5 overflow-y-auto">
+    <aside className="fixed left-0 top-16 bottom-0 w-[240px] bg-[#FDFBF1] border-r border-[#EDE8C8] flex flex-col z-40 hidden lg:flex select-none">
+      {/* ─── 1. Navigation Links ────────────────────────────── */}
+      <nav className="flex-1 px-3.5 py-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
           // Precise single item active matching:
           let isActive = false;

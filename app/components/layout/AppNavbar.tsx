@@ -12,15 +12,15 @@ const navLinks = [
   { label: "Browse", href: "/browse" },
   { label: "How it Works", href: "/#how-it-works" },
   { label: "For You", href: "/dashboard" },
-  { label: "Impact", href: "/dashboard" },
-  { label: "Help", href: "/dashboard" },
+  { label: "Impact", href: "/dashboard#impact" },
+  { label: "Help", href: "/dashboard#help" },
 ];
 
 export default function AppNavbar({ variant = "auth" }: AppNavbarProps) {
   const pathname = usePathname();
 
   return (
-    <header className="h-16 px-6 md:px-8 flex items-center justify-between border-b border-[#EDE8C8] bg-[#FDFBF1] sticky top-0 z-40 w-full select-none flex-shrink-0">
+    <header className="h-16 px-6 md:px-8 flex items-center justify-between border-b border-[#EDE8C8] bg-[#FDFBF1] sticky top-0 z-50 w-full select-none flex-shrink-0">
       {/* ─── Logo ────────────────────────────────────────────── */}
       <Link href="/dashboard" className="flex items-center group flex-shrink-0" id="main-nav-logo">
         <div className="relative w-[185px] sm:w-[200px] h-[52px]">
@@ -37,7 +37,15 @@ export default function AppNavbar({ variant = "auth" }: AppNavbarProps) {
       {/* ─── Center Nav Links ─────────────────────────────────── */}
       <nav className="hidden md:flex items-center gap-7">
         {navLinks.map((item) => {
-          const isActive = pathname === item.href || (item.href === "/browse" && pathname.startsWith("/browse"));
+          let isActive = false;
+          if (item.label === "Browse") {
+            isActive = pathname.startsWith("/browse");
+          } else if (item.label === "For You") {
+            isActive = pathname === "/dashboard" || pathname === "/" || pathname.startsWith("/listings") || pathname.startsWith("/loans") || pathname.startsWith("/requests");
+          } else if (item.label === "How it Works") {
+            isActive = pathname === "/#how-it-works";
+          }
+
           return (
             <Link
               key={item.label}

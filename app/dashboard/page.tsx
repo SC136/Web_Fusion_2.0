@@ -16,7 +16,7 @@ import {
 } from "@/app/data/mockData";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 import Sidebar from "@/app/components/dashboard/Sidebar";
-import TopBar from "@/app/components/dashboard/TopBar";
+import AppNavbar from "@/app/components/layout/AppNavbar";
 import { useState } from "react";
 
 export default function DashboardPage() {
@@ -24,19 +24,19 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="flex min-h-screen bg-[#FEFEFE]">
-      {/* ─── LEFT SIDEBAR (Desktop) ─────────────────────────── */}
-      <Sidebar />
+    <div className="min-h-screen bg-[#FEFEFE] flex flex-col select-none">
+      {/* ─── FULL-WIDTH CONTINUOUS TOP NAVBAR ─────────────── */}
+      <AppNavbar variant="auth" />
 
-      {/* ─── MAIN AREA ──────────────────────────────────────── */}
-      <div className="flex-1 lg:ml-[240px] flex flex-col min-h-screen">
-        {/* Top Bar */}
-        <TopBar />
+      {/* ─── MAIN BODY (Sidebar + Content) ─────────────────── */}
+      <div className="flex-1 flex w-full">
+        {/* ─── LEFT SIDEBAR (Desktop) ───────────────────────── */}
+        <Sidebar />
 
-        {/* Content */}
-        <div className="flex-1 flex">
+        {/* ─── MAIN DASHBOARD AREA ──────────────────────────── */}
+        <div className="flex-1 lg:ml-[240px] flex min-w-0">
           {/* ─── CENTER CONTENT ─────────────────────────────── */}
-          <main className="flex-1 p-5 lg:p-6 overflow-y-auto max-h-[calc(100vh-56px)]">
+          <main className="flex-1 p-5 lg:p-6 overflow-y-auto max-h-[calc(100vh-64px)] min-w-0">
             {/* Hero / Welcome + AI Search Section with Mascot */}
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-5 items-center mb-6">
               {/* Left Column: Heading + Search Card */}

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Sidebar from "@/app/components/dashboard/Sidebar";
-import TopBar from "@/app/components/dashboard/TopBar";
+import AppNavbar from "@/app/components/layout/AppNavbar";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 import { mockCommunityRequests } from "@/app/data/mockData";
 import ListResourceModal from "@/app/components/modals/ListResourceModal";
@@ -48,13 +48,17 @@ export default function CommunityRequestsPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#FBF7F0] text-[#18181B] select-none">
-      {/* ─── LEFT PERSISTENT SIDEBAR ──────────────────────────── */}
-      <Sidebar />
+    <div className="min-h-screen bg-[#FBF7F0] text-[#18181B] select-none flex flex-col">
+      {/* ─── FULL-WIDTH CONTINUOUS TOP NAVBAR ─────────────── */}
+      <AppNavbar variant="auth" />
 
-      {/* ─── MAIN CONTENT AREA ────────────────────────────────── */}
-      <div className="flex-1 lg:ml-[240px] flex flex-col min-h-screen">
-        <TopBar />
+      {/* ─── MAIN BODY (Sidebar + Content) ─────────────────── */}
+      <div className="flex-1 flex w-full">
+        {/* ─── LEFT PERSISTENT SIDEBAR ──────────────────────── */}
+        <Sidebar />
+
+        {/* ─── MAIN CONTENT AREA ────────────────────────────── */}
+        <div className="flex-1 lg:ml-[240px] flex flex-col min-w-0">
 
         {/* ─── Header Banner ───────────────────────────────────── */}
         <div className="px-5 lg:px-8 pt-6 pb-4 w-full">
@@ -208,6 +212,7 @@ export default function CommunityRequestsPage() {
         initialTab={modalInitialTab}
         onSuccess={handleNewPost}
       />
+      </div>
       </div>
     </div>
   );

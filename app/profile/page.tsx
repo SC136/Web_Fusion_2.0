@@ -5,24 +5,26 @@ import Link from "next/link";
 import { useState } from "react";
 import { profileUser, publicProfileMaya } from "@/app/data/mockData";
 import { AppIcon } from "@/app/components/dashboard/Icons";
-import TopBar from "@/app/components/dashboard/TopBar";
+import AppNavbar from "@/app/components/layout/AppNavbar";
 import Sidebar from "@/app/components/dashboard/Sidebar";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<"dashboard" | "public">("dashboard");
 
   return (
-    <div className="flex min-h-screen bg-[#FEFEFE] text-[#18181B] select-none">
-      {/* ─── UNIFIED MASTER LEFT SIDEBAR (Desktop) ────────────── */}
-      <Sidebar />
+    <div className="min-h-screen bg-[#FEFEFE] text-[#18181B] select-none flex flex-col">
+      {/* ─── FULL-WIDTH CONTINUOUS TOP NAVBAR ─────────────── */}
+      <AppNavbar variant="auth" />
 
-      {/* ─── MAIN AREA ────────────────────────────────────────── */}
-      <div className="flex-1 lg:ml-[240px] flex flex-col min-h-screen">
-        {/* Top Bar */}
-        <TopBar />
+      {/* ─── MAIN BODY (Sidebar + Content) ─────────────────── */}
+      <div className="flex-1 flex w-full">
+        {/* ─── UNIFIED MASTER LEFT SIDEBAR (Desktop) ────────── */}
+        <Sidebar />
 
-        {/* ─── CENTER PROFILE CONTENT ─────────────────────────── */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-h-[calc(100vh-56px)] bg-[#FEFEFE]">
+        {/* ─── MAIN AREA ────────────────────────────────────── */}
+        <div className="flex-1 lg:ml-[240px] flex flex-col min-w-0">
+          {/* ─── CENTER PROFILE CONTENT ─────────────────────── */}
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-h-[calc(100vh-64px)] bg-[#FEFEFE]">
           {/* Top Row: Page Title + View Switcher */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
             <div className="relative">
