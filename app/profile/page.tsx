@@ -192,7 +192,7 @@ export default function ProfilePage() {
                   </div>
                   <div className="relative w-32 h-36 lg:w-36 lg:h-40 flex-shrink-0">
                     <Image
-                      src="/mascots/blue_dress_hat.png"
+                      src="/mascots/mascot_character.png"
                       alt="Profile mascot"
                       fill
                       className="object-contain object-bottom scale-105 select-none pointer-events-none"

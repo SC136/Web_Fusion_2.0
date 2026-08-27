@@ -155,7 +155,7 @@ export default function BrowsePage() {
             </div>
             <div className="relative w-28 h-32 lg:w-32 lg:h-36">
               <Image
-                src="/mascots/blue_dress_hat.png"
+                src="/mascots/mascot_character.png"
                 alt="Browse Mascot"
                 fill
                 className="object-contain object-bottom select-none pointer-events-none scale-105"

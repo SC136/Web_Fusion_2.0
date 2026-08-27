@@ -59,7 +59,7 @@ export default function TopBar() {
         >
           <div className="w-10 h-10 rounded-full bg-white border border-[#E5E7EB] relative overflow-hidden flex items-center justify-center shadow-xs group-hover:ring-2 group-hover:ring-[#16A34A] transition-all flex-shrink-0">
             <Image
-              src="/mascots/blue_dress_hat.png"
+              src="/mascots/mascot_character.png"
               alt="User avatar"
               fill
               className="object-contain object-center scale-110 p-0.5"
