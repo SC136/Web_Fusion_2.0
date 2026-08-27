@@ -25,7 +25,7 @@ export default function DashboardPage() {
       <Sidebar />
 
       {/* ─── MAIN AREA ──────────────────────────────────────── */}
-      <div className="flex-1 lg:ml-[220px] flex flex-col min-h-screen">
+      <div className="flex-1 lg:ml-[240px] flex flex-col min-h-screen">
         {/* Top Bar */}
         <TopBar />
 
@@ -33,123 +33,145 @@ export default function DashboardPage() {
         <div className="flex-1 flex">
           {/* ─── CENTER CONTENT ─────────────────────────────── */}
           <main className="flex-1 p-5 lg:p-6 overflow-y-auto max-h-[calc(100vh-56px)]">
-            {/* Welcome */}
-            <div className="flex items-start justify-between mb-5">
-              <div>
-                <h1
-                  className="text-2xl md:text-3xl font-bold text-[#18181B] mb-1"
-                  style={{ fontFamily: "'Pixelify Sans', monospace" }}
-                >
-                  Welcome back, {currentUser.name}!
-                </h1>
-                <p className="text-sm text-[#6B7280]">Let&apos;s make sharing the new normal.</p>
-              </div>
-              <div className="hidden md:block w-[120px] h-[100px] relative">
-                <Image src="/hero-center.jpg" alt="mascot" fill className="object-contain mix-blend-multiply" />
-              </div>
-            </div>
-
-            {/* AI Search Bar */}
-            <div className="bg-[#F0FDF4] border border-[#BBF7D0] rounded-2xl p-4 mb-5">
-              <p className="text-sm font-semibold text-[#166534] mb-2 flex items-center gap-2">
-                <span>What do you need today?</span>
-              </p>
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9CA3AF]">
-                    <AppIcon name="sparkles" size={16} className="text-[#16A34A]" />
-                  </div>
-                  <input
-                    id="ai-search"
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="e.g. I need a camera and tripod for a reel shoot tomorrow"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#D1D5DB] text-sm text-[#18181B] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#86EFAC] focus:border-transparent shadow-xs"
-                  />
-                </div>
-                <button
-                  id="ai-search-btn"
-                  className="px-5 py-2.5 bg-[#16A34A] text-white text-sm font-semibold rounded-xl hover:bg-[#15803D] transition-colors flex items-center gap-2 whitespace-nowrap shadow-xs"
-                >
-                  <span>Search with AI</span>
-                  <AppIcon name="sparkles" size={15} />
-                </button>
-              </div>
-              <div className="flex items-center gap-2 mt-2.5 flex-wrap">
-                <span className="text-[11px] text-[#6B7280] font-medium">Popular:</span>
-                {popularSearches.map((tag) => (
-                  <button
-                    key={tag}
-                    className="text-[11px] px-2.5 py-1 bg-white border border-[#E5E7EB] rounded-lg text-[#374151] hover:bg-[#F9FAFB] transition-colors"
+            {/* Hero / Welcome + AI Search Section with Mascot */}
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-5 items-center mb-6">
+              {/* Left Column: Heading + Search Card */}
+              <div className="flex flex-col gap-4">
+                {/* Heading */}
+                <div>
+                  <h1
+                    className="text-2xl md:text-3xl font-bold text-[#18181B] mb-1 flex items-center gap-2"
+                    style={{ fontFamily: "'Pixelify Sans', monospace" }}
                   >
-                    {tag}
-                  </button>
-                ))}
+                    <span>Welcome back, {currentUser.name}!</span>
+                    <span className="text-2xl not-italic">👋</span>
+                  </h1>
+                  <p className="text-sm text-[#6B7280]">Let&apos;s make sharing the new normal.</p>
+                </div>
+
+                {/* AI Search Card */}
+                <div className="bg-[#F5F8E9] border border-[#D8E8B8] rounded-2xl p-4 shadow-2xs">
+                  <p className="text-[13px] font-semibold text-[#2E5E1C] mb-2.5">
+                    What do you need today?
+                  </p>
+                  <div className="flex gap-2">
+                    <input
+                      id="ai-search"
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="e.g. I need a camera and tripod for a reel shoot tomorrow"
+                      className="flex-1 px-4 py-2.5 rounded-xl bg-white border border-[#E5E7EB] text-xs md:text-sm text-[#18181B] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#86EFAC] focus:border-transparent shadow-2xs"
+                    />
+                    <button
+                      id="ai-search-btn"
+                      className="px-4 md:px-5 py-2.5 bg-[#6F9535] hover:bg-[#61832C] text-white text-xs md:text-[13px] font-semibold rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap shadow-xs cursor-pointer active:scale-98"
+                    >
+                      <span>Search with AI</span>
+                      <span className="text-sm">✨</span>
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-2 mt-3 flex-wrap">
+                    <span className="text-[11px] text-[#6B7280] font-medium">Popular:</span>
+                    {popularSearches.map((tag) => (
+                      <button
+                        key={tag}
+                        onClick={() => setSearchQuery(tag)}
+                        className="text-[11px] px-3 py-1 bg-white/90 border border-[#E0E7D5] rounded-xl text-[#374151] hover:bg-white hover:border-[#CBD5C0] hover:text-[#18181B] transition-colors cursor-pointer shadow-2xs"
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: 3D Mascot Illustration */}
+              <div className="hidden lg:flex items-center justify-center relative w-[280px] xl:w-[320px] h-[190px] xl:h-[220px]">
+                <Image
+                  src="/dashboard.png"
+                  alt="Campus Circular 3D Characters"
+                  fill
+                  className="object-contain drop-shadow-sm select-none"
+                  priority
+                />
               </div>
             </div>
 
             {/* Overview Stats */}
-            <div className="mb-5">
+            <div className="bg-white rounded-2xl border border-[#EDE8C8] p-4 md:p-5 mb-5">
               <h2 className="text-base font-bold text-[#18181B] mb-3">Overview</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
                 {overviewStats.map((stat) => (
                   <div
                     key={stat.label}
-                    className="bg-white rounded-2xl border border-[#F3F4F6] p-4 hover:shadow-sm transition-shadow"
+                    className="rounded-2xl border p-3.5 hover:shadow-sm transition-all"
+                    style={{ backgroundColor: stat.cardBg, borderColor: stat.cardBorder }}
                   >
-                    <div className="flex items-center gap-2.5 mb-2">
+                    <div className="flex items-center gap-2.5 mb-2.5">
                       <div
-                        className="w-9 h-9 rounded-xl flex items-center justify-center"
-                        style={{ backgroundColor: stat.bgColor, color: stat.textColor }}
+                        className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                        style={{ backgroundColor: stat.iconBg, color: stat.iconColor }}
                       >
                         <AppIcon name={stat.icon} size={18} />
                       </div>
                       <span className="text-xl font-bold text-[#18181B]">{stat.value}</span>
                     </div>
-                    <p className="text-[11px] text-[#6B7280] font-medium">{stat.label}</p>
-                    <p className="text-[10px] text-[#16A34A] font-semibold mt-0.5">{stat.change}</p>
+                    <p className="text-[12px] text-[#374151] font-medium leading-snug">{stat.label}</p>
+                    <p className="text-[11px] text-[#6B7280] mt-1">{stat.change}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Activity Tracker */}
-            <div className="bg-white rounded-2xl border border-[#F3F4F6] p-4 mb-5">
+            <div className="bg-[#FEFAEE] rounded-2xl border border-[#EDE8C8] p-4 md:p-5 mb-5">
               <h2 className="text-base font-bold text-[#18181B] mb-4">Your Activity</h2>
-              <div className="flex items-center justify-between overflow-x-auto gap-1">
-                {activityStages.map((stage, i) => (
-                  <div key={stage.label} className="flex items-center">
-                    <div className="flex flex-col items-center min-w-[80px]">
-                      <div
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center mb-1.5 transition-colors ${
-                          stage.active
-                            ? "bg-[#18181B] text-white shadow-md"
-                            : "bg-[#F9FAFB] text-[#6B7280] border border-[#E5E7EB]"
-                        }`}
-                      >
-                        <AppIcon name={stage.icon} size={18} />
+              <div className="flex items-center justify-between overflow-x-auto gap-2 px-2">
+                {activityStages.map((stage, i) => {
+                  const isCurrent = stage.active;
+                  const isPast = i < 2;
+                  return (
+                    <div key={stage.label} className="flex items-center flex-1 last:flex-none">
+                      <div className="flex flex-col items-center min-w-[76px]">
+                        <div
+                          className={`w-11 h-11 rounded-full flex items-center justify-center mb-1.5 transition-all shadow-2xs ${
+                            isCurrent
+                              ? "bg-[#F0FDF4] text-[#16A34A] border-2 border-[#16A34A]"
+                              : isPast
+                              ? "bg-white text-[#374151] border border-[#D1D5DB]"
+                              : "bg-white text-[#9CA3AF] border border-[#FDE68A]"
+                          }`}
+                        >
+                          <AppIcon name={stage.icon} size={18} />
+                        </div>
+                        <span
+                          className={`text-[11px] ${
+                            isCurrent
+                              ? "text-[#18181B] font-bold"
+                              : "text-[#6B7280] font-medium"
+                          }`}
+                        >
+                          {stage.label}
+                        </span>
+                        <span
+                          className={`text-base font-bold ${
+                            isCurrent ? "text-[#18181B]" : "text-[#4B5563]"
+                          }`}
+                        >
+                          {stage.count}
+                        </span>
                       </div>
-                      <span
-                        className={`text-[11px] font-medium ${
-                          stage.active ? "text-[#18181B] font-bold" : "text-[#9CA3AF]"
-                        }`}
-                      >
-                        {stage.label}
-                      </span>
-                      <span
-                        className={`text-lg font-bold ${
-                          stage.active ? "text-[#18181B]" : "text-[#6B7280]"
-                        }`}
-                      >
-                        {stage.count}
-                      </span>
+                      {i < activityStages.length - 1 && (
+                        <div
+                          className={`flex-1 h-[2px] mx-1 mt-[-26px] ${
+                            i < 2 ? "bg-[#16A34A]" : "bg-[#FDE68A]"
+                          }`}
+                        />
+                      )}
                     </div>
-                    {i < activityStages.length - 1 && (
-                      <div className="w-8 h-[2px] bg-[#E5E7EB] mx-1 mt-[-20px]" />
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -362,7 +384,7 @@ function SidebarIcon({ name }: { name: string }) {
     shield: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
   };
   return (
-    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
       <path d={p[name] || ""} />
     </svg>
   );
@@ -370,7 +392,7 @@ function SidebarIcon({ name }: { name: string }) {
 
 function Sidebar() {
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-[#FDFBF1] border-r border-[#E8E4D8] flex flex-col z-40 hidden lg:flex">
+    <aside className="fixed left-0 top-0 bottom-0 w-[240px] bg-[#FDFBF1] border-r border-[#E8E4D8] flex flex-col z-40 hidden lg:flex">
       {/* Logo */}
       <div className="px-5 py-5 flex items-center gap-2.5">
         <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#3B82F6] via-[#10B981] to-[#84CC16] p-[2px] flex items-center justify-center">
@@ -387,19 +409,19 @@ function Sidebar() {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-2 space-y-0.5 overflow-y-auto">
+      <nav className="flex-1 px-3.5 py-2 space-y-1 overflow-y-auto">
         {sidebarNav.map((item) => (
           <Link
             key={item.label}
             href={item.href}
             id={`sidebar-${item.label.toLowerCase().replace(/\s/g, "-")}`}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all ${
+            className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[13.5px] transition-all ${
               item.active
-                ? "bg-[#EAF7EE] text-[#166534] font-semibold"
-                : "text-[#6B7280] hover:bg-[#F5F2E8] hover:text-[#18181B]"
+                ? "bg-[#EAF7EE] text-[#14532D] font-bold shadow-2xs"
+                : "text-[#374151] font-semibold hover:bg-[#F5F2E8] hover:text-[#18181B]"
             }`}
           >
-            <span className={item.active ? "text-[#16A34A]" : "text-[#9CA3AF]"}>
+            <span className={item.active ? "text-[#16A34A]" : "text-[#6B7280]"}>
               <SidebarIcon name={item.icon} />
             </span>
             {item.label}
@@ -407,17 +429,38 @@ function Sidebar() {
         ))}
       </nav>
 
-      {/* User */}
-      <div className="px-4 py-4 border-t border-[#E8E4D8]">
-        <div className="flex items-center gap-3">
-          <div className={`w-9 h-9 rounded-full ${currentUser.avatarBg} flex items-center justify-center font-bold text-xs`}>
-            {currentUser.initials}
+      {/* User Profile Card */}
+      <div className="px-3.5 pt-2 pb-1">
+        <div className="p-2.5 bg-[#FFF9EA] border border-[#F4E8CB] rounded-2xl flex items-center gap-2.5 shadow-2xs">
+          <div className="w-10 h-10 rounded-full overflow-hidden relative flex-shrink-0 bg-[#E0F2FE] border border-[#BAE6FD]">
+            <Image
+              src="/dashboard.png"
+              alt={currentUser.name}
+              fill
+              className="object-cover object-top scale-175 translate-y-1"
+            />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-semibold text-[#18181B] truncate">Hey, {currentUser.name}!</p>
-            <p className="text-[11px] text-[#9CA3AF]">View Profile</p>
+            <p className="text-[12.5px] font-bold text-[#18181B] truncate flex items-center gap-1">
+              <span>Hey, {currentUser.name}!</span>
+              <span className="text-xs">👋</span>
+            </p>
+            <p className="text-[11px] text-[#78716C] font-medium hover:underline cursor-pointer">
+              View Profile
+            </p>
           </div>
         </div>
+      </div>
+
+      {/* Bottom Mascot */}
+      <div className="relative w-full h-[225px] mt-auto overflow-hidden">
+        <Image
+          src="/sidebar.png"
+          alt="Sidebar mascot"
+          fill
+          className="object-cover object-top select-none pointer-events-none"
+          priority
+        />
       </div>
     </aside>
   );
