@@ -18,9 +18,10 @@ export default function BrowsePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedAvailabilities, setSelectedAvailabilities] = useState<string[]>(["now"]);
   const [maxDistance, setMaxDistance] = useState<number>(5);
+  const [maxDailyRate, setMaxDailyRate] = useState<number>(1000);
   const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
-  const [minRating, setMinRating] = useState<number>(4.0);
-  const [sortBy, setSortBy] = useState<"relevance" | "rating" | "distance" | "name">("relevance");
+  const [minRating, setMinRating] = useState<number>(0);
+  const [sortBy, setSortBy] = useState<"relevance" | "price-asc" | "price-desc" | "rating" | "distance">("relevance");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [favorites, setFavorites] = useState<Record<string, boolean>>({
     b1: true,
@@ -29,10 +30,10 @@ export default function BrowsePage() {
   // Accordion open/close states
   const [openSections, setOpenSections] = useState({
     category: true,
+    price: true,
     availability: true,
     distance: true,
     condition: true,
-    rating: true,
   });
 
   const toggleSection = (section: keyof typeof openSections) => {
@@ -62,9 +63,18 @@ export default function BrowsePage() {
     setSelectedCategory("all");
     setSelectedAvailabilities([]);
     setMaxDistance(15);
+    setMaxDailyRate(1000);
     setSelectedConditions([]);
     setMinRating(0);
   };
+
+  const quickSearchTags = [
+    { label: "📸 DSLR Cameras", query: "camera" },
+    { label: "📐 Tripods & Lighting", query: "tripod" },
+    { label: "🎹 Synthesizers", query: "keyboard" },
+    { label: "🎙️ Microphones", query: "mic" },
+    { label: "📚 Coursebooks", query: "calculus" },
+  ];
 
   // Filter and Sort logic
   const filteredResources = useMemo(() => {
@@ -95,6 +105,11 @@ export default function BrowsePage() {
           return false;
         }
 
+        // Max Daily Rate filter
+        if (item.dailyRate && item.dailyRate > maxDailyRate) {
+          return false;
+        }
+
         // Condition filter
         if (selectedConditions.length > 0 && !selectedConditions.includes(item.condition)) {
           return false;
@@ -108,9 +123,10 @@ export default function BrowsePage() {
         return true;
       })
       .sort((a, b) => {
+        if (sortBy === "price-asc") return (a.dailyRate || 0) - (b.dailyRate || 0);
+        if (sortBy === "price-desc") return (b.dailyRate || 0) - (a.dailyRate || 0);
         if (sortBy === "rating") return b.rating - a.rating;
         if (sortBy === "distance") return a.distance - b.distance;
-        if (sortBy === "name") return a.title.localeCompare(b.title);
         return 0; // relevance
       });
   }, [
@@ -118,64 +134,64 @@ export default function BrowsePage() {
     selectedCategory,
     selectedAvailabilities,
     maxDistance,
+    maxDailyRate,
     selectedConditions,
     minRating,
     sortBy,
   ]);
 
   return (
-    <div className="min-h-screen bg-[#FBF7F0] text-[#18181B] flex flex-col select-none">
-      {/* ─── Top Navbar ───────────────────────────────────────── */}
+    <div className="min-h-screen bg-[#FDFBF1] text-[#18181B] flex flex-col select-none animate-fadeIn">
+      {/* ─── MASTER CONTINUOUS TOP NAVBAR ─────────────────────── */}
       <AppNavbar variant="auth" />
 
-      {/* ─── Main Content Container ───────────────────────────── */}
+      {/* ─── BROWSE BODY CONTAINER ───────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-1 flex flex-col">
-        {/* ─── Header Banner with Title & Mascot ──────────────── */}
-        <div className="flex items-center justify-between pb-6 border-b border-[#EDE8C8] relative">
-          <div className="max-w-xl">
-            <div className="flex items-center gap-3 mb-1.5">
-              <h1
-                className="text-3xl sm:text-4xl font-extrabold text-[#18181B] tracking-tight"
-                style={{ fontFamily: "'Pixelify Sans', monospace" }}
-              >
-                Browse Resources
-              </h1>
-              {/* Sparkle decorative lines */}
-              <div className="text-[#6F9535] flex items-center -mt-2">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-                </svg>
-              </div>
+        {/* ─── 1. Hero Header Banner ──────────────────────────── */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-[#EDE8C8]">
+          <div className="max-w-2xl text-center md:text-left">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#F5F8E9] border border-[#D8E8B8] rounded-full text-xs font-bold text-[#2E5E1C] mb-2 shadow-2xs">
+              <AppIcon name="sparkles" size={14} className="text-[#6F9535]" />
+              <span>CAMPUS RESOURCE CATALOG</span>
+              <span>✦</span>
             </div>
-            <p className="text-xs sm:text-sm text-[#52525B] font-medium mb-3">
-              Discover and access verified resources shared by students across your campus.
+            <h1
+              className="text-2xl sm:text-4xl font-extrabold text-[#18181B] tracking-tight leading-tight mb-2"
+              style={{ fontFamily: "'Pixelify Sans', monospace" }}
+            >
+              Borrow Equipment from Campus Peers
+            </h1>
+            <p className="text-xs sm:text-sm text-[#52525B] font-medium leading-relaxed mb-4">
+              Access verified cameras, lab gear, coursebooks, and tools right on campus with automated security deposit escrow.
             </p>
-            <div className="flex flex-wrap items-center gap-2.5">
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
               <button
                 type="button"
                 onClick={() => {
                   setModalTab("list");
                   setIsListModalOpen(true);
                 }}
-                className="px-4 py-2 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold text-xs rounded-xl transition-all shadow-xs cursor-pointer flex items-center gap-1.5"
+                className="px-5 py-2.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold text-xs sm:text-sm rounded-2xl transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] flex items-center gap-2 cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
               >
                 <span>+ List a Resource</span>
               </button>
               <Link
                 href="/requests"
-                className="px-3.5 py-2 bg-white hover:bg-[#FAF7F0] border border-[#EDE8C8] text-[#18181B] font-bold text-xs rounded-xl transition-all shadow-2xs flex items-center gap-1.5"
+                className="px-4 py-2.5 bg-white hover:bg-[#FAF7F0] border border-[#EDE8C8] text-[#18181B] font-bold text-xs sm:text-sm rounded-2xl transition-all shadow-2xs flex items-center gap-2 cursor-pointer active:translate-y-0.5"
               >
-                <span>📢 Wanted Requests</span>
-                <span className="bg-[#FEF3C7] text-[#92400E] text-[10px] px-1.5 py-0.2 rounded-full font-bold">4</span>
+                <span>Wanted Requests</span>
+                <span className="bg-[#FEF3C7] text-[#92400E] text-[10px] px-2 py-0.5 rounded-full font-extrabold border border-[#FDE68A]">
+                  4 Open
+                </span>
               </Link>
             </div>
           </div>
 
-          {/* Right Mascot with Clean Speech Bubble */}
+          {/* Right Mascot with Speech Bubble */}
           <div className="relative hidden md:flex items-center gap-3 flex-shrink-0">
-            <div className="bg-[#FFF9EA] border border-[#F4E8CB] px-3.5 py-1.5 rounded-2xl text-xs font-bold text-[#78350F] shadow-2xs relative">
-              <span>{filteredResources.length} items nearby! 🎒</span>
-              <div className="absolute top-1/2 -right-1.5 -translate-y-1/2 w-2.5 h-2.5 bg-[#FFF9EA] border-t border-r border-[#F4E8CB] rotate-45" />
+            <div className="bg-white border border-[#EDE8C8] px-4 py-2 rounded-2xl text-xs font-bold text-[#18181B] shadow-2xs relative">
+              <span className="text-[#16A34A]">{filteredResources.length} resources</span> nearby! 🎒
+              <div className="absolute top-1/2 -right-1.5 -translate-y-1/2 w-2.5 h-2.5 bg-white border-t border-r border-[#EDE8C8] rotate-45" />
             </div>
             <div className="relative w-28 h-32 lg:w-32 lg:h-36">
               <Image
@@ -189,79 +205,102 @@ export default function BrowsePage() {
           </div>
         </div>
 
-        {/* ─── Search & Controls Row ──────────────────────────── */}
-        <div className="mt-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3.5 bg-white p-3.5 rounded-3xl border border-[#EDE8C8] shadow-2xs">
-          {/* Search Bar */}
-          <div className="relative flex-1 min-w-0">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#9CA3AF]">
-              <AppIcon name="search" size={18} />
+        {/* ─── 2. Search Command Bar & Quick Filter Chips ──────── */}
+        <div className="mt-5 bg-white p-4 rounded-3xl border border-[#EDE8C8] shadow-2xs space-y-3">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+            {/* Search Input Box */}
+            <div className="relative flex-1 min-w-0">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#9CA3AF]">
+                <AppIcon name="search" size={18} />
+              </div>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search gear, course codes, or student owners..."
+                className="w-full pl-11 pr-10 py-2.5 bg-[#FDFBF1] border border-[#EDE8C8] rounded-2xl text-xs sm:text-sm text-[#18181B] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#6F9535] transition-all"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#9CA3AF] hover:text-[#18181B] cursor-pointer"
+                >
+                  ✕
+                </button>
+              )}
             </div>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search for resources (e.g., DSLR camera, Calculus textbook...)"
-              className="w-full pl-11 pr-4 py-2.5 bg-[#FBF7F0]/60 border border-[#E8E1D5] rounded-2xl text-xs sm:text-sm text-[#18181B] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#84CC16]"
-            />
-          </div>
 
-          {/* Sort Dropdown & View Mode */}
-          <div className="flex items-center gap-3 flex-shrink-0">
-            {/* Sort */}
-            <div className="relative">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="appearance-none bg-[#FBF7F0]/80 border border-[#E8E1D5] text-[#374151] text-xs font-semibold py-2.5 pl-3.5 pr-8 rounded-2xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#84CC16]"
-              >
-                <option value="relevance">Sort: Relevance</option>
-                <option value="rating">Sort: Rating</option>
-                <option value="distance">Sort: Distance</option>
-                <option value="name">Sort: Name</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[#71717A]">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
+            {/* Sort & Grid/List Switcher */}
+            <div className="flex items-center gap-2.5 flex-shrink-0">
+              {/* Sort Dropdown */}
+              <div className="relative">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as any)}
+                  className="appearance-none bg-[#FDFBF1] border border-[#EDE8C8] text-[#18181B] text-xs font-bold py-2.5 pl-3.5 pr-8 rounded-2xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#6F9535]"
+                >
+                  <option value="relevance">Sort: Relevance</option>
+                  <option value="price-asc">Price: Low to High</option>
+                  <option value="price-desc">Price: High to Low</option>
+                  <option value="rating">Top Rated (★)</option>
+                  <option value="distance">Nearest Distance</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-[#71717A]">
+                  <AppIcon name="chevron-down" size={12} />
+                </div>
+              </div>
+
+              {/* View Switcher */}
+              <div className="flex items-center bg-[#FDFBF1] border border-[#EDE8C8] p-1 rounded-2xl gap-1">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`p-1.5 rounded-xl transition-all cursor-pointer ${
+                    viewMode === "grid" ? "bg-[#18181B] text-white shadow-2xs" : "text-[#71717A] hover:text-[#18181B]"
+                  }`}
+                  title="Grid View"
+                >
+                  <AppIcon name="grid" size={16} />
+                </button>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`p-1.5 rounded-xl transition-all cursor-pointer ${
+                    viewMode === "list" ? "bg-[#18181B] text-white shadow-2xs" : "text-[#71717A] hover:text-[#18181B]"
+                  }`}
+                  title="List View"
+                >
+                  <AppIcon name="list" size={16} />
+                </button>
               </div>
             </div>
+          </div>
 
-            {/* View Mode Toggle */}
-            <div className="flex items-center bg-[#FBF7F0] border border-[#E8E1D5] p-1 rounded-2xl gap-1">
+          {/* Quick Search Chips */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none pt-1">
+            <span className="text-[11px] font-bold text-[#71717A] flex-shrink-0">Quick Search:</span>
+            {quickSearchTags.map((tag) => (
               <button
-                onClick={() => setViewMode("grid")}
-                className={`p-1.5 rounded-xl transition-all cursor-pointer ${
-                  viewMode === "grid" ? "bg-[#18181B] text-white shadow-2xs" : "text-[#71717A] hover:text-[#18181B]"
-                }`}
-                title="Grid View"
+                key={tag.query}
+                onClick={() => setSearchQuery(tag.query)}
+                className="px-3 py-1 rounded-xl bg-[#FDFBF1] hover:bg-[#F5F2E8] border border-[#EDE8C8] text-[11px] font-semibold text-[#52525B] hover:text-[#18181B] transition-all flex-shrink-0 cursor-pointer"
               >
-                <AppIcon name="grid" size={16} />
+                {tag.label}
               </button>
-              <button
-                onClick={() => setViewMode("list")}
-                className={`p-1.5 rounded-xl transition-all cursor-pointer ${
-                  viewMode === "list" ? "bg-[#18181B] text-white shadow-2xs" : "text-[#71717A] hover:text-[#18181B]"
-                }`}
-                title="List View"
-              >
-                <AppIcon name="list" size={16} />
-              </button>
-            </div>
+            ))}
           </div>
         </div>
 
-        {/* ─── Category Quick-Filter Horizontal Cards ─────────── */}
-        <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
+        {/* ─── 3. Claymorphic Category Pills ──────────────────── */}
+        <div className="mt-4 flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-none">
           <button
             onClick={() => setSelectedCategory("all")}
-            className={`px-4 py-2.5 rounded-2xl border text-xs font-bold transition-all flex items-center gap-2 flex-shrink-0 cursor-pointer ${
+            className={`px-4 py-2.5 rounded-2xl border text-xs font-bold transition-all duration-200 flex items-center gap-2 flex-shrink-0 cursor-pointer ${
               selectedCategory === "all"
-                ? "bg-[#18181B] text-white border-[#18181B] shadow-xs"
-                : "bg-white text-[#374151] border-[#EDE8C8] hover:bg-[#FBF7F0]"
+                ? "bg-[#18181B] text-white border-[#18181B] shadow-xs scale-102"
+                : "bg-white text-[#52525B] border-[#EDE8C8] hover:bg-[#FDFBF1]"
             }`}
           >
             <span>All Categories</span>
-            <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${selectedCategory === "all" ? "bg-white/20 text-white" : "bg-[#F3EFE6] text-[#71717A]"}`}>
+            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${selectedCategory === "all" ? "bg-white/20 text-white" : "bg-[#F5F2E8] text-[#71717A]"}`}>
               {browseResources.length}
             </span>
           </button>
@@ -272,26 +311,23 @@ export default function BrowsePage() {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(isSelected ? "all" : cat.name.toLowerCase())}
-                style={{
-                  backgroundColor: isSelected ? "#18181B" : cat.bgColor,
-                  borderColor: isSelected ? "#18181B" : cat.borderColor,
-                }}
-                className={`px-3.5 py-2 rounded-2xl border flex items-center gap-3 flex-shrink-0 cursor-pointer shadow-2xs hover:shadow-xs transition-all ${
-                  isSelected ? "text-white" : "text-[#18181B]"
+                className={`px-3.5 py-2 rounded-2xl border flex items-center gap-2.5 flex-shrink-0 cursor-pointer shadow-2xs hover:shadow-xs transition-all duration-200 ${
+                  isSelected
+                    ? "bg-[#6F9535] text-white border-[#6F9535] scale-102"
+                    : "bg-white text-[#18181B] border-[#EDE8C8] hover:bg-[#FDFBF1]"
                 }`}
               >
                 <div
                   className={`w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                    isSelected ? "bg-white/20 text-white" : "bg-white"
+                    isSelected ? "bg-white/20 text-white" : "bg-[#FDFBF1] border border-[#EDE8C8]"
                   }`}
-                  style={{ color: isSelected ? "#FFFFFF" : cat.iconColor }}
                 >
-                  <AppIcon name={cat.icon} size={15} />
+                  <AppIcon name={cat.icon} size={14} className={isSelected ? "text-white" : "text-[#6F9535]"} />
                 </div>
                 <div className="text-left">
                   <p className="text-xs font-bold leading-tight">{cat.name}</p>
-                  <p className={`text-[10.5px] leading-tight ${isSelected ? "text-white/70" : "text-[#71717A]"}`}>
-                    {cat.count}
+                  <p className={`text-[10px] leading-tight ${isSelected ? "text-white/80" : "text-[#71717A]"}`}>
+                    {cat.count} items
                   </p>
                 </div>
               </button>
@@ -299,133 +335,63 @@ export default function BrowsePage() {
           })}
         </div>
 
-        {/* ─── Main Grid Layout (Filters Sidebar + Products) ──── */}
+        {/* ─── 4. Main Layout (Sidebar + Product Grid) ────────── */}
         <div className="mt-5 flex flex-col lg:flex-row items-start gap-6 flex-1">
           {/* ─── LEFT FILTERS SIDEBAR ─────────────────────────── */}
-          <aside className="w-full lg:w-[240px] xl:w-[250px] bg-white rounded-3xl border border-[#EDE8C8] p-5 shadow-2xs flex-shrink-0 select-none">
-            {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-[#F0EAE0]">
+          <aside className="w-full lg:w-[250px] xl:w-[260px] bg-white rounded-3xl border border-[#EDE8C8] p-5 shadow-2xs flex-shrink-0 select-none space-y-4">
+            {/* Filter Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-[#EDE8C8]">
               <div className="flex items-center gap-2">
-                <AppIcon name="filter" size={16} className="text-[#18181B]" />
-                <h2 className="text-sm font-bold text-[#18181B]">Filters</h2>
+                <AppIcon name="filter" size={16} className="text-[#6F9535]" />
+                <h2 className="text-sm font-bold text-[#18181B]">Filters &amp; Radius</h2>
               </div>
               <button
                 onClick={clearAllFilters}
                 className="text-xs font-bold text-[#16A34A] hover:underline cursor-pointer"
               >
-                Clear all
+                Reset All
               </button>
             </div>
 
-            {/* Accordion 1: Category */}
-            <div className="py-3.5 border-b border-[#F0EAE0]">
+            {/* Accordion 1: Daily Budget Max Slider */}
+            <div className="pb-3 border-b border-[#F8F5EC]">
               <button
-                onClick={() => toggleSection("category")}
-                className="w-full flex items-center justify-between text-xs font-bold text-[#18181B] mb-2.5 cursor-pointer"
+                onClick={() => toggleSection("price")}
+                className="w-full flex items-center justify-between text-xs font-bold text-[#18181B] mb-2 cursor-pointer"
               >
-                <span>Category</span>
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className={`transition-transform ${openSections.category ? "rotate-180" : ""}`}
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
+                <span>Max Daily Rate</span>
+                <span className="text-[#6F9535] font-black">₹{maxDailyRate}/d</span>
               </button>
-              {openSections.category && (
-                <div className="space-y-2 text-xs text-[#374151]">
-                  {[
-                    { id: "all", label: "All Categories" },
-                    { id: "electronics", label: "Electronics" },
-                    { id: "books", label: "Books" },
-                    { id: "sports", label: "Sports" },
-                    { id: "tools", label: "Tools" },
-                    { id: "music", label: "Musical Instruments" },
-                    { id: "others", label: "Others" },
-                  ].map((c) => (
-                    <label key={c.id} className="flex items-center gap-2 cursor-pointer hover:text-[#18181B]">
-                      <input
-                        type="checkbox"
-                        checked={selectedCategory === c.id || (c.id === "all" && selectedCategory === "all")}
-                        onChange={() => setSelectedCategory(c.id)}
-                        className="w-4 h-4 rounded text-[#16A34A] focus:ring-[#16A34A] accent-[#16A34A] cursor-pointer"
-                      />
-                      <span>{c.label}</span>
-                    </label>
-                  ))}
+              {openSections.price && (
+                <div className="space-y-1.5 pt-1">
+                  <input
+                    type="range"
+                    min="50"
+                    max="1000"
+                    step="50"
+                    value={maxDailyRate}
+                    onChange={(e) => setMaxDailyRate(parseInt(e.target.value))}
+                    className="w-full h-1.5 bg-[#EDE8C8] rounded-lg appearance-none cursor-pointer accent-[#6F9535]"
+                  />
+                  <div className="flex items-center justify-between text-[10px] text-[#71717A] font-semibold">
+                    <span>₹50/day</span>
+                    <span>₹1,000/day</span>
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Accordion 2: Availability */}
-            <div className="py-3.5 border-b border-[#F0EAE0]">
-              <button
-                onClick={() => toggleSection("availability")}
-                className="w-full flex items-center justify-between text-xs font-bold text-[#18181B] mb-2.5 cursor-pointer"
-              >
-                <span>Availability</span>
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className={`transition-transform ${openSections.availability ? "rotate-180" : ""}`}
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </button>
-              {openSections.availability && (
-                <div className="space-y-2 text-xs text-[#374151]">
-                  {[
-                    { id: "now", label: "Available Now" },
-                    { id: "week", label: "Available This Week" },
-                    { id: "flexible", label: "Availability Flexible" },
-                  ].map((a) => (
-                    <label key={a.id} className="flex items-center gap-2 cursor-pointer hover:text-[#18181B]">
-                      <input
-                        type="checkbox"
-                        checked={selectedAvailabilities.includes(a.id)}
-                        onChange={() => toggleAvailability(a.id)}
-                        className="w-4 h-4 rounded text-[#16A34A] focus:ring-[#16A34A] accent-[#16A34A] cursor-pointer"
-                      />
-                      <span>{a.label}</span>
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Accordion 3: Distance */}
-            <div className="py-3.5 border-b border-[#F0EAE0]">
+            {/* Accordion 2: Distance Radius */}
+            <div className="pb-3 border-b border-[#F8F5EC]">
               <button
                 onClick={() => toggleSection("distance")}
-                className="w-full flex items-center justify-between text-xs font-bold text-[#18181B] mb-2.5 cursor-pointer"
+                className="w-full flex items-center justify-between text-xs font-bold text-[#18181B] mb-2 cursor-pointer"
               >
-                <span>Distance</span>
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className={`transition-transform ${openSections.distance ? "rotate-180" : ""}`}
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
+                <span>Campus Radius</span>
+                <span className="text-[#6F9535] font-black">{maxDistance} km</span>
               </button>
               {openSections.distance && (
-                <div>
-                  <div className="flex items-center justify-between text-xs font-semibold text-[#52525B] mb-2">
-                    <span>Radius</span>
-                    <span className="font-bold text-[#16A34A]">{maxDistance} km</span>
-                  </div>
+                <div className="space-y-1.5 pt-1">
                   <input
                     type="range"
                     min="0.5"
@@ -433,126 +399,125 @@ export default function BrowsePage() {
                     step="0.5"
                     value={maxDistance}
                     onChange={(e) => setMaxDistance(parseFloat(e.target.value))}
-                    className="w-full h-1.5 bg-[#E5E7EB] rounded-lg appearance-none cursor-pointer accent-[#16A34A]"
+                    className="w-full h-1.5 bg-[#EDE8C8] rounded-lg appearance-none cursor-pointer accent-[#6F9535]"
                   />
-                  <div className="flex items-center justify-between text-[10px] text-[#9CA3AF] mt-1">
-                    <span>0.5 km</span>
+                  <div className="flex items-center justify-between text-[10px] text-[#71717A] font-semibold">
+                    <span>Within 500m</span>
                     <span>15 km</span>
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Accordion 4: Condition */}
-            <div className="py-3.5 border-b border-[#F0EAE0]">
+            {/* Accordion 3: Availability */}
+            <div className="pb-3 border-b border-[#F8F5EC]">
               <button
-                onClick={() => toggleSection("condition")}
+                onClick={() => toggleSection("availability")}
                 className="w-full flex items-center justify-between text-xs font-bold text-[#18181B] mb-2.5 cursor-pointer"
               >
-                <span>Condition</span>
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className={`transition-transform ${openSections.condition ? "rotate-180" : ""}`}
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
+                <span>Availability</span>
+                <AppIcon name="chevron-down" size={12} className={openSections.availability ? "rotate-180" : ""} />
               </button>
-              {openSections.condition && (
-                <div className="space-y-2 text-xs text-[#374151]">
-                  {["Like New", "Good", "Fair"].map((cond) => (
-                    <label key={cond} className="flex items-center gap-2 cursor-pointer hover:text-[#18181B]">
-                      <input
-                        type="checkbox"
-                        checked={selectedConditions.includes(cond)}
-                        onChange={() => toggleCondition(cond)}
-                        className="w-4 h-4 rounded text-[#16A34A] focus:ring-[#16A34A] accent-[#16A34A] cursor-pointer"
-                      />
-                      <span>{cond}</span>
+              {openSections.availability && (
+                <div className="space-y-2 text-xs">
+                  {[
+                    { id: "now", label: "Available Now", badge: "Instant", color: "text-[#16A34A]" },
+                    { id: "week", label: "This Week", badge: "Upcoming", color: "text-[#D97706]" },
+                    { id: "flexible", label: "Flexible", badge: "On-Demand", color: "text-[#2563EB]" },
+                  ].map((a) => (
+                    <label
+                      key={a.id}
+                      className="flex items-center justify-between p-2 rounded-xl bg-[#FDFBF1] hover:bg-[#F5F2E8] border border-[#EDE8C8] cursor-pointer transition-all"
+                    >
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={selectedAvailabilities.includes(a.id)}
+                          onChange={() => toggleAvailability(a.id)}
+                          className="w-4 h-4 rounded text-[#6F9535] focus:ring-[#6F9535] accent-[#6F9535] cursor-pointer"
+                        />
+                        <span className="font-bold text-[#18181B] text-[11.5px]">{a.label}</span>
+                      </div>
+                      <span className={`text-[9.5px] font-extrabold ${a.color}`}>
+                        {a.badge}
+                      </span>
                     </label>
                   ))}
                 </div>
               )}
             </div>
 
-            {/* Accordion 5: Rating */}
-            <div className="pt-3.5">
+            {/* Accordion 4: Condition */}
+            <div className="pb-3 border-b border-[#F8F5EC]">
               <button
-                onClick={() => toggleSection("rating")}
+                onClick={() => toggleSection("condition")}
                 className="w-full flex items-center justify-between text-xs font-bold text-[#18181B] mb-2.5 cursor-pointer"
               >
-                <span>Rating</span>
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className={`transition-transform ${openSections.rating ? "rotate-180" : ""}`}
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
+                <span>Item Condition</span>
+                <AppIcon name="chevron-down" size={12} className={openSections.condition ? "rotate-180" : ""} />
               </button>
-              {openSections.rating && (
-                <div className="space-y-2 text-xs">
-                  <div
-                    onClick={() => setMinRating(minRating === 4.0 ? 0 : 4.0)}
-                    className="flex items-center gap-2 cursor-pointer hover:text-[#18181B]"
-                  >
-                    <div className="flex items-center text-[#F59E0B] text-xs">
-                      {"★★★★★"}
-                    </div>
-                    <span className="text-xs text-[#374151] font-semibold">4.0 & above</span>
-                  </div>
+              {openSections.condition && (
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {["Like New", "Good", "Fair"].map((cond) => {
+                    const isSelected = selectedConditions.includes(cond);
+                    return (
+                      <button
+                        key={cond}
+                        type="button"
+                        onClick={() => toggleCondition(cond)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                          isSelected
+                            ? "bg-[#6F9535] text-white border-[#6F9535] shadow-xs"
+                            : "bg-[#FDFBF1] text-[#52525B] border-[#EDE8C8] hover:bg-[#F5F2E8]"
+                        }`}
+                      >
+                        {cond}
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
 
-            {/* Bottom Cute Graphic from Existing Mascot Assets */}
-            <div className="mt-6 pt-4 border-t border-[#F0EAE0] flex items-center justify-center">
-              <div className="relative w-24 h-24">
-                <Image
-                  src="/mascots/ladder.png"
-                  alt="Decorative mascot element"
-                  fill
-                  className="object-contain"
-                />
+            {/* Bottom Escrow Security Badge */}
+            <div className="p-4 rounded-2xl bg-[#F5F8E9] border border-[#D8E8B8] space-y-1 text-center">
+              <div className="w-8 h-8 rounded-xl bg-white text-[#16A34A] flex items-center justify-center mx-auto shadow-2xs font-bold mb-1">
+                <AppIcon name="shield-check" size={16} />
               </div>
+              <p className="text-xs font-bold text-[#18181B]">Campus Escrow Protected</p>
+              <p className="text-[10px] text-[#52525B] leading-tight">
+                Deposits are held safely and released immediately on verified return.
+              </p>
             </div>
           </aside>
 
-          {/* ─── RIGHT RESOURCE CARDS GRID ─────────────────────── */}
+          {/* ─── RIGHT PRODUCT CARDS GRID ───────────────────────── */}
           <main className="flex-1 w-full min-w-0">
             {filteredResources.length === 0 ? (
               <div className="bg-white rounded-3xl border border-[#EDE8C8] p-12 text-center shadow-2xs">
                 <div className="w-16 h-16 rounded-full bg-[#FEF3C7] text-[#D97706] flex items-center justify-center mx-auto mb-4">
                   <AppIcon name="search" size={28} />
                 </div>
-                <h3 className="text-lg font-bold text-[#18181B] mb-1">No resources found</h3>
+                <h3 className="text-lg font-bold text-[#18181B] mb-1">No resources match your filters</h3>
                 <p className="text-xs text-[#71717A] max-w-sm mx-auto mb-4">
-                  Try adjusting your search keywords, clearing your category filters, or expanding the distance radius.
+                  Try clearing your search query or expanding your max daily budget and distance radius.
                 </p>
                 <button
                   onClick={clearAllFilters}
-                  className="px-4 py-2 bg-[#18181B] text-white text-xs font-bold rounded-xl hover:bg-[#27272A] transition-all cursor-pointer"
+                  className="px-5 py-2.5 bg-[#18181B] text-white text-xs font-bold rounded-2xl hover:bg-[#27272A] transition-all cursor-pointer shadow-xs"
                 >
                   Reset All Filters
                 </button>
               </div>
             ) : viewMode === "grid" ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
                 {filteredResources.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-white rounded-3xl border border-[#EDE8C8] overflow-hidden shadow-2xs hover:shadow-md transition-all group flex flex-col justify-between"
+                    className="bg-white rounded-3xl border border-[#EDE8C8] overflow-hidden shadow-2xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between"
                   >
-                    {/* Top Image Container with Badges */}
-                    <div className="relative w-full aspect-[4/3] bg-[#F9FAFB] overflow-hidden">
+                    {/* Top Image Container with Price & Wishlist Badges */}
+                    <div className="relative w-full aspect-[4/3] bg-[#FDFBF1] overflow-hidden">
                       <Link href={`/browse/${item.id}`} className="block w-full h-full">
                         <Image
                           src={item.image}
@@ -562,132 +527,139 @@ export default function BrowsePage() {
                         />
                       </Link>
 
-                      {/* Availability Pill (Bottom Left of Image) */}
-                      <div className="absolute bottom-2.5 left-2.5 pointer-events-none">
-                        <span
-                          className={`text-[10px] font-bold px-2.5 py-1 rounded-full shadow-2xs ${
-                            item.statusType === "now"
-                              ? "bg-[#DEF7EC] text-[#03543F]"
-                              : item.statusType === "week"
-                              ? "bg-[#FEF3C7] text-[#92400E]"
-                              : "bg-[#E0F2FE] text-[#075985]"
-                          }`}
-                        >
-                          {item.status}
-                        </span>
+                      {/* Top-Left Price Badge */}
+                      <div className="absolute top-3 left-3 bg-[#18181B]/85 backdrop-blur-xs text-white px-3 py-1 rounded-2xl shadow-xs border border-white/10 flex items-baseline gap-1 pointer-events-none">
+                        <span className="text-sm font-black text-[#BBF7D0]">₹{item.dailyRate || 100}</span>
+                        <span className="text-[10px] text-white/70 font-normal">/day</span>
                       </div>
 
-                      {/* Favorite Heart Button (Top Right of Image) */}
+                      {/* Top-Right Favorite Button */}
                       <button
                         onClick={(e) => toggleFavorite(item.id, e)}
-                        className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center text-[#EF4444] shadow-xs hover:scale-110 transition-transform cursor-pointer z-10"
+                        className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center text-[#EF4444] shadow-xs hover:scale-110 active:scale-95 transition-all cursor-pointer z-10"
                         title={favorites[item.id] ? "Favorited" : "Add to favorites"}
                       >
                         {favorites[item.id] ? (
                           <span className="text-sm">❤️</span>
                         ) : (
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
                           </svg>
                         )}
                       </button>
+
+                      {/* Bottom Availability & Distance Bar */}
+                      <div className="absolute bottom-2.5 inset-x-2.5 flex items-center justify-between pointer-events-none">
+                        <span
+                          className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-2xs backdrop-blur-xs ${
+                            item.statusType === "now"
+                              ? "bg-[#DEF7EC]/95 text-[#03543F] border border-[#BBF7D0]"
+                              : item.statusType === "week"
+                              ? "bg-[#FEF3C7]/95 text-[#92400E] border border-[#FDE68A]"
+                              : "bg-[#E0F2FE]/95 text-[#075985] border border-[#BAE6FD]"
+                          }`}
+                        >
+                          {item.status}
+                        </span>
+
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#18181B]/75 text-white backdrop-blur-xs flex items-center gap-1">
+                          <AppIcon name="map-pin" size={10} className="text-[#86EFAC]" />
+                          <span>{item.distance} km</span>
+                        </span>
+                      </div>
                     </div>
 
-                    {/* Card Body */}
-                    <div className="p-4 flex-1 flex flex-col justify-between">
+                    {/* Card Content Details */}
+                    <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                       <div>
                         {/* Title */}
                         <Link href={`/browse/${item.id}`}>
-                          <h3 className="text-[13.5px] font-bold text-[#18181B] leading-tight mb-2.5 line-clamp-1 group-hover:text-[#16A34A] transition-colors">
+                          <h3 className="text-sm font-bold text-[#18181B] leading-snug line-clamp-1 group-hover:text-[#6F9535] transition-colors">
                             {item.title}
                           </h3>
                         </Link>
 
-                        {/* Owner Row */}
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className={`w-6 h-6 rounded-full ${item.avatarBg} flex items-center justify-center font-bold text-[10px] flex-shrink-0 shadow-2xs`}>
+                        {/* Owner & Department */}
+                        <div className="flex items-center gap-2.5 mt-2">
+                          <div className={`w-7 h-7 rounded-xl ${item.avatarBg} flex items-center justify-center font-bold text-[10.5px] flex-shrink-0 shadow-2xs border border-white`}>
                             {item.initials}
                           </div>
-                          <div className="min-w-0">
-                            <p className="text-[11px] font-bold text-[#18181B] truncate leading-tight">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-bold text-[#18181B] truncate leading-tight">
                               {item.owner}
                             </p>
-                            <p className="text-[9.5px] text-[#71717A] truncate leading-tight">
+                            <p className="text-[10px] text-[#71717A] truncate leading-tight">
                               {item.department}
                             </p>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs font-bold text-[#18181B]">
+                            <span className="text-[#F59E0B]">★</span>
+                            <span>{item.rating}</span>
                           </div>
                         </div>
                       </div>
 
-                      {/* Bottom Stats: Rating & Distance */}
-                      <div className="pt-2.5 border-t border-[#F0EAE0] flex items-center justify-between text-[11px] text-[#52525B]">
-                        <div className="flex items-center gap-1 font-semibold">
-                          <span className="text-[#F59E0B]">★</span>
-                          <span className="text-[#18181B] font-bold">{item.rating}</span>
-                          <span className="text-[#9CA3AF]">({item.reviews})</span>
-                        </div>
-                        <div className="flex items-center gap-1 text-[#71717A] font-medium">
-                          <AppIcon name="map-pin" size={12} className="text-[#16A34A]" />
-                          <span>{item.distance} km</span>
-                        </div>
+                      {/* Deposit & Escrow Badge */}
+                      <div className="pt-2.5 border-t border-[#EDE8C8] flex items-center justify-between text-[11px]">
+                        <span className="text-[#71717A] font-medium">
+                          Deposit: <strong className="text-[#18181B]">₹{item.deposit || 800}</strong>
+                        </span>
+                        <span className="text-[10px] font-extrabold text-[#16A34A] bg-[#DCFCE7] px-2 py-0.5 rounded-full border border-[#BBF7D0]">
+                          100% Escrow
+                        </span>
                       </div>
+
+                      {/* Tactile Borrow Action Button */}
+                      <Link
+                        href={`/browse/${item.id}`}
+                        className="w-full py-2.5 bg-[#FDFBF1] hover:bg-[#6F9535] text-[#18181B] hover:text-white border border-[#EDE8C8] hover:border-[#6F9535] font-bold text-xs rounded-2xl transition-all flex items-center justify-center gap-1.5 shadow-2xs active:translate-y-0.5"
+                      >
+                        <span>Borrow Equipment</span>
+                        <AppIcon name="arrow-right" size={13} />
+                      </Link>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              /* List View */
-              <div className="space-y-3">
+              /* List View Mode */
+              <div className="space-y-3.5">
                 {filteredResources.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-white rounded-3xl border border-[#EDE8C8] p-4 shadow-2xs hover:shadow-md transition-all flex flex-col sm:flex-row items-center justify-between gap-4 group"
+                    className="bg-white rounded-3xl border border-[#EDE8C8] p-4 shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col sm:flex-row items-center justify-between gap-5 group"
                   >
-                    <Link href={`/browse/${item.id}`} className="flex items-center gap-4 min-w-0 w-full sm:w-auto">
-                      <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-[#F9FAFB] flex-shrink-0">
-                        <Image src={item.image} alt={item.title} fill className="object-cover" />
+                    <Link href={`/browse/${item.id}`} className="flex items-center gap-4 min-w-0 w-full sm:w-auto flex-1">
+                      <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-[#FDFBF1] flex-shrink-0 border border-[#EDE8C8]">
+                        <Image src={item.image} alt={item.title} fill className="object-cover group-hover:scale-105 transition-transform" />
                       </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span
-                            className={`text-[9.5px] font-bold px-2 py-0.5 rounded-full ${
-                              item.statusType === "now"
-                                ? "bg-[#DEF7EC] text-[#03543F]"
-                                : item.statusType === "week"
-                                ? "bg-[#FEF3C7] text-[#92400E]"
-                                : "bg-[#E0F2FE] text-[#075985]"
-                            }`}
-                          >
+                      <div className="min-w-0 space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#DEF7EC] text-[#03543F]">
                             {item.status}
                           </span>
-                          <span className="text-[10px] text-[#9CA3AF]">• {item.condition}</span>
+                          <span className="text-[10.5px] text-[#71717A] font-semibold">{item.distance} km away</span>
                         </div>
-                        <h3 className="text-sm font-bold text-[#18181B] truncate group-hover:text-[#16A34A] transition-colors">{item.title}</h3>
-                        <p className="text-xs text-[#71717A] mt-0.5">
-                          Shared by <span className="font-semibold text-[#18181B]">{item.owner}</span> ({item.department})
+                        <h3 className="text-sm sm:text-base font-bold text-[#18181B] group-hover:text-[#6F9535] transition-colors truncate">
+                          {item.title}
+                        </h3>
+                        <p className="text-xs text-[#71717A] truncate">
+                          Owner: <strong>{item.owner}</strong> ({item.department}) • ★ {item.rating}
                         </p>
                       </div>
                     </Link>
 
-                    <div className="flex items-center justify-between sm:justify-end gap-5 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-[#F0EAE0]">
+                    <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-[#EDE8C8]">
                       <div className="text-left sm:text-right">
-                        <div className="flex items-center gap-1 text-xs font-semibold">
-                          <span className="text-[#F59E0B]">★</span>
-                          <span className="text-[#18181B] font-bold">{item.rating}</span>
-                          <span className="text-[#9CA3AF]">({item.reviews})</span>
-                        </div>
-                        <p className="text-[11px] text-[#71717A] flex items-center sm:justify-end gap-1 mt-0.5">
-                          <AppIcon name="map-pin" size={11} className="text-[#16A34A]" />
-                          <span>{item.distance} km away</span>
-                        </p>
+                        <p className="text-base font-black text-[#16A34A]">₹{item.dailyRate || 100} <span className="text-xs font-normal text-[#71717A]">/day</span></p>
+                        <p className="text-[10px] text-[#71717A]">₹{item.deposit || 800} refundable deposit</p>
                       </div>
-
-                      <button
-                        onClick={(e) => toggleFavorite(item.id, e)}
-                        className="w-8 h-8 rounded-full bg-[#F3EFE6] flex items-center justify-center text-sm cursor-pointer hover:bg-white transition-colors"
+                      <Link
+                        href={`/browse/${item.id}`}
+                        className="px-5 py-2.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold text-xs rounded-2xl hover:from-[#8AC538] hover:to-[#72A627] transition-all shadow-xs border-b-2 border-[#557F1C] active:translate-y-0.5 flex items-center gap-1.5 cursor-pointer"
                       >
-                        {favorites[item.id] ? "❤️" : "🤍"}
-                      </button>
+                        <span>Borrow →</span>
+                      </Link>
                     </div>
                   </div>
                 ))}
@@ -697,7 +669,7 @@ export default function BrowsePage() {
         </div>
       </div>
 
-      {/* ─── 3-Step List / Request Modal ──────────────────────── */}
+      {/* ─── 3-Step List Modal ─────────────────────────────────── */}
       <ListResourceModal
         isOpen={isListModalOpen}
         onClose={() => setIsListModalOpen(false)}

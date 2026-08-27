@@ -662,9 +662,9 @@ export const browseResources = [
   },
   {
     id: "b7",
-    title: "Yamaha Portable Keyboard",
+    title: "Yamaha Portable Synthesizer Keyboard",
     category: "Music",
-    image: "/products/ringlight.jpg",
+    image: "/products/keyboard.jpg",
     status: "Available Now",
     statusType: "now",
     isFavorite: false,
@@ -676,6 +676,9 @@ export const browseResources = [
     reviews: 42,
     distance: 1.5,
     condition: "Like New",
+    dailyRate: 250,
+    deposit: 1800,
+    lateFee: 60,
   },
   {
     id: "b8",
