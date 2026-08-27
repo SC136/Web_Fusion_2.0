@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { profileUser, publicProfileMaya } from "@/app/data/mockData";
 import { AppIcon } from "@/app/components/dashboard/Icons";
