@@ -15,14 +15,13 @@ import {
 } from "@/app/data/mockData";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 import AppNavbar from "@/app/components/layout/AppNavbar";
-import AppFooter from "@/app/components/layout/AppFooter";
 import Sidebar from "@/app/components/dashboard/Sidebar";
 
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="min-h-screen bg-[#FBF7F0] text-[#18181B] flex flex-col select-none">
+    <div className="min-h-screen bg-[#FEFEFE] text-[#18181B] flex flex-col select-none">
       {/* ─── UNIFIED TOP NAVBAR ───────────────────────────────── */}
       <AppNavbar variant="auth" />
 
@@ -32,175 +31,196 @@ export default function DashboardPage() {
         <Sidebar />
 
         {/* ─── DASHBOARD CONTENT + RIGHT SIDEBAR ──────────────── */}
-        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-          {/* ─── MAIN CENTER AREA ─────────────────────────────── */}
-          <main className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-5">
-            {/* Welcome Banner */}
-            <div className="flex items-start justify-between">
-              <div>
-                <h1
-                  className="text-2xl sm:text-3xl font-bold text-[#18181B] tracking-normal mb-1 flex items-center gap-2"
-                  style={{ fontFamily: "'Pixelify Sans', monospace" }}
-                >
-                  Welcome back, {currentUser.name}!
-                </h1>
-                <p className="text-xs sm:text-sm text-[#52525B]">Let&apos;s make sharing the new normal.</p>
-              </div>
-              <div className="hidden md:block w-[110px] h-[90px] relative">
-                <Image src="/hero-center.jpg" alt="mascot" fill className="object-contain mix-blend-multiply" />
-              </div>
-            </div>
-
-            {/* AI Search Bar */}
-            <div className="bg-[#F0FDF4] border border-[#BBF7D0] rounded-2xl p-4 shadow-2xs">
-              <p className="text-xs sm:text-sm font-semibold text-[#166534] mb-2 flex items-center gap-1.5">
-                <span>What do you need today?</span>
-              </p>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <div className="relative flex-1">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9CA3AF]">
-                    <AppIcon name="sparkles" size={16} className="text-[#16A34A]" />
-                  </div>
-                  <input
-                    id="ai-search"
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="e.g. I need a camera and tripod for a reel shoot tomorrow"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#D1D5DB] text-xs sm:text-sm text-[#18181B] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#86EFAC] focus:border-transparent shadow-2xs"
-                  />
-                </div>
-                <button
-                  id="ai-search-btn"
-                  className="px-5 py-2.5 bg-[#16A34A] hover:bg-[#15803D] text-white text-xs sm:text-sm font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 whitespace-nowrap shadow-2xs cursor-pointer"
-                >
-                  <span>Search with AI</span>
-                  <AppIcon name="sparkles" size={15} />
-                </button>
-              </div>
-              <div className="flex items-center gap-2 mt-2.5 flex-wrap">
-                <span className="text-[11px] text-[#6B7280] font-medium">Popular:</span>
-                {popularSearches.map((tag) => (
-                  <button
-                    key={tag}
-                    onClick={() => setSearchQuery(tag)}
-                    className="text-[11px] px-2.5 py-1 bg-white border border-[#E5E7EB] rounded-lg text-[#374151] hover:bg-[#F9FAFB] transition-colors cursor-pointer shadow-2xs"
+        <div className="flex-1 flex flex-col xl:flex-row overflow-hidden">
+          {/* ─── CENTER CONTENT ─────────────────────────────── */}
+          <main className="flex-1 p-4 sm:p-5 lg:p-6 overflow-y-auto space-y-5">
+            {/* Hero / Welcome + AI Search Section with Mascot */}
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-5 items-center">
+              {/* Left Column: Heading + Search Card */}
+              <div className="flex flex-col gap-4">
+                {/* Heading */}
+                <div>
+                  <h1
+                    className="text-2xl sm:text-3xl font-bold text-[#18181B] mb-1 flex items-center gap-2"
+                    style={{ fontFamily: "'Pixelify Sans', monospace" }}
                   >
-                    {tag}
-                  </button>
-                ))}
+                    <span>Welcome back, {currentUser.name}!</span>
+                    <span className="text-2xl not-italic">👋</span>
+                  </h1>
+                  <p className="text-xs sm:text-sm text-[#6B7280]">Let&apos;s make sharing the new normal.</p>
+                </div>
+
+                {/* AI Search Card */}
+                <div className="bg-[#F5F8E9] border border-[#D8E8B8] rounded-2xl p-4 shadow-2xs">
+                  <p className="text-[13px] font-semibold text-[#2E5E1C] mb-2.5">
+                    What do you need today?
+                  </p>
+                  <div className="flex gap-2">
+                    <input
+                      id="ai-search"
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="e.g. I need a camera and tripod for a reel shoot tomorrow"
+                      className="flex-1 px-4 py-2.5 rounded-xl bg-white border border-[#E5E7EB] text-xs md:text-sm text-[#18181B] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#86EFAC] focus:border-transparent shadow-2xs"
+                    />
+                    <button
+                      id="ai-search-btn"
+                      className="px-4 md:px-5 py-2.5 bg-[#6F9535] hover:bg-[#61832C] text-white text-xs md:text-[13px] font-semibold rounded-xl transition-all flex items-center gap-1.5 whitespace-nowrap shadow-xs cursor-pointer active:scale-98"
+                    >
+                      <span>Search with AI</span>
+                      <span className="text-sm">✨</span>
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-2 mt-3 flex-wrap">
+                    <span className="text-[11px] text-[#6B7280] font-medium">Popular:</span>
+                    {popularSearches.map((tag) => (
+                      <button
+                        key={tag}
+                        onClick={() => setSearchQuery(tag)}
+                        className="text-[11px] px-3 py-1 bg-white/90 border border-[#E0E7D5] rounded-xl text-[#374151] hover:bg-white hover:border-[#CBD5C0] hover:text-[#18181B] transition-colors cursor-pointer shadow-2xs"
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: 3D Mascot Illustration */}
+              <div className="hidden lg:flex items-center justify-center relative w-[280px] xl:w-[320px] h-[190px] xl:h-[220px]">
+                <Image
+                  src="/dashboard.png"
+                  alt="Campus Circular 3D Characters"
+                  fill
+                  className="object-contain drop-shadow-sm select-none"
+                  priority
+                />
               </div>
             </div>
 
             {/* Overview Stats */}
-            <div>
-              <h2 className="text-sm sm:text-base font-bold text-[#18181B] mb-3">Overview</h2>
+            <div className="bg-white rounded-2xl border border-[#EDE8C8] p-4 md:p-5">
+              <h2 className="text-base font-bold text-[#18181B] mb-3">Overview</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
                 {overviewStats.map((stat) => (
                   <div
                     key={stat.label}
-                    className="bg-white rounded-2xl border border-[#F0EAE0] p-3.5 shadow-2xs hover:shadow-xs transition-shadow"
+                    className="rounded-2xl border p-3.5 hover:shadow-xs transition-all"
+                    style={{ backgroundColor: stat.cardBg, borderColor: stat.cardBorder }}
                   >
-                    <div className="flex items-center gap-2.5 mb-2">
+                    <div className="flex items-center gap-2.5 mb-2.5">
                       <div
-                        className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                        style={{ backgroundColor: stat.iconBg || "#E0F2FE", color: stat.iconColor || "#0284C7" }}
+                        className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                        style={{ backgroundColor: stat.iconBg, color: stat.iconColor }}
                       >
                         <AppIcon name={stat.icon} size={18} />
                       </div>
-                      <span className="text-lg sm:text-xl font-bold text-[#18181B]">{stat.value}</span>
+                      <span className="text-xl font-bold text-[#18181B]">{stat.value}</span>
                     </div>
-                    <p className="text-[11px] text-[#6B7280] font-medium leading-tight">{stat.label}</p>
-                    <p className="text-[10px] text-[#16A34A] font-semibold mt-0.5">{stat.change}</p>
+                    <p className="text-[12px] text-[#374151] font-medium leading-snug">{stat.label}</p>
+                    <p className="text-[11px] text-[#6B7280] mt-1">{stat.change}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Activity Tracker */}
-            <div className="bg-white rounded-2xl border border-[#F0EAE0] p-4 shadow-2xs">
-              <h2 className="text-sm sm:text-base font-bold text-[#18181B] mb-3">Your Activity</h2>
-              <div className="flex items-center justify-between overflow-x-auto gap-1 pb-1">
-                {activityStages.map((stage, i) => (
-                  <div key={stage.label} className="flex items-center">
-                    <div className="flex flex-col items-center min-w-[75px]">
-                      <div
-                        className={`w-9 h-9 rounded-xl flex items-center justify-center mb-1.5 transition-colors ${
-                          stage.active
-                            ? "bg-[#18181B] text-white shadow-xs"
-                            : "bg-[#FBF7F0] text-[#6B7280] border border-[#E5E7EB]"
-                        }`}
-                      >
-                        <AppIcon name={stage.icon} size={16} />
+            <div className="bg-[#FEFAEE] rounded-2xl border border-[#EDE8C8] p-4 md:p-5">
+              <h2 className="text-base font-bold text-[#18181B] mb-4">Your Activity</h2>
+              <div className="flex items-center justify-between overflow-x-auto gap-2 px-2 pb-1">
+                {activityStages.map((stage, i) => {
+                  const isCurrent = stage.active;
+                  const isPast = i < 2;
+                  return (
+                    <div key={stage.label} className="flex items-center flex-1 last:flex-none">
+                      <div className="flex flex-col items-center min-w-[76px]">
+                        <div
+                          className={`w-11 h-11 rounded-full flex items-center justify-center mb-1.5 transition-all shadow-2xs ${
+                            isCurrent
+                              ? "bg-[#F0FDF4] text-[#16A34A] border-2 border-[#16A34A]"
+                              : isPast
+                              ? "bg-white text-[#374151] border border-[#D1D5DB]"
+                              : "bg-white text-[#9CA3AF] border border-[#FDE68A]"
+                          }`}
+                        >
+                          <AppIcon name={stage.icon} size={18} />
+                        </div>
+                        <span
+                          className={`text-[11px] ${
+                            isCurrent
+                              ? "text-[#18181B] font-bold"
+                              : "text-[#6B7280] font-medium"
+                          }`}
+                        >
+                          {stage.label}
+                        </span>
+                        <span
+                          className={`text-base font-bold ${
+                            isCurrent ? "text-[#18181B]" : "text-[#4B5563]"
+                          }`}
+                        >
+                          {stage.count}
+                        </span>
                       </div>
-                      <span
-                        className={`text-[10px] sm:text-[11px] font-medium ${
-                          stage.active ? "text-[#18181B] font-bold" : "text-[#9CA3AF]"
-                        }`}
-                      >
-                        {stage.label}
-                      </span>
-                      <span
-                        className={`text-base sm:text-lg font-bold ${
-                          stage.active ? "text-[#18181B]" : "text-[#6B7280]"
-                        }`}
-                      >
-                        {stage.count}
-                      </span>
+                      {i < activityStages.length - 1 && (
+                        <div
+                          className={`flex-1 h-[2px] mx-1 mt-[-26px] ${
+                            i < 2 ? "bg-[#16A34A]" : "bg-[#FDE68A]"
+                          }`}
+                        />
+                      )}
                     </div>
-                    {i < activityStages.length - 1 && (
-                      <div className="w-6 sm:w-8 h-[2px] bg-[#E8E0D2] mx-1 mt-[-18px]" />
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
             {/* Bottom Row: Recommended + Categories */}
-            <div className="grid grid-cols-1 xl:grid-cols-[1fr_260px] gap-5">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-5">
               {/* Recommended Items */}
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-sm sm:text-base font-bold text-[#18181B] flex items-center gap-1.5">
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-base font-bold text-[#18181B] flex items-center gap-1.5">
                     <span>Recommended for You</span>
-                    <AppIcon name="sparkles" size={15} className="text-amber-500" />
+                    <AppIcon name="sparkles" size={16} className="text-amber-500" />
                   </h2>
                   <button className="text-xs font-semibold text-[#16A34A] hover:underline cursor-pointer">
                     View all
                   </button>
                 </div>
-                <p className="text-[11px] text-[#9CA3AF] mb-3">
+                <p className="text-[11px] text-[#9CA3AF] mb-3 -mt-2">
                   Based on your need: &quot;Camera and tripod for reel&quot;
                 </p>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {recommendedItems.map((item) => (
                     <div
                       key={item.id}
-                      className="bg-white rounded-2xl border border-[#F0EAE0] overflow-hidden hover:shadow-md transition-all group cursor-pointer"
+                      className="bg-white rounded-2xl border border-[#F3F4F6] overflow-hidden hover:shadow-md transition-shadow group cursor-pointer shadow-2xs"
                     >
-                      <div className="aspect-square bg-[#FBF7F0] relative overflow-hidden">
+                      <div className="aspect-square bg-[#F9FAFB] relative overflow-hidden">
                         <Image
                           src={item.image}
                           alt={item.name}
                           fill
-                          className="object-contain p-2.5 group-hover:scale-105 transition-transform duration-300"
+                          className="object-contain p-3 group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
                       <div className="p-3">
-                        <div className="flex items-center gap-1.5 text-[10px] text-[#6B7280] mb-1">
+                        <div className="flex items-center gap-2 text-[10px] text-[#6B7280] mb-1.5">
                           <span className="flex items-center gap-0.5 text-amber-500 font-semibold">
-                            <AppIcon name="star" size={11} className="fill-amber-400 text-amber-400" />
+                            <AppIcon name="star" size={12} className="fill-amber-400 text-amber-400" />
                             <span className="text-[#374151]">{item.rating}</span>
                           </span>
                           <span className="text-[#D1D5DB]">•</span>
                           <span className="flex items-center gap-0.5 text-[#6B7280]">
-                            <AppIcon name="map-pin" size={10} className="text-[#9CA3AF]" />
+                            <AppIcon name="map-pin" size={11} className="text-[#9CA3AF]" />
                             {item.distance}
                           </span>
                         </div>
-                        <p className="text-xs font-semibold text-[#18181B] mb-0.5 truncate">{item.name}</p>
-                        <p className="text-[10px] text-[#9CA3AF] mb-1.5">By {item.owner}</p>
-                        <p className="text-xs font-bold text-[#18181B]">{item.pricePerDay}</p>
+                        <p className="text-[13px] font-semibold text-[#18181B] mb-0.5 truncate">{item.name}</p>
+                        <p className="text-[10px] text-[#9CA3AF] mb-2">By {item.owner}</p>
+                        <p className="text-[13px] font-bold text-[#18181B]">{item.pricePerDay}</p>
                         <p className="text-[10px] text-[#16A34A] font-medium">{item.deposit}</p>
                       </div>
                     </div>
@@ -211,7 +231,7 @@ export default function DashboardPage() {
               {/* Popular Categories */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-sm sm:text-base font-bold text-[#18181B]">Popular Categories</h2>
+                  <h2 className="text-base font-bold text-[#18181B]">Popular Categories</h2>
                   <button className="text-xs font-semibold text-[#16A34A] hover:underline cursor-pointer">
                     View all
                   </button>
@@ -220,15 +240,15 @@ export default function DashboardPage() {
                   {popularCategories.map((cat) => (
                     <div
                       key={cat.name}
-                      className="flex items-center gap-3 bg-white rounded-xl border border-[#F0EAE0] px-3.5 py-2.5 hover:shadow-2xs transition-shadow cursor-pointer"
+                      className="flex items-center gap-3 bg-white rounded-xl border border-[#F3F4F6] px-4 py-3 hover:shadow-xs transition-shadow cursor-pointer shadow-2xs"
                     >
-                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${cat.color}`}>
-                        <AppIcon name={cat.icon} size={15} />
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${cat.color}`}>
+                        <AppIcon name={cat.icon} size={16} />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-[#18181B] truncate">{cat.name}</p>
+                      <div className="flex-1">
+                        <p className="text-[13px] font-medium text-[#18181B]">{cat.name}</p>
                       </div>
-                      <span className="text-[11px] text-[#9CA3AF] font-medium whitespace-nowrap">{cat.count} items</span>
+                      <span className="text-[11px] text-[#9CA3AF] font-medium">{cat.count} items</span>
                     </div>
                   ))}
                 </div>
@@ -236,122 +256,113 @@ export default function DashboardPage() {
             </div>
           </main>
 
-          {/* ─── RIGHT SIDEBAR WIDGETS ───────────────────────── */}
-          <aside className="w-full lg:w-[280px] p-4 sm:p-6 lg:pl-0 space-y-4 flex-shrink-0">
-            {/* Trust Score Card */}
+          {/* ─── RIGHT SIDEBAR (Non-scrollable) ────────────────── */}
+          <aside className="w-full xl:w-[280px] 2xl:w-[290px] sticky top-16 h-[calc(100vh-64px)] max-h-[calc(100vh-64px)] overflow-hidden border-t xl:border-t-0 xl:border-l border-[#EDE8C8] p-3.5 flex flex-col justify-between flex-shrink-0 bg-[#FEFEFE] select-none">
+            {/* 1. Your Trust Score */}
             <Link
               href="/profile"
               id="dashboard-trust-widget"
-              className="bg-white rounded-2xl border border-[#F0EAE0] p-4 block hover:shadow-md transition-shadow group shadow-2xs"
+              className="bg-white rounded-2xl border border-[#EDE8C8] p-3.5 shadow-2xs block hover:shadow-md transition-shadow group flex-shrink-0"
             >
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-xs font-bold text-[#18181B] uppercase tracking-wide group-hover:text-[#16A34A] transition-colors">
-                  Your Trust Score
-                </h3>
-                <span className="text-[10px] font-bold text-[#16A34A] flex items-center gap-1">
-                  View Profile <AppIcon name="arrow-right" size={11} />
-                </span>
-              </div>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-11 h-11 rounded-full bg-[#F0FDF4] border-2 border-[#16A34A] flex items-center justify-center text-[#16A34A]">
-                  <AppIcon name="shield-check" size={22} />
+              <h3 className="text-[13.5px] font-bold text-[#18181B] mb-2.5 group-hover:text-[#16A34A] transition-colors">
+                Your Trust Score
+              </h3>
+
+              {/* Score Display */}
+              <div className="flex items-center gap-2.5 mb-2.5">
+                <div className="w-10 h-10 rounded-xl bg-[#E8F8EE] flex items-center justify-center text-[#10B981] flex-shrink-0">
+                  <AppIcon name="shield-check" size={20} />
                 </div>
                 <div>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold text-[#18181B]">{currentUser.trustScore}</span>
-                    <span className="text-xs text-[#9CA3AF]">/ 5</span>
+                    <span className="text-2xl font-black text-[#18181B] leading-none">4.7</span>
+                    <span className="text-xs text-[#9CA3AF] font-medium">/ 5</span>
                   </div>
-                  <span className="text-[10px] font-bold text-[#16A34A] bg-[#F0FDF4] px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-semibold text-[#166534] bg-[#E2F7E9] px-2 py-0.5 rounded-md inline-block mt-0.5">
                     Excellent
                   </span>
                 </div>
               </div>
-              <div className="space-y-1.5 text-[11px] text-[#6B7280]">
+
+              {/* Stats Rows */}
+              <div className="space-y-1.5 text-[11.5px] text-[#374151]">
                 <div className="flex items-center gap-2">
-                  <span className="text-[#3B82F6]"><AppIcon name="repeat" size={13} /></span>
-                  <span>{currentUser.successfulExchanges} Successful Exchanges</span>
+                  <span className="text-[#3B82F6] flex-shrink-0"><AppIcon name="repeat" size={13} /></span>
+                  <span>32 Successful Exchanges</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[#10B981]"><AppIcon name="clock-check" size={13} /></span>
-                  <span>{currentUser.lateReturns} Late Returns</span>
+                  <span className="text-[#10B981] flex-shrink-0"><AppIcon name="timer" size={13} /></span>
+                  <span>0 Late Returns</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[#F59E0B]"><AppIcon name="alert-circle" size={13} /></span>
-                  <span>{currentUser.disputes} Disputes</span>
+                  <span className="text-[#F59E0B] flex-shrink-0"><AppIcon name="alert-circle" size={13} /></span>
+                  <span>0 Disputes</span>
                 </div>
+              </div>
+
+              {/* Verified Member */}
+              <div className="mt-2.5 pt-2.5 border-t border-[#F0EBE0]">
+                <div className="flex items-center gap-1.5 text-[12px]">
+                  <span className="text-[#10B981] flex-shrink-0"><AppIcon name="shield-check" size={14} /></span>
+                  <span className="font-bold text-[#18181B]">Verified Member</span>
+                </div>
+                <p className="text-[10.5px] text-[#6B7280] ml-5 mt-0.5">Computer Engineering, 3rd Year</p>
               </div>
             </Link>
 
-            {/* Upcoming Returns */}
-            <div className="bg-white rounded-2xl border border-[#F0EAE0] p-4 shadow-2xs">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-xs font-bold text-[#18181B] uppercase tracking-wide">Upcoming Returns</h3>
-                <button className="text-[10px] font-semibold text-[#16A34A] hover:underline cursor-pointer">View all</button>
-              </div>
-              <div className="space-y-2.5">
-                {upcomingReturns.map((ret) => (
-                  <div key={ret.id} className="flex items-center gap-2.5">
-                    <div className={`w-8 h-8 rounded-full ${ret.avatarBg} flex items-center justify-center font-bold text-[11px] flex-shrink-0`}>
-                      {ret.initials}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-[#18181B] truncate">{ret.item}</p>
-                      <p className="text-[10px] text-[#9CA3AF]">By {ret.owner}</p>
-                    </div>
-                    <span
-                      className={`text-[9px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
-                        ret.urgent
-                          ? "bg-[#FEF2F2] text-[#DC2626]"
-                          : "bg-[#FEF3C7] text-[#D97706]"
-                      }`}
-                    >
-                      {ret.dueIn}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Recent Messages */}
-            <div className="bg-white rounded-2xl border border-[#F0EAE0] p-4 shadow-2xs">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-xs font-bold text-[#18181B] uppercase tracking-wide">Recent Messages</h3>
-                <button className="text-[10px] font-semibold text-[#16A34A] hover:underline cursor-pointer">View all</button>
+            {/* 2. Recent Messages */}
+            <div className="bg-white rounded-2xl border border-[#EDE8C8] p-3.5 shadow-2xs flex-shrink-0">
+              <div className="flex items-center justify-between mb-2.5">
+                <h3 className="text-[13.5px] font-bold text-[#18181B]">Recent Messages</h3>
+                <button className="text-[11px] font-semibold text-[#2563EB] hover:underline cursor-pointer">View all</button>
               </div>
               <div className="space-y-2.5">
                 {recentMessages.map((msg) => (
                   <div key={msg.id} className="flex items-center gap-2.5">
-                    <div className={`w-8 h-8 rounded-full ${msg.avatarBg} flex items-center justify-center font-bold text-[11px] flex-shrink-0`}>
+                    <div className={`w-7 h-7 rounded-full ${msg.avatarBg} flex items-center justify-center font-bold text-[11px] flex-shrink-0 shadow-2xs`}>
                       {msg.initials}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-[#18181B] truncate">{msg.name}</p>
-                      <p className="text-[10px] text-[#9CA3AF] truncate">{msg.message}</p>
+                      <p className="text-[12px] font-bold text-[#18181B] truncate leading-tight">{msg.name}</p>
+                      <p className="text-[10.5px] text-[#6B7280] truncate">{msg.message}</p>
                     </div>
-                    <span className="text-[9px] text-[#9CA3AF] whitespace-nowrap">{msg.time}</span>
+                    <span className="text-[10px] text-[#9CA3AF] whitespace-nowrap">{msg.time}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Impact Card */}
-            <div className="bg-gradient-to-br from-[#065F46] to-[#047857] rounded-2xl p-4 text-white shadow-2xs">
-              <div className="flex items-center justify-between mb-1">
-                <p className="text-xs font-semibold opacity-90">Every share counts!</p>
-                <AppIcon name="leaf" size={16} className="text-emerald-200" />
+            {/* 3. Impact Card with Tree */}
+            <div className="bg-[#F2F7E8] border border-[#DCE8C8] rounded-2xl p-3 shadow-2xs relative overflow-hidden flex items-center justify-between flex-shrink-0">
+              <div className="flex-1 min-w-0 pr-1">
+                <p className="text-[12px] font-extrabold text-[#1E4E1C] leading-tight">
+                  Every share<br />counts!
+                </p>
+                <p className="text-[10px] text-[#52525B] mt-0.5">You&apos;ve helped save</p>
+                <p className="text-[22px] font-black text-[#18181B] mt-0.5 leading-none tracking-tight">
+                  12.4 kg
+                </p>
+                <p className="text-[22px] font-black text-[#18181B] leading-none tracking-tight">
+                  CO<sub className="text-xs font-bold">2</sub>
+                </p>
+                <p className="text-[10px] text-[#52525B] flex items-center gap-1 mt-0.5 font-medium">
+                  <span>this month</span>
+                  <span className="text-xs">🌱</span>
+                </p>
               </div>
-              <p className="text-[10px] opacity-75 mb-1.5">You&apos;ve helped save</p>
-              <p className="text-2xl font-bold mb-0.5">
-                {currentUser.co2Saved} kg CO<sub className="text-sm font-normal">2</sub>
-              </p>
-              <p className="text-[10px] opacity-75">this month</p>
+              <div className="w-[100px] h-[100px] relative flex-shrink-0 -mr-1">
+                <Image
+                  src="/tree.png"
+                  alt="Environmental tree impact"
+                  fill
+                  className="object-contain object-center select-none pointer-events-none drop-shadow-xs"
+                  priority
+                />
+              </div>
             </div>
           </aside>
         </div>
       </div>
-
-      {/* ─── UNIFIED BOTTOM FOOTER ────────────────────────────── */}
-      <AppFooter />
     </div>
   );
 }

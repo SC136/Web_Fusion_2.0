@@ -1,6 +1,5 @@
 import Image from "next/image";
 import AppNavbar from "./layout/AppNavbar";
-import AppFooter from "./layout/AppFooter";
 
 export default function HeroSection() {
   return (
@@ -123,8 +122,8 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Unified Bottom Footer */}
-      <AppFooter />
+      {/* Spacer at bottom so content is vertically centered */}
+      <div className="h-[28vh] sm:h-[32vh] md:h-[36vh] w-full pointer-events-none flex-shrink-0" />
     </div>
   );
 }

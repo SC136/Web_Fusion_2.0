@@ -5,7 +5,6 @@ import { useState } from "react";
 import { profileUser, publicProfileMaya } from "@/app/data/mockData";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 import AppNavbar from "@/app/components/layout/AppNavbar";
-import AppFooter from "@/app/components/layout/AppFooter";
 import Sidebar from "@/app/components/dashboard/Sidebar";
 
 export default function ProfilePage() {
@@ -559,9 +558,6 @@ export default function ProfilePage() {
           )}
         </main>
       </div>
-
-      {/* ─── UNIFIED BOTTOM FOOTER ────────────────────────────── */}
-      <AppFooter />
     </div>
   );
 }

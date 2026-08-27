@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import AppNavbar from "@/app/components/layout/AppNavbar";
-import AppFooter from "@/app/components/layout/AppFooter";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -227,9 +226,6 @@ export default function LoginPage() {
           </div>
         </div>
       </main>
-
-      {/* ─── UNIFIED BOTTOM FOOTER ────────────────────────────── */}
-      <AppFooter />
     </div>
   );
 }
