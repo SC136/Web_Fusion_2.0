@@ -107,12 +107,12 @@ export default function Sidebar() {
       {/* User Profile */}
       <div className="px-4 py-4 border-t border-[#E8E4D8]">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-[#FEF3C7] flex items-center justify-center text-lg">
-            {currentUser.avatar}
+          <div className={`w-9 h-9 rounded-full ${currentUser.avatarBg} flex items-center justify-center font-bold text-xs`}>
+            {currentUser.initials}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-semibold text-[#18181B] truncate">
-              Hey, {currentUser.name}! 👋
+              Hey, {currentUser.name}!
             </p>
             <p className="text-[11px] text-[#9CA3AF]">View Profile</p>
           </div>

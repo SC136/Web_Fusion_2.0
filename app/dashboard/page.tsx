@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import {
   currentUser,
   overviewStats,
@@ -10,7 +11,9 @@ import {
   upcomingReturns,
   recentMessages,
   popularSearches,
+  sidebarNav,
 } from "@/app/data/mockData";
+import { AppIcon } from "@/app/components/dashboard/Icons";
 import { useState } from "react";
 
 export default function DashboardPage() {
@@ -37,7 +40,7 @@ export default function DashboardPage() {
                   className="text-2xl md:text-3xl font-bold text-[#18181B] mb-1"
                   style={{ fontFamily: "'Pixelify Sans', monospace" }}
                 >
-                  Welcome back, {currentUser.name}! 👋
+                  Welcome back, {currentUser.name}!
                 </h1>
                 <p className="text-sm text-[#6B7280]">Let&apos;s make sharing the new normal.</p>
               </div>
@@ -48,21 +51,29 @@ export default function DashboardPage() {
 
             {/* AI Search Bar */}
             <div className="bg-[#F0FDF4] border border-[#BBF7D0] rounded-2xl p-4 mb-5">
-              <p className="text-sm font-semibold text-[#166534] mb-2">What do you need today?</p>
+              <p className="text-sm font-semibold text-[#166534] mb-2 flex items-center gap-2">
+                <span>What do you need today?</span>
+              </p>
               <div className="flex gap-2">
-                <input
-                  id="ai-search"
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="e.g. I need a camera and tripod for a reel shoot tomorrow"
-                  className="flex-1 px-4 py-2.5 rounded-xl bg-white border border-[#D1D5DB] text-sm text-[#18181B] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#86EFAC] focus:border-transparent"
-                />
+                <div className="relative flex-1">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9CA3AF]">
+                    <AppIcon name="sparkles" size={16} className="text-[#16A34A]" />
+                  </div>
+                  <input
+                    id="ai-search"
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="e.g. I need a camera and tripod for a reel shoot tomorrow"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-[#D1D5DB] text-sm text-[#18181B] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#86EFAC] focus:border-transparent shadow-xs"
+                  />
+                </div>
                 <button
                   id="ai-search-btn"
-                  className="px-5 py-2.5 bg-[#16A34A] text-white text-sm font-semibold rounded-xl hover:bg-[#15803D] transition-colors flex items-center gap-1.5 whitespace-nowrap"
+                  className="px-5 py-2.5 bg-[#16A34A] text-white text-sm font-semibold rounded-xl hover:bg-[#15803D] transition-colors flex items-center gap-2 whitespace-nowrap shadow-xs"
                 >
-                  Search with AI ✨
+                  <span>Search with AI</span>
+                  <AppIcon name="sparkles" size={15} />
                 </button>
               </div>
               <div className="flex items-center gap-2 mt-2.5 flex-wrap">
@@ -89,10 +100,10 @@ export default function DashboardPage() {
                   >
                     <div className="flex items-center gap-2.5 mb-2">
                       <div
-                        className="w-9 h-9 rounded-xl flex items-center justify-center text-lg"
-                        style={{ backgroundColor: stat.color }}
+                        className="w-9 h-9 rounded-xl flex items-center justify-center"
+                        style={{ backgroundColor: stat.bgColor, color: stat.textColor }}
                       >
-                        {stat.icon}
+                        <AppIcon name={stat.icon} size={18} />
                       </div>
                       <span className="text-xl font-bold text-[#18181B]">{stat.value}</span>
                     </div>
@@ -111,13 +122,13 @@ export default function DashboardPage() {
                   <div key={stage.label} className="flex items-center">
                     <div className="flex flex-col items-center min-w-[80px]">
                       <div
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg mb-1.5 ${
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center mb-1.5 transition-colors ${
                           stage.active
-                            ? "bg-[#18181B] shadow-md"
-                            : "bg-[#F9FAFB] border border-[#E5E7EB]"
+                            ? "bg-[#18181B] text-white shadow-md"
+                            : "bg-[#F9FAFB] text-[#6B7280] border border-[#E5E7EB]"
                         }`}
                       >
-                        {stage.icon}
+                        <AppIcon name={stage.icon} size={18} />
                       </div>
                       <span
                         className={`text-[11px] font-medium ${
@@ -147,8 +158,9 @@ export default function DashboardPage() {
               {/* Recommended Items */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-base font-bold text-[#18181B]">
-                    Recommended for You <span className="text-sm">✨</span>
+                  <h2 className="text-base font-bold text-[#18181B] flex items-center gap-1.5">
+                    <span>Recommended for You</span>
+                    <AppIcon name="sparkles" size={16} className="text-amber-500" />
                   </h2>
                   <button className="text-xs font-semibold text-[#16A34A] hover:underline">View all</button>
                 </div>
@@ -170,15 +182,21 @@ export default function DashboardPage() {
                         />
                       </div>
                       <div className="p-3">
-                        <div className="flex items-center gap-1.5 text-[10px] text-[#6B7280] mb-1.5">
-                          <span>⭐ {item.rating}</span>
+                        <div className="flex items-center gap-2 text-[10px] text-[#6B7280] mb-1.5">
+                          <span className="flex items-center gap-0.5 text-amber-500 font-semibold">
+                            <AppIcon name="star" size={12} className="fill-amber-400 text-amber-400" />
+                            <span className="text-[#374151]">{item.rating}</span>
+                          </span>
                           <span className="text-[#D1D5DB]">•</span>
-                          <span>📍 {item.distance}</span>
+                          <span className="flex items-center gap-0.5 text-[#6B7280]">
+                            <AppIcon name="map-pin" size={11} className="text-[#9CA3AF]" />
+                            {item.distance}
+                          </span>
                         </div>
                         <p className="text-[13px] font-semibold text-[#18181B] mb-0.5 truncate">{item.name}</p>
                         <p className="text-[10px] text-[#9CA3AF] mb-2">By {item.owner}</p>
                         <p className="text-[13px] font-bold text-[#18181B]">{item.pricePerDay}</p>
-                        <p className="text-[10px] text-[#16A34A]">{item.deposit}</p>
+                        <p className="text-[10px] text-[#16A34A] font-medium">{item.deposit}</p>
                       </div>
                     </div>
                   ))}
@@ -197,7 +215,9 @@ export default function DashboardPage() {
                       key={cat.name}
                       className="flex items-center gap-3 bg-white rounded-xl border border-[#F3F4F6] px-4 py-3 hover:shadow-sm transition-shadow cursor-pointer"
                     >
-                      <span className="text-lg">{cat.icon}</span>
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${cat.color}`}>
+                        <AppIcon name={cat.icon} size={16} />
+                      </div>
                       <div className="flex-1">
                         <p className="text-[13px] font-medium text-[#18181B]">{cat.name}</p>
                       </div>
@@ -215,8 +235,8 @@ export default function DashboardPage() {
             <div className="bg-white rounded-2xl border border-[#F3F4F6] p-4">
               <h3 className="text-sm font-bold text-[#18181B] mb-3">Your Trust Score</h3>
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-12 h-12 rounded-full bg-[#F0FDF4] border-2 border-[#16A34A] flex items-center justify-center">
-                  <span className="text-lg">🛡️</span>
+                <div className="w-12 h-12 rounded-full bg-[#F0FDF4] border-2 border-[#16A34A] flex items-center justify-center text-[#16A34A]">
+                  <AppIcon name="shield-check" size={24} />
                 </div>
                 <div>
                   <div className="flex items-baseline gap-1">
@@ -228,20 +248,23 @@ export default function DashboardPage() {
                   </span>
                 </div>
               </div>
-              <div className="space-y-1.5 text-[12px] text-[#6B7280]">
+              <div className="space-y-2 text-[12px] text-[#6B7280]">
                 <div className="flex items-center gap-2">
-                  <span>🤝</span> {currentUser.successfulExchanges} Successful Exchanges
+                  <span className="text-[#3B82F6]"><AppIcon name="repeat" size={14} /></span>
+                  <span>{currentUser.successfulExchanges} Successful Exchanges</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span>⏱️</span> {currentUser.lateReturns} Late Returns
+                  <span className="text-[#10B981]"><AppIcon name="clock-check" size={14} /></span>
+                  <span>{currentUser.lateReturns} Late Returns</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span>⚠️</span> {currentUser.disputes} Disputes
+                  <span className="text-[#F59E0B]"><AppIcon name="alert-circle" size={14} /></span>
+                  <span>{currentUser.disputes} Disputes</span>
                 </div>
               </div>
               <div className="mt-3 pt-3 border-t border-[#F3F4F6]">
-                <div className="flex items-center gap-2 text-[12px]">
-                  <span className="text-[#16A34A] font-bold">✓</span>
+                <div className="flex items-center gap-1.5 text-[12px]">
+                  <span className="text-[#16A34A]"><AppIcon name="shield-check" size={15} /></span>
                   <span className="font-semibold text-[#18181B]">Verified Member</span>
                 </div>
                 <p className="text-[11px] text-[#9CA3AF] ml-5">{currentUser.department}, {currentUser.year}</p>
@@ -257,8 +280,8 @@ export default function DashboardPage() {
               <div className="space-y-3">
                 {upcomingReturns.map((ret) => (
                   <div key={ret.id} className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-[#F9FAFB] flex items-center justify-center text-lg">
-                      {ret.avatar}
+                    <div className={`w-9 h-9 rounded-full ${ret.avatarBg} flex items-center justify-center font-bold text-xs`}>
+                      {ret.initials}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[13px] font-semibold text-[#18181B] truncate">{ret.item}</p>
@@ -274,11 +297,8 @@ export default function DashboardPage() {
                       >
                         {ret.dueIn}
                       </span>
-                      <button className="text-[#9CA3AF] hover:text-[#18181B]">
-                        <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                          <circle cx="12" cy="12" r="3" />
-                        </svg>
+                      <button className="text-[#9CA3AF] hover:text-[#18181B] transition-colors">
+                        <AppIcon name="eye" size={14} />
                       </button>
                     </div>
                   </div>
@@ -295,8 +315,8 @@ export default function DashboardPage() {
               <div className="space-y-3">
                 {recentMessages.map((msg) => (
                   <div key={msg.id} className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-[#F9FAFB] flex items-center justify-center text-lg">
-                      {msg.avatar}
+                    <div className={`w-9 h-9 rounded-full ${msg.avatarBg} flex items-center justify-center font-bold text-xs`}>
+                      {msg.initials}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[13px] font-semibold text-[#18181B] truncate">{msg.name}</p>
@@ -310,12 +330,15 @@ export default function DashboardPage() {
 
             {/* Impact Card */}
             <div className="bg-gradient-to-br from-[#065F46] to-[#047857] rounded-2xl p-4 text-white">
-              <p className="text-xs font-semibold opacity-90 mb-1">Every share counts!</p>
+              <div className="flex items-center justify-between mb-1">
+                <p className="text-xs font-semibold opacity-90">Every share counts!</p>
+                <AppIcon name="leaf" size={16} className="text-emerald-200" />
+              </div>
               <p className="text-[11px] opacity-75 mb-2">You&apos;ve helped save</p>
               <p className="text-3xl font-bold mb-0.5">
-                {currentUser.co2Saved} kg CO<sub className="text-base">2</sub>
+                {currentUser.co2Saved} kg CO<sub className="text-base font-normal">2</sub>
               </p>
-              <p className="text-[11px] opacity-75">this month 🌱</p>
+              <p className="text-[11px] opacity-75">this month</p>
             </div>
           </aside>
         </div>
@@ -325,9 +348,6 @@ export default function DashboardPage() {
 }
 
 /* ─── SIDEBAR ────────────────────────────────────────────────── */
-import Link from "next/link";
-import { sidebarNav } from "@/app/data/mockData";
-
 function SidebarIcon({ name }: { name: string }) {
   const p: Record<string, string> = {
     grid: "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z",
@@ -350,7 +370,7 @@ function SidebarIcon({ name }: { name: string }) {
 
 function Sidebar() {
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-[#FDFBF1] border-r border-[#E8E4D8] flex-col z-40 hidden lg:flex">
+    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-[#FDFBF1] border-r border-[#E8E4D8] flex flex-col z-40 hidden lg:flex">
       {/* Logo */}
       <div className="px-5 py-5 flex items-center gap-2.5">
         <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#3B82F6] via-[#10B981] to-[#84CC16] p-[2px] flex items-center justify-center">
@@ -390,11 +410,11 @@ function Sidebar() {
       {/* User */}
       <div className="px-4 py-4 border-t border-[#E8E4D8]">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-[#FEF3C7] flex items-center justify-center text-lg">
-            {currentUser.avatar}
+          <div className={`w-9 h-9 rounded-full ${currentUser.avatarBg} flex items-center justify-center font-bold text-xs`}>
+            {currentUser.initials}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-semibold text-[#18181B] truncate">Hey, {currentUser.name}! 👋</p>
+            <p className="text-[13px] font-semibold text-[#18181B] truncate">Hey, {currentUser.name}!</p>
             <p className="text-[11px] text-[#9CA3AF]">View Profile</p>
           </div>
         </div>
@@ -419,8 +439,8 @@ function TopBar() {
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
         </svg>
       </button>
-      <div className="w-9 h-9 rounded-full bg-[#FEF3C7] flex items-center justify-center text-lg cursor-pointer hover:ring-2 hover:ring-[#16A34A] transition-shadow">
-        {currentUser.avatar}
+      <div className={`w-9 h-9 rounded-full ${currentUser.avatarBg} flex items-center justify-center font-bold text-xs cursor-pointer hover:ring-2 hover:ring-[#16A34A] transition-all`}>
+        {currentUser.initials}
       </div>
     </header>
   );
