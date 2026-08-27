@@ -67,11 +67,11 @@ function SidebarIcon({ name }: { name: string }) {
 
 export default function Sidebar() {
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-white border-r border-[#E5E7EB] flex flex-col z-40 hidden lg:flex">
+    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-[#FDFBF1] border-r border-[#E8E4D8] flex flex-col z-40 hidden lg:flex">
       {/* Logo */}
       <div className="px-5 py-5 flex items-center gap-2.5">
         <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#3B82F6] via-[#10B981] to-[#84CC16] p-[2px] flex items-center justify-center">
-          <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
+          <div className="w-full h-full bg-[#FDFBF1] rounded-full flex items-center justify-center">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
             </svg>
@@ -92,8 +92,8 @@ export default function Sidebar() {
             id={`sidebar-${item.label.toLowerCase().replace(/\s/g, "-")}`}
             className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-150 ${
               item.active
-                ? "bg-[#F0FDF4] text-[#166534] font-semibold"
-                : "text-[#6B7280] hover:bg-[#F9FAFB] hover:text-[#18181B]"
+                ? "bg-[#EAF7EE] text-[#166534] font-semibold"
+                : "text-[#6B7280] hover:bg-[#F5F2E8] hover:text-[#18181B]"
             }`}
           >
             <span className={item.active ? "text-[#16A34A]" : "text-[#9CA3AF]"}>
@@ -105,7 +105,7 @@ export default function Sidebar() {
       </nav>
 
       {/* User Profile */}
-      <div className="px-4 py-4 border-t border-[#F3F4F6]">
+      <div className="px-4 py-4 border-t border-[#E8E4D8]">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-[#FEF3C7] flex items-center justify-center text-lg">
             {currentUser.avatar}

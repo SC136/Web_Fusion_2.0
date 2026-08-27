@@ -17,7 +17,7 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="flex min-h-screen bg-[#FAFAFA]">
+    <div className="flex min-h-screen bg-[#FEFEFE]">
       {/* ─── LEFT SIDEBAR (Desktop) ─────────────────────────── */}
       <Sidebar />
 
@@ -350,11 +350,11 @@ function SidebarIcon({ name }: { name: string }) {
 
 function Sidebar() {
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-white border-r border-[#E5E7EB] flex-col z-40 hidden lg:flex">
+    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-[#FDFBF1] border-r border-[#E8E4D8] flex-col z-40 hidden lg:flex">
       {/* Logo */}
       <div className="px-5 py-5 flex items-center gap-2.5">
         <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#3B82F6] via-[#10B981] to-[#84CC16] p-[2px] flex items-center justify-center">
-          <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
+          <div className="w-full h-full bg-[#FDFBF1] rounded-full flex items-center justify-center">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38" />
             </svg>
@@ -375,8 +375,8 @@ function Sidebar() {
             id={`sidebar-${item.label.toLowerCase().replace(/\s/g, "-")}`}
             className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all ${
               item.active
-                ? "bg-[#F0FDF4] text-[#166534] font-semibold"
-                : "text-[#6B7280] hover:bg-[#F9FAFB] hover:text-[#18181B]"
+                ? "bg-[#EAF7EE] text-[#166534] font-semibold"
+                : "text-[#6B7280] hover:bg-[#F5F2E8] hover:text-[#18181B]"
             }`}
           >
             <span className={item.active ? "text-[#16A34A]" : "text-[#9CA3AF]"}>
@@ -388,7 +388,7 @@ function Sidebar() {
       </nav>
 
       {/* User */}
-      <div className="px-4 py-4 border-t border-[#F3F4F6]">
+      <div className="px-4 py-4 border-t border-[#E8E4D8]">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-[#FEF3C7] flex items-center justify-center text-lg">
             {currentUser.avatar}
@@ -406,7 +406,7 @@ function Sidebar() {
 /* ─── TOP BAR ────────────────────────────────────────────────── */
 function TopBar() {
   return (
-    <header className="h-14 border-b border-[#F3F4F6] bg-white px-5 flex items-center justify-end gap-4 flex-shrink-0 sticky top-0 z-30">
+    <header className="h-14 border-b border-[#EDE9DA] bg-[#FEFEFE] px-5 flex items-center justify-end gap-4 flex-shrink-0 sticky top-0 z-30">
       <button id="topbar-notifications" className="w-9 h-9 rounded-xl bg-[#F9FAFB] flex items-center justify-center hover:bg-[#F3F4F6] transition-colors relative">
         <svg width="18" height="18" fill="none" stroke="#6B7280" strokeWidth="2" viewBox="0 0 24 24">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" strokeLinecap="round" strokeLinejoin="round" />
