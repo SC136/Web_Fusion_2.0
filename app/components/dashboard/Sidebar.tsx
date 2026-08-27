@@ -10,7 +10,7 @@ const navItems = [
   { label: "Dashboard", icon: "grid", href: "/dashboard" },
   { label: "Browse", icon: "search", href: "/browse" },
   { label: "AI Assistant", icon: "sparkles", href: "/ai-assistant" },
-  { label: "My Requests", icon: "inbox", href: "/requests" },
+  { label: "Requests", icon: "inbox", href: "/requests" },
   { label: "My Loans", icon: "arrow-up-right", href: "/loans" },
   { label: "My Listings", icon: "list", href: "/listings" },
   { label: "Messages", icon: "message", href: "/messages" },
@@ -113,7 +113,7 @@ export default function Sidebar() {
             isActive = pathname.startsWith("/browse");
           } else if (item.label === "AI Assistant") {
             isActive = pathname.startsWith("/ai-assistant");
-          } else if (item.label === "My Requests") {
+          } else if (item.label === "Requests") {
             isActive = pathname.startsWith("/requests");
           } else if (item.label === "My Loans") {
             isActive = pathname.startsWith("/loans");
