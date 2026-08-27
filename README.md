@@ -347,6 +347,25 @@ All application state flows through a single `AppContext` provider:
 
 **Team SC136** — Web Fusion 2.0 Hackathon, TCET
 
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/SC136">
+        <img src="https://github.com/SC136.png" width="80" style="border-radius:50%" alt="SC136" /><br />
+        <sub><b>Swar</b></sub>
+      </a><br />
+      <sub>@SC136</sub>
+    </td>
+    <td align="center">
+      <a href="https://github.com/WillyEverGreen">
+        <img src="https://github.com/WillyEverGreen.png" width="80" style="border-radius:50%" alt="WillyEverGreen" /><br />
+        <sub><b>Balkawade Sai Dipak</b></sub>
+      </a><br />
+      <sub>@WillyEverGreen</sub>
+    </td>
+  </tr>
+</table>
+
 ---
 
 <div align="center">
