@@ -626,6 +626,7 @@ export default function ProfilePage() {
           )}
         </main>
       </div>
+      </div>
     </div>
   );
 }
