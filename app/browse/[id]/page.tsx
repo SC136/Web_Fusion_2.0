@@ -66,54 +66,14 @@ export default function ProductDetailPage() {
           {/* ─── LEFT: Product Showcase & Gallery (7 cols) ──────── */}
           <div className="lg:col-span-7 space-y-4">
             {/* Main Stage Display Card */}
-            <div className="relative w-full aspect-[4/3] bg-[#EFF7ED] border border-[#DCEBD9] rounded-3xl overflow-hidden shadow-sm flex items-center justify-center p-6 sm:p-10 group">
-              {/* Decorative Clay Accent 1: Blue wiggle */}
-              <div className="absolute left-6 bottom-12 w-16 h-16 pointer-events-none opacity-90">
-                <svg viewBox="0 0 100 100" fill="none" className="w-full h-full drop-shadow-md">
-                  <path
-                    d="M20 70 C 15 50, 45 40, 40 25 C 35 10, 65 15, 75 35 C 85 55, 60 75, 70 85"
-                    stroke="#3B82F6"
-                    strokeWidth="18"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </div>
-
-              {/* Decorative Clay Accent 2: Orange zig-zag */}
-              <div className="absolute left-16 top-10 w-12 h-12 pointer-events-none opacity-85">
-                <svg viewBox="0 0 100 100" fill="none" className="w-full h-full drop-shadow-md">
-                  <path
-                    d="M10 70 L 40 25 L 65 65 L 90 20"
-                    stroke="#F97316"
-                    strokeWidth="16"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-
-              {/* Decorative Mascot Props Right: Green Radio & Yellow Mini-cam */}
-              <div className="absolute right-6 bottom-6 flex items-end gap-2 pointer-events-none">
-                <div className="relative w-12 h-14 drop-shadow-md">
-                  <Image
-                    src="/mascots/green_radio.png"
-                    alt="Props"
-                    fill
-                    className="object-contain object-bottom"
-                  />
-                </div>
-                <div className="w-8 h-7 bg-[#FBBF24] rounded-xl border-2 border-[#D97706] shadow-sm flex items-center justify-center text-xs">
-                  📷
-                </div>
-              </div>
-
+            <div className="relative w-full aspect-[4/3] bg-[#EFF7ED] border border-[#DCEBD9] rounded-3xl overflow-hidden shadow-xs flex items-center justify-center p-6 sm:p-10 group">
               {/* Main Product Hero Image */}
               <div className="relative w-4/5 h-4/5 max-h-[360px] z-10">
                 <Image
                   src={galleryImages[selectedImageIndex]}
                   alt={product.title}
                   fill
-                  className="object-contain object-center drop-shadow-xl transition-all duration-300 group-hover:scale-105"
+                  className="object-contain object-center drop-shadow-md transition-all duration-300 group-hover:scale-105"
                   priority
                 />
               </div>
