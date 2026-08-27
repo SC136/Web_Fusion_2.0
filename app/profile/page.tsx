@@ -73,9 +73,9 @@ export default function ProfilePage() {
           {activeTab === "dashboard" && (
             <div className="space-y-6 animate-fadeInUp">
               {/* Top Main Hero Card */}
-              <div className="bg-white rounded-3xl border border-[#EDE8C8] p-6 lg:p-7 shadow-xs relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-6">
-                {/* Left Side: Avatar + Details */}
-                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left z-10">
+              <div className="bg-white rounded-3xl border border-[#EDE8C8] p-6 lg:p-7 shadow-xs relative overflow-hidden flex flex-col xl:flex-row items-center justify-between gap-6">
+                {/* Left Side: Avatar + Details + Bio + Action Pills */}
+                <div className="flex-1 flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left z-10 min-w-0">
                   {/* Large Circular Avatar */}
                   <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-[#E0F2FE] border-4 border-white shadow-md flex-shrink-0">
                     <Image
@@ -85,30 +85,38 @@ export default function ProfilePage() {
                       className="object-cover object-top scale-175 translate-y-1"
                       priority
                     />
+                    <div className="absolute bottom-1 right-1 w-4 h-4 bg-[#16A34A] rounded-full border-2 border-white" title="Active on Campus" />
                   </div>
 
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-center sm:justify-start gap-2">
-                      <h2 className="text-xl sm:text-2xl font-bold text-[#18181B]">
-                        {profileUser.name}
-                      </h2>
-                      <span className="w-5 h-5 rounded-full bg-[#16A34A] text-white flex items-center justify-center">
-                        <AppIcon name="check" size={12} />
+                  <div className="space-y-2 flex-1 min-w-0">
+                    {/* Name + Department */}
+                    <div>
+                      <div className="flex items-center justify-center sm:justify-start gap-2">
+                        <h2 className="text-xl sm:text-2xl font-bold text-[#18181B]">
+                          {profileUser.name}
+                        </h2>
+                        <span className="w-5 h-5 rounded-full bg-[#16A34A] text-white flex items-center justify-center shadow-2xs">
+                          <AppIcon name="check" size={12} />
+                        </span>
+                      </div>
+                      <p className="text-xs sm:text-[13px] font-semibold text-[#52525B] mt-0.5">
+                        {profileUser.department} • {profileUser.year}
+                      </p>
+                    </div>
+
+                    {/* Location & Meta Badges */}
+                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 text-xs text-[#71717A]">
+                      <span className="flex items-center gap-1 bg-[#F9FAFB] border border-[#E5E7EB] px-2.5 py-1 rounded-lg font-medium text-[11.5px]">
+                        <AppIcon name="map-pin" size={12} className="text-[#9CA3AF]" />
+                        <span>{profileUser.location}</span>
+                      </span>
+                      <span className="flex items-center gap-1 bg-[#F9FAFB] border border-[#E5E7EB] px-2.5 py-1 rounded-lg font-medium text-[11.5px]">
+                        <span>📅 Member since Aug 2024</span>
                       </span>
                     </div>
-                    <p className="text-xs sm:text-sm font-semibold text-[#52525B]">
-                      {profileUser.department}
-                    </p>
-                    <p className="text-xs text-[#71717A] font-medium">
-                      {profileUser.year}
-                    </p>
-                    <p className="text-xs text-[#71717A] flex items-center justify-center sm:justify-start gap-1">
-                      <AppIcon name="map-pin" size={13} className="text-[#9CA3AF]" />
-                      <span>{profileUser.location}</span>
-                    </p>
 
                     {/* Verification Badges */}
-                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
+                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-0.5">
                       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-[#DCFCE7] text-[#15803D] border border-[#BBF7D0]">
                         <AppIcon name="check" size={11} />
                         <span>ID Verified</span>
@@ -117,45 +125,80 @@ export default function ProfilePage() {
                         <AppIcon name="check" size={11} />
                         <span>College Email Verified</span>
                       </span>
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-[#FEF3C7] text-[#B45309] border border-[#FDE68A]">
+                        <span>✦ Top Lender</span>
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Center-Right: Trust Score Card */}
-                <div className="border-t lg:border-t-0 lg:border-l border-[#EDE8C8] pt-4 lg:pt-0 lg:pl-8 flex flex-col items-center text-center z-10 min-w-[180px]">
-                  <span className="text-xs font-bold text-[#52525B] mb-2 uppercase tracking-wide">
-                    Trust Score
-                  </span>
-                  {/* Shield Badge */}
-                  <div className="w-24 h-24 border-2 border-[#16A34A] rounded-2xl flex flex-col items-center justify-center bg-[#F0FDF4] shadow-xs relative mb-2">
-                    <span className="text-3xl font-black text-[#18181B] leading-none">
-                      {profileUser.trustScore}
+                {/* Middle / Center: Trust Score & Quick Activity Stats */}
+                <div className="border-t xl:border-t-0 xl:border-l xl:border-r border-[#EDE8C8] pt-4 xl:pt-0 xl:px-6 flex flex-col sm:flex-row items-center gap-5 z-10">
+                  {/* Trust Score Box */}
+                  <div className="bg-[#F5F8E9] border border-[#D8E8B8] rounded-2xl p-4 flex flex-col items-center text-center shadow-2xs min-w-[140px]">
+                    <span className="text-[10.5px] font-bold text-[#2E5E1C] uppercase tracking-wider mb-1">
+                      Trust Score
                     </span>
-                    <span className="text-[11px] font-bold text-[#71717A]">/5</span>
-                    <span className="text-[9.5px] font-bold text-[#166534] bg-[#DCFCE7] px-2 py-0.2 rounded-full mt-1">
-                      Excellent
+                    <div className="flex items-baseline gap-1 my-0.5">
+                      <span className="text-3xl font-extrabold text-[#18181B] leading-none">
+                        {profileUser.trustScore}
+                      </span>
+                      <span className="text-xs text-[#71717A] font-bold">/ 5</span>
+                    </div>
+                    <span className="text-[10px] font-bold text-[#166534] bg-[#DCFCE7] px-2.5 py-0.5 rounded-full my-1">
+                      Excellent Tier
+                    </span>
+                    <div className="flex items-center gap-0.5 text-amber-400 my-0.5">
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <AppIcon key={s} name="star" size={13} className="fill-amber-400 text-amber-400" />
+                      ))}
+                    </div>
+                    <span className="text-[10px] text-[#71717A] font-medium mt-0.5">
+                      {profileUser.reviewsCount} reviews
                     </span>
                   </div>
-                  {/* Stars */}
-                  <div className="flex items-center gap-1 text-amber-400 mb-1">
-                    {[1, 2, 3, 4, 5].map((s) => (
-                      <AppIcon key={s} name="star" size={15} className="fill-amber-400 text-amber-400" />
-                    ))}
+
+                  {/* Highlights Mini Stats */}
+                  <div className="space-y-2 text-xs min-w-[150px]">
+                    <div className="bg-[#FEFCF6] border border-[#F4E8CB] p-2 rounded-xl flex items-center gap-2.5">
+                      <span className="text-base">⚡</span>
+                      <div>
+                        <p className="text-[10px] text-[#78716C] font-semibold">Response Time</p>
+                        <p className="text-xs font-bold text-[#18181B]">&lt; 15 mins</p>
+                      </div>
+                    </div>
+                    <div className="bg-[#FEFCF6] border border-[#F4E8CB] p-2 rounded-xl flex items-center gap-2.5">
+                      <span className="text-base">🏅</span>
+                      <div>
+                        <p className="text-[10px] text-[#78716C] font-semibold">Campus Rank</p>
+                        <p className="text-xs font-bold text-[#18181B]">Top 5% on Campus</p>
+                      </div>
+                    </div>
+                    <div className="bg-[#FEFCF6] border border-[#F4E8CB] p-2 rounded-xl flex items-center gap-2.5">
+                      <span className="text-base">🌱</span>
+                      <div>
+                        <p className="text-[10px] text-[#78716C] font-semibold">CO₂ Saved</p>
+                        <p className="text-xs font-bold text-[#18181B]">12.4 kg CO₂</p>
+                      </div>
+                    </div>
                   </div>
-                  <span className="text-[11px] text-[#71717A] font-medium">
-                    Based on {profileUser.reviewsCount} reviews
-                  </span>
                 </div>
 
-                {/* Far Right: Clean 3D Mascot Character */}
-                <div className="relative w-36 h-44 lg:w-44 lg:h-48 hidden md:block flex-shrink-0 z-0">
-                  <Image
-                    src="/mascots/blue_dress_hat.png"
-                    alt="Profile mascot"
-                    fill
-                    className="object-contain object-bottom scale-105 select-none pointer-events-none"
-                    priority
-                  />
+                {/* Far Right: Clean Mascot with Friendly Speech Bubble */}
+                <div className="relative flex flex-col items-center justify-end flex-shrink-0 z-0 pl-2">
+                  <div className="mb-2 bg-[#FFF9EA] border border-[#F4E8CB] px-3 py-1.5 rounded-xl text-[11px] font-bold text-[#78350F] shadow-2xs relative max-w-[170px] text-center">
+                    <span>100% on-time returns! 🌱</span>
+                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-[#FFF9EA] border-r border-b border-[#F4E8CB] rotate-45" />
+                  </div>
+                  <div className="relative w-32 h-36 lg:w-36 lg:h-40 flex-shrink-0">
+                    <Image
+                      src="/mascots/blue_dress_hat.png"
+                      alt="Profile mascot"
+                      fill
+                      className="object-contain object-bottom scale-105 select-none pointer-events-none"
+                      priority
+                    />
+                  </div>
                 </div>
               </div>
 
