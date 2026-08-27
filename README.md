@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔄 Campus Circular
+<img src="public/named_logo.png" alt="Campus Circular Logo" width="400" />
 
 ### _From Ownership to Access — Why buy what someone nearby already has?_
 
