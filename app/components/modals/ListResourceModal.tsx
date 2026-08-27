@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 
 interface ListResourceModalProps {
@@ -62,10 +63,118 @@ export default function ListResourceModal({
       setCurrentStep((prev) => (prev + 1) as 1 | 2 | 3);
     } else {
       // Final submit
-      setIsSuccess(true);
-      if (onSuccess) {
-        onSuccess(activeTab === "list" ? listForm : requestForm);
+      if (activeTab === "list") {
+        const categoryImages: Record<string, string> = {
+          Electronics: "/products/camera.jpg",
+          Books: "/mascots/books_camera.png",
+          Sports: "/products/tripod.jpg",
+          Tools: "/products/ringlight.jpg",
+          Music: "/products/mic.jpg",
+          Others: "/products/camera.jpg",
+        };
+
+        const newItem = {
+          id: `my-${Date.now()}`,
+          title: listForm.title || "Custom Campus Equipment",
+          category: listForm.category || "Electronics",
+          image: categoryImages[listForm.category] || "/products/camera.jpg",
+          dailyRate: Number(listForm.dailyRate) || 120,
+          deposit: Number(listForm.securityDeposit) || 1000,
+          status: "Available",
+          statusType: "active",
+          timesRented: 0,
+          totalEarned: 0,
+          rating: 5.0,
+          reviewsCount: 0,
+          condition: listForm.condition || "Like New",
+          incomingRequests: [],
+          description: listForm.description,
+          accessories: listForm.accessories,
+          pickupLocation: listForm.pickupLocation,
+        };
+
+        const newBrowseResource = {
+          id: `b-${Date.now()}`,
+          title: listForm.title || "Custom Campus Equipment",
+          category: listForm.category || "Electronics",
+          image: categoryImages[listForm.category] || "/products/camera.jpg",
+          status: "Available Now",
+          statusType: "now",
+          isFavorite: false,
+          owner: "Anaya Sharma (You)",
+          department: "Computer Engineering • 3rd Year",
+          avatarBg: "bg-emerald-100 text-emerald-800",
+          initials: "AS",
+          rating: 5.0,
+          reviews: 0,
+          distance: 0.1,
+          condition: listForm.condition || "Like New",
+          dailyRate: Number(listForm.dailyRate) || 120,
+          deposit: Number(listForm.securityDeposit) || 1000,
+          lateFee: Number(listForm.lateFee) || 30,
+        };
+
+        try {
+          // Save to user listings
+          const existingListings = localStorage.getItem("campus_circular_my_listings");
+          const parsedListings = existingListings ? JSON.parse(existingListings) : [];
+          localStorage.setItem(
+            "campus_circular_my_listings",
+            JSON.stringify([newItem, ...parsedListings.filter((l: any) => l.id !== newItem.id)])
+          );
+
+          // Save to browse resources
+          const existingBrowse = localStorage.getItem("campus_circular_browse_resources");
+          const parsedBrowse = existingBrowse ? JSON.parse(existingBrowse) : [];
+          localStorage.setItem(
+            "campus_circular_browse_resources",
+            JSON.stringify([newBrowseResource, ...parsedBrowse.filter((b: any) => b.id !== newBrowseResource.id)])
+          );
+        } catch (e) {
+          console.error("Failed to save listing:", e);
+        }
+
+        if (onSuccess) {
+          onSuccess(newItem);
+        }
+      } else {
+        // Wanted request
+        const createdReq = {
+          id: `CR-${Date.now()}`,
+          title: requestForm.title,
+          category: requestForm.category,
+          requesterName: "Anaya Sharma",
+          requesterDept: "3rd Year, Computer Engg",
+          requesterAvatarBg: "bg-emerald-100 text-emerald-800",
+          neededBy: requestForm.neededBy || "Tomorrow",
+          duration: requestForm.duration || "2 Days",
+          budget: `₹${requestForm.budget || 100} / day`,
+          depositOffered: `₹${requestForm.depositOffered || 800}`,
+          description: requestForm.description || "Campus coursework requirement.",
+          responsesCount: 0,
+          urgency: requestForm.urgency || "High",
+          status: "Open",
+          postedAgo: "Just now",
+          location: requestForm.location || "Main Campus Quad",
+        };
+
+        try {
+          const existingReqs = localStorage.getItem("campus_circular_requests");
+          const parsedReqs = existingReqs ? JSON.parse(existingReqs) : [];
+          localStorage.setItem(
+            "campus_circular_requests",
+            JSON.stringify([createdReq, ...parsedReqs.filter((r: any) => r.id !== createdReq.id)])
+          );
+        } catch (e) {
+          console.error("Failed to save request:", e);
+        }
+
+        if (onSuccess) {
+          onSuccess(createdReq);
+        }
       }
+
+      setIsSuccess(true);
     }
   };
 
@@ -212,12 +321,31 @@ export default function ListResourceModal({
                 <p><strong>Category:</strong> {activeTab === "list" ? listForm.category : requestForm.category}</p>
                 <p><strong>Status:</strong> <span className="text-[#16A34A] font-bold">Active on Campus</span></p>
               </div>
-              <button
-                onClick={resetAndClose}
-                className="mt-4 px-6 py-2.5 bg-[#18181B] text-white font-bold text-xs rounded-xl hover:bg-[#27272A] cursor-pointer"
-              >
-                Done
-              </button>
+              <div className="flex items-center gap-2.5 justify-center mt-4 pt-2">
+                <button
+                  onClick={resetAndClose}
+                  className="px-5 py-2.5 bg-[#FAF7F0] hover:bg-[#F3EFE3] border border-[#EDE8C8] text-[#18181B] font-bold text-xs rounded-xl cursor-pointer"
+                >
+                  Close
+                </button>
+                {activeTab === "list" ? (
+                  <Link
+                    href="/listings"
+                    onClick={resetAndClose}
+                    className="px-5 py-2.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold text-xs rounded-xl hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer shadow-xs border-b-2 border-[#557F1C] active:translate-y-0.5 flex items-center gap-1.5"
+                  >
+                    <span>View in My Listings →</span>
+                  </Link>
+                ) : (
+                  <Link
+                    href="/requests"
+                    onClick={resetAndClose}
+                    className="px-5 py-2.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold text-xs rounded-xl hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer shadow-xs border-b-2 border-[#557F1C] active:translate-y-0.5 flex items-center gap-1.5"
+                  >
+                    <span>View on Wanted Board →</span>
+                  </Link>
+                )}
+              </div>
             </div>
           ) : activeTab === "list" ? (
             /* ═══════════════════════════════════════════════════════
@@ -599,7 +727,7 @@ export default function ListResourceModal({
             <button
               type="button"
               onClick={handleNext}
-              className="px-6 py-2.5 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold text-xs rounded-xl transition-all shadow-xs cursor-pointer"
+              className="px-6 py-2.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold text-xs rounded-xl transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
             >
               {currentStep === 3
                 ? activeTab === "list"

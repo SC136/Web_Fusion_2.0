@@ -20,6 +20,28 @@ body {
   font-family: 'Inter', Arial, Helvetica, sans-serif;
 }
 
+/* ─── Tactile Claymorphic Green Button (Reference Style) ─────── */
+.btn-clay-green {
+  background: linear-gradient(180deg, #7FB634 0%, #689A24 100%);
+  color: #FFFFFF !important;
+  font-weight: 700;
+  border-bottom: 2px solid #557F1C;
+  border-radius: 1rem;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-clay-green:hover {
+  background: linear-gradient(180deg, #8AC538 0%, #72A627 100%);
+  box-shadow: 0 4px 12px rgba(104, 154, 36, 0.25);
+}
+
+.btn-clay-green:active {
+  transform: translateY(1.5px);
+  border-bottom-width: 1px;
+}
+
 /* ─── Custom Animations ──────────────────────────────────────── */
 
 @keyframes fadeInDown {

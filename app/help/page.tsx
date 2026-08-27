@@ -242,7 +242,7 @@ export default function HelpPage() {
                   </div>
                   <button
                     type="submit"
-                    className="w-full py-2.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold rounded-xl hover:from-[#8AC538] hover:to-[#72A627] transition-all shadow-xs cursor-pointer active:translate-y-0.5"
+                    className="w-full py-2.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold rounded-xl hover:from-[#8AC538] hover:to-[#72A627] transition-all shadow-xs cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
                   >
                     Submit Support Ticket →
                   </button>

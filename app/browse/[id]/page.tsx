@@ -73,6 +73,87 @@ export default function ProductDetailPage() {
   const rentalTotal = dailyRate * borrowDays;
   const totalPayable = rentalTotal + platformFee + deposit;
 
+  const handleBorrowConfirm = () => {
+    const newExchange = {
+      id: `EX-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+      itemTitle: product.title,
+      itemImage: product.image,
+      category: product.category,
+      ownerName: product.owner,
+      ownerDept: product.department,
+      ownerAvatarBg: product.avatarBg || "bg-amber-100 text-amber-800",
+      borrowerName: "Anaya Sharma",
+      borrowerDept: "3rd Year, Computer Engg",
+      borrowerAvatarBg: "bg-emerald-100 text-emerald-800",
+      currentStageIndex: 0, // Starts at Stage 1: "Requested"
+      requestedDate: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      startDate: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      returnDueDate: new Date(Date.now() + borrowDays * 86400000).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + ", 6:00 PM",
+      durationDays: borrowDays,
+      dailyRate: dailyRate,
+      platformFee: platformFee,
+      securityDeposit: deposit,
+      totalRentalFee: rentalTotal,
+      totalPaid: totalPayable,
+      handoverOtp: `CC-${Math.floor(1000 + Math.random() * 9000)}`,
+      handoverLocation: "Campus Central Library Plaza",
+      returnLocation: "Engineering Block Quad",
+      beforeCondition: {
+        photo: product.image,
+        date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + " • 10:00 AM",
+        rating: "Very Good",
+        checklist: [
+          { item: "Item powers on & all essential features verified", verified: true },
+          { item: "Accessories and original parts complete", verified: true },
+          { item: "Clean surface condition without damage", verified: true },
+          { item: "Carrying strap & pouch verified", verified: true },
+        ],
+        notes: `${product.title} handed over in clean condition with all included accessories.`,
+      },
+      afterCondition: {
+        photo: product.image,
+        date: new Date(Date.now() + borrowDays * 86400000).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + " • 5:30 PM",
+        rating: "Very Good",
+        checklist: [
+          { item: "Item powers on & all essential features verified", verified: true },
+          { item: "Accessories and original parts complete", verified: true },
+          { item: "Clean surface condition without damage", verified: true },
+          { item: "Carrying strap & pouch verified", verified: true },
+        ],
+        notes: "Returned clean and in pristine working condition. No damages.",
+      },
+      settlement: {
+        borrowingCharge: rentalTotal,
+        platformFee: platformFee,
+        lateFeeDeduction: 0,
+        damageDeduction: 0,
+        refundedDeposit: deposit,
+        lenderPayout: rentalTotal,
+        refundStatus: "Transferred to Student Escrow Account",
+        transactionId: `TXN-CC-${Math.floor(100000 + Math.random() * 900000)}`,
+      },
+      ratingData: {
+        borrowerGivenRating: 5,
+        borrowerReview: `Smooth and friendly borrowing experience from ${product.owner}! The item was in great condition.`,
+        lenderGivenRating: 5,
+        lenderReview: `Anaya took great care of the ${product.title} and returned it right on time. Highly recommended!`,
+        trustPointsEarned: 15,
+      },
+    };
+
+    try {
+      const existingStr = localStorage.getItem("campus_circular_exchanges");
+      const existing = existingStr ? JSON.parse(existingStr) : [];
+      const updated = [newExchange, ...existing.filter((e: any) => e.id !== newExchange.id)];
+      localStorage.setItem("campus_circular_exchanges", JSON.stringify(updated));
+      localStorage.setItem("campus_circular_selected_exchange", newExchange.id);
+    } catch (err) {
+      console.error("Failed to save borrow request:", err);
+    }
+
+    setRequestSubmitted(true);
+  };
+
   return (
     <div className="min-h-screen bg-[#FBF7F0] text-[#18181B] flex flex-col select-none">
       {/* ─── Top Navbar ───────────────────────────────────────── */}
@@ -590,7 +671,7 @@ export default function ProductDetailPage() {
                     setIsBorrowModalOpen(false);
                     router.push("/loans");
                   }}
-                  className="mt-4 w-full py-3 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold text-xs rounded-xl cursor-pointer shadow-xs"
+                  className="mt-4 w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold text-xs rounded-xl cursor-pointer shadow-xs hover:from-[#8AC538] hover:to-[#72A627] border-b-2 border-[#557F1C] active:translate-y-0.5"
                 >
                   Track in Lifecycle Tracker →
                 </button>
@@ -663,8 +744,8 @@ export default function ProductDetailPage() {
 
                 <button
                   type="button"
-                  onClick={() => setRequestSubmitted(true)}
-                  className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-extrabold rounded-2xl transition-all shadow-md active:translate-y-0.5 cursor-pointer text-sm"
+                  onClick={handleBorrowConfirm}
+                  className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold rounded-2xl transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] border-b-2 border-[#557F1C] active:translate-y-0.5 cursor-pointer text-sm"
                 >
                   Confirm &amp; Send Request
                 </button>

@@ -207,7 +207,7 @@ export default function NotificationDropdown() {
 
       {/* ─── Dropdown Popover ───────────────────────────────────── */}
       {isOpen && (
-        <div className="absolute right-0 sm:right-auto sm:left-1/2 sm:-translate-x-1/2 mt-2.5 w-[330px] sm:w-[380px] bg-white rounded-3xl border border-[#EDE8C8] shadow-2xl z-50 overflow-hidden animate-fadeInUp">
+        <div className="absolute right-0 mt-2.5 w-[320px] sm:w-[380px] max-w-[calc(100vw-24px)] bg-white rounded-3xl border border-[#EDE8C8] shadow-2xl z-[100] overflow-hidden animate-fadeInUp">
           {/* Header */}
           <div className="p-4 bg-[#FAF7F0] border-b border-[#EDE8C8] flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -334,7 +334,7 @@ export default function NotificationDropdown() {
             <Link
               href="/messages"
               onClick={() => setIsOpen(false)}
-              className="py-2 px-2 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 font-black"
+              className="py-2 px-2 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white hover:from-[#8AC538] hover:to-[#72A627] rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 font-bold border-b-2 border-[#557F1C] active:translate-y-0.5"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />

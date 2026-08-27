@@ -2,16 +2,39 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import AppNavbar from "@/app/components/layout/AppNavbar";
 import { browseCategories, browseResources } from "@/app/data/mockData";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 import ListResourceModal from "@/app/components/modals/ListResourceModal";
 
 export default function BrowsePage() {
+  const [resources, setResources] = useState<typeof browseResources>(browseResources);
+
+  // Load custom resources from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("campus_circular_browse_resources");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const existingIds = new Set(parsed.map((p: any) => p.id));
+          const combined = [...parsed, ...browseResources.filter((b) => !existingIds.has(b.id))];
+          setResources(combined);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load browse resources:", e);
+    }
+  }, []);
+
   // Modal state
   const [isListModalOpen, setIsListModalOpen] = useState(false);
-  const [modalTab, setModalTab] = useState<"list" | "request">("list");
+  const [modalTab, setModalTab] = useState<"list" | "request">(listTabFallback());
+
+  function listTabFallback(): "list" | "request" {
+    return "list";
+  }
 
   // Search & Filter States
   const [searchQuery, setSearchQuery] = useState("");
@@ -79,7 +102,7 @@ export default function BrowsePage() {
 
   // Filter and Sort logic
   const filteredResources = useMemo(() => {
-    return browseResources
+    return resources
       .filter((item) => {
         // Search filter
         if (
@@ -131,6 +154,7 @@ export default function BrowsePage() {
         return 0; // relevance
       });
   }, [
+    resources,
     searchQuery,
     selectedCategory,
     selectedAvailabilities,
@@ -625,7 +649,7 @@ export default function BrowsePage() {
                       {/* Tactile Borrow Action Button */}
                       <Link
                         href={`/browse/${item.id}`}
-                        className="w-full py-2.5 bg-[#FDFBF1] hover:bg-[#6F9535] text-[#18181B] hover:text-white border border-[#EDE8C8] hover:border-[#6F9535] font-bold text-xs rounded-2xl transition-all flex items-center justify-center gap-1.5 shadow-2xs active:translate-y-0.5"
+                        className="w-full py-2.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white hover:from-[#8AC538] hover:to-[#72A627] font-bold text-xs rounded-2xl transition-all flex items-center justify-center gap-1.5 shadow-xs border-b-2 border-[#557F1C] active:translate-y-0.5 cursor-pointer"
                       >
                         <span>Borrow Equipment</span>
                         <AppIcon name="arrow-right" size={13} />
@@ -689,6 +713,31 @@ export default function BrowsePage() {
         isOpen={isListModalOpen}
         onClose={() => setIsListModalOpen(false)}
         initialTab={modalTab}
+        onSuccess={(newItem) => {
+          if (modalTab === "list" || newItem.dailyRate) {
+            const newBrowseItem = {
+              id: newItem.id || `b-${Date.now()}`,
+              title: newItem.title || "Custom Equipment",
+              category: newItem.category || "Electronics",
+              image: newItem.image || "/products/camera.jpg",
+              status: "Available Now",
+              statusType: "now",
+              isFavorite: false,
+              owner: "Anaya Sharma (You)",
+              department: "Computer Engineering • 3rd Year",
+              avatarBg: "bg-emerald-100 text-emerald-800",
+              initials: "AS",
+              rating: 5.0,
+              reviews: 0,
+              distance: 0.1,
+              condition: newItem.condition || "Like New",
+              dailyRate: newItem.dailyRate || 120,
+              deposit: newItem.deposit || newItem.securityDeposit || 1000,
+              lateFee: 30,
+            };
+            setResources((prev) => [newBrowseItem, ...prev.filter((r) => r.id !== newBrowseItem.id)]);
+          }
+        }}
       />
     </div>
   );

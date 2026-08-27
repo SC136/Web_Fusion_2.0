@@ -93,7 +93,7 @@ export default function AdminLoginPage() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-3 bg-[#18181B] hover:bg-[#27272A] text-white font-bold rounded-2xl transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+            className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold rounded-2xl transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] flex items-center justify-center gap-2 cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
           >
             <span>Enter Admin Panel</span>
             <span className="text-base">→</span>

@@ -103,15 +103,15 @@ export default function MessagesPage() {
 
   return (
     <div className="min-h-screen bg-[#FBF7F0] text-[#18181B] select-none flex flex-col">
-      {/* ─── Master Continuous Top Navbar ─────────────────────── */}
+      {/* ─── FULL-WIDTH CONTINUOUS TOP NAVBAR ─────────────── */}
       <AppNavbar variant="auth" />
 
-      {/* ─── Main Body (Sidebar + Content) ─────────────────── */}
+      {/* ─── MAIN BODY (Sidebar + Content) ─────────────────── */}
       <div className="flex-1 flex w-full">
-        {/* ─── Persistent Left Sidebar ────────────────────────── */}
+        {/* ─── Persistent Left Sidebar ──────────────────────── */}
         <Sidebar />
 
-        {/* ─── Main Content Area ──────────────────────────────── */}
+        {/* ─── Main Content Area ────────────────────────────── */}
         <div className="flex-1 lg:ml-[240px] flex flex-col h-[calc(100vh-64px)] overflow-hidden min-w-0">
 
         {/* ─── Chat Container (2-Column Layout) ─────────────────── */}
@@ -273,7 +273,7 @@ export default function MessagesPage() {
                 <button
                   type="button"
                   onClick={() => setShowOtpModal(true)}
-                  className="px-3 py-1.5 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] text-xs font-black rounded-xl transition-all shadow-xs cursor-pointer flex items-center gap-1.5"
+                  className="px-3 py-1.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white text-xs font-bold rounded-xl transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer flex items-center gap-1.5 border-b-2 border-[#557F1C] active:translate-y-0.5"
                 >
                   <AppIcon name="shield-check" size={13} />
                   <span>Handover OTP: {activeThread.meetupOtp}</span>
@@ -375,13 +375,14 @@ export default function MessagesPage() {
               <button
                 type="button"
                 onClick={() => handleSendMessage()}
-                className="px-5 py-3 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold text-xs sm:text-sm rounded-2xl transition-all shadow-xs cursor-pointer flex items-center gap-1.5 flex-shrink-0"
+                className="px-5 py-3 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold text-xs sm:text-sm rounded-2xl transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer flex items-center gap-1.5 flex-shrink-0 border-b-2 border-[#557F1C] active:translate-y-0.5"
               >
                 <span>Send</span>
                 <AppIcon name="arrow-up-right" size={15} />
               </button>
             </div>
           </div>
+        </div>
         </div>
       </div>
 
@@ -421,7 +422,7 @@ export default function MessagesPage() {
               <button
                 type="button"
                 onClick={handleCopyOtp}
-                className="flex-1 py-2.5 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-black text-xs rounded-xl shadow-xs cursor-pointer"
+                className="flex-1 py-2.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white hover:from-[#8AC538] hover:to-[#72A627] font-bold text-xs rounded-xl shadow-xs cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
               >
                 {copiedOtp ? "Copied! ✓" : "Copy Code"}
               </button>
@@ -429,7 +430,6 @@ export default function MessagesPage() {
           </div>
         </div>
       )}
-      </div>
     </div>
   );
 }

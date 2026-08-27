@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,10 +12,27 @@ import ListResourceModal from "@/app/components/modals/ListResourceModal";
 
 export default function MyListingsPage() {
   const router = useRouter();
-  const [listings, setListings] = useState(myUserListings);
+  const [listings, setListings] = useState<typeof myUserListings>(myUserListings);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [acceptedRequests, setAcceptedRequests] = useState<{ [key: string]: boolean }>({});
   const [pausedListings, setPausedListings] = useState<{ [key: string]: boolean }>({});
+
+  // Load custom listings from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("campus_circular_my_listings");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const existingIds = new Set(parsed.map((p: any) => p.id));
+          const combined = [...parsed, ...myUserListings.filter((m) => !existingIds.has(m.id))];
+          setListings(combined);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load listings:", e);
+    }
+  }, []);
 
   const totalEarnings = listings.reduce((acc, curr) => acc + curr.totalEarned, 0);
   const totalRented = listings.reduce((acc, curr) => acc + curr.timesRented, 0);
@@ -28,24 +45,30 @@ export default function MyListingsPage() {
     setPausedListings((prev) => ({ ...prev, [itemId]: !prev[itemId] }));
   };
 
-  const handleNewListingSuccess = (newForm: any) => {
-    const newItem = {
-      id: `my-${Date.now()}`,
-      title: newForm.title || "New Campus Resource",
-      category: newForm.category || "Electronics",
-      image: "/products/camera.jpg",
-      dailyRate: newForm.dailyRate || 100,
-      deposit: newForm.securityDeposit || 800,
+  const handleNewListingSuccess = (newItem: any) => {
+    const item = {
+      id: newItem.id || `my-${Date.now()}`,
+      title: newItem.title || "New Campus Resource",
+      category: newItem.category || "Electronics",
+      image: newItem.image || "/products/camera.jpg",
+      dailyRate: newItem.dailyRate || 100,
+      deposit: newItem.deposit || newItem.securityDeposit || 800,
       status: "Available",
       statusType: "active",
       timesRented: 0,
       totalEarned: 0,
       rating: 5.0,
       reviewsCount: 0,
-      condition: newForm.condition || "Like New",
+      condition: newItem.condition || "Like New",
       incomingRequests: [],
     };
-    setListings([newItem, ...listings]);
+    const updated = [item, ...listings.filter((l) => l.id !== item.id)];
+    setListings(updated);
+    try {
+      localStorage.setItem("campus_circular_my_listings", JSON.stringify(updated));
+    } catch (e) {
+      console.error("Failed to update listings in localStorage:", e);
+    }
   };
 
   return (
@@ -88,7 +111,7 @@ export default function MyListingsPage() {
             </Link>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="px-5 py-2.5 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold text-xs rounded-xl transition-all shadow-xs cursor-pointer flex items-center gap-1.5"
+              className="px-5 py-2.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold text-xs rounded-2xl transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer flex items-center gap-1.5 border-b-2 border-[#557F1C] active:translate-y-0.5"
             >
               <span>+ List New Resource</span>
             </button>
@@ -176,7 +199,7 @@ export default function MyListingsPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleAcceptRequest("req-1")}
-                    className="flex-1 py-2 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold text-xs rounded-xl shadow-xs cursor-pointer"
+                    className="flex-1 py-2.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold text-xs rounded-xl shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
                   >
                     Accept & Confirm Handover →
                   </button>
@@ -220,7 +243,7 @@ export default function MyListingsPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleAcceptRequest("req-2")}
-                    className="flex-1 py-2 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold text-xs rounded-xl shadow-xs cursor-pointer"
+                    className="flex-1 py-2.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold text-xs rounded-xl shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
                   >
                     Accept & Confirm Handover →
                   </button>

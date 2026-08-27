@@ -24,17 +24,17 @@ export default function AppNavbar({ variant = "auth" }: AppNavbarProps) {
 
   return (
     <>
-      <header className="h-16 px-4 sm:px-6 md:px-8 flex items-center justify-between border-b border-[#EDE8C8] bg-[#FDFBF1] sticky top-0 z-50 w-full select-none flex-shrink-0">
+      <header className="h-16 px-3 sm:px-6 md:px-8 flex items-center justify-between border-b border-[#EDE8C8] bg-[#FDFBF1] sticky top-0 z-50 w-full select-none flex-shrink-0 flex-nowrap">
         {/* ─── Left Section: Hamburger (Mobile) + Logo ─────────── */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0 min-w-0">
           {variant === "auth" && (
             <button
               type="button"
               onClick={() => setIsDrawerOpen(true)}
               aria-label="Open mobile menu"
-              className="w-10 h-10 rounded-2xl bg-white border border-[#EDE8C8] flex lg:hidden items-center justify-center text-[#18181B] shadow-2xs hover:bg-[#FAF7F0] transition-all cursor-pointer flex-shrink-0"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-white border border-[#EDE8C8] flex lg:hidden items-center justify-center text-[#18181B] shadow-2xs hover:bg-[#FAF7F0] transition-all cursor-pointer flex-shrink-0"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="4" y1="6" x2="20" y2="6" />
                 <line x1="4" y1="12" x2="20" y2="12" />
                 <line x1="4" y1="18" x2="20" y2="18" />
@@ -43,7 +43,7 @@ export default function AppNavbar({ variant = "auth" }: AppNavbarProps) {
           )}
 
           <Link href="/dashboard" className="flex items-center group flex-shrink-0" id="main-nav-logo">
-            <div className="relative w-[150px] sm:w-[185px] md:w-[200px] h-[46px] sm:h-[52px]">
+            <div className="relative w-[130px] sm:w-[170px] md:w-[200px] h-[38px] sm:h-[48px]">
               <Image
                 src="/named_logo.png"
                 alt="Campus Circular"

@@ -110,25 +110,92 @@ export default function AiAssistantPage() {
 
   const handleConfirmBundleBorrow = () => {
     setIsSubmitting(true);
+    const bundleExchange = {
+      id: `EX-KIT-${Math.floor(1000 + Math.random() * 9000)}`,
+      itemTitle: activeBundle.title,
+      itemImage: activeItems[0]?.image || "/products/camera.jpg",
+      category: "AI Smart Bundle",
+      ownerName: "Campus Verified Collective",
+      ownerDept: "Multidisciplinary Resource Pool",
+      ownerAvatarBg: "bg-purple-100 text-purple-800",
+      borrowerName: "Anaya Sharma",
+      borrowerDept: "3rd Year, Computer Engg",
+      borrowerAvatarBg: "bg-emerald-100 text-emerald-800",
+      currentStageIndex: 0,
+      requestedDate: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      startDate: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      returnDueDate: new Date(Date.now() + borrowDuration * 86400000).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + ", 6:00 PM",
+      durationDays: borrowDuration,
+      dailyRate: discountedDailyRate,
+      platformFee: platformFee,
+      securityDeposit: totalDeposit,
+      totalRentalFee: totalRentalFee,
+      totalPaid: totalEscrowPayable,
+      handoverOtp: `CC-${Math.floor(1000 + Math.random() * 9000)}`,
+      handoverLocation: "Campus Central Library Plaza",
+      returnLocation: "Engineering Block Quad",
+      beforeCondition: {
+        photo: activeItems[0]?.image || "/products/camera.jpg",
+        date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + " • 10:00 AM",
+        rating: "Excellent",
+        checklist: activeItems.map((item) => ({ item: `${item.name} tested & verified`, verified: true })),
+        notes: `AI Smart Bundle (${activeItems.length} items) verified and packaged together.`,
+      },
+      afterCondition: {
+        photo: activeItems[0]?.image || "/products/camera.jpg",
+        date: new Date(Date.now() + borrowDuration * 86400000).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + " • 5:30 PM",
+        rating: "Excellent",
+        checklist: activeItems.map((item) => ({ item: `${item.name} returned & clean`, verified: true })),
+        notes: "All bundle items accounted for and returned in working order.",
+      },
+      settlement: {
+        borrowingCharge: totalRentalFee,
+        platformFee: platformFee,
+        lateFeeDeduction: 0,
+        damageDeduction: 0,
+        refundedDeposit: totalDeposit,
+        lenderPayout: totalRentalFee,
+        refundStatus: "Transferred to Student Escrow Account",
+        transactionId: `TXN-CC-${Math.floor(100000 + Math.random() * 900000)}`,
+      },
+      ratingData: {
+        borrowerGivenRating: 5,
+        borrowerReview: "Super convenient to borrow the entire equipment bundle with 1 click!",
+        lenderGivenRating: 5,
+        lenderReview: "Anaya took great care of all items in the kit. Returned promptly!",
+        trustPointsEarned: 20,
+      },
+    };
+
+    try {
+      const existingStr = localStorage.getItem("campus_circular_exchanges");
+      const existing = existingStr ? JSON.parse(existingStr) : [];
+      const updated = [bundleExchange, ...existing.filter((e: any) => e.id !== bundleExchange.id)];
+      localStorage.setItem("campus_circular_exchanges", JSON.stringify(updated));
+      localStorage.setItem("campus_circular_selected_exchange", bundleExchange.id);
+    } catch (err) {
+      console.error("Failed to save bundle borrow request:", err);
+    }
+
     setTimeout(() => {
       setIsSubmitting(false);
       setIsConfirmModalOpen(false);
       router.push("/loans");
-    }, 900);
+    }, 600);
   };
 
   return (
-    <div className="min-h-screen bg-[#FBF7F0] text-[#18181B] select-none flex flex-col">
-      {/* ─── Master Continuous Top Navbar ─────────────────────── */}
+    <div className="min-h-screen bg-[#FBF7F0] text-[#18181B] select-none flex flex-col w-full max-w-full overflow-x-hidden">
+      {/* ─── FULL-WIDTH CONTINUOUS TOP NAVBAR ─────────────── */}
       <AppNavbar variant="auth" />
 
-      {/* ─── Main Body (Sidebar + Content) ─────────────────── */}
-      <div className="flex-1 flex w-full">
-        {/* ─── Left Persistent Sidebar ────────────────────────── */}
+      {/* ─── MAIN BODY (Sidebar + Content) ─────────────────── */}
+      <div className="flex-1 flex w-full max-w-full overflow-x-hidden">
+        {/* ─── Left Persistent Sidebar ──────────────────────── */}
         <Sidebar />
 
-        {/* ─── Main Content Area ──────────────────────────────── */}
-        <div className="flex-1 lg:ml-[240px] flex flex-col min-w-0 min-h-[calc(100vh-64px)]">
+        {/* ─── Main Content Area ────────────────────────────── */}
+        <div className="flex-1 lg:ml-[240px] flex flex-col min-w-0 w-full max-w-full overflow-x-hidden">
 
         {/* ─── Hero Header ─────────────────────────────────────── */}
         <div className="px-5 lg:px-8 pt-6 pb-2 w-full">
@@ -208,7 +275,7 @@ export default function AiAssistantPage() {
                 type="button"
                 onClick={() => handleGenerateBundle()}
                 disabled={isThinking}
-                className="px-6 py-3.5 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-black text-xs sm:text-sm rounded-2xl transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2 flex-shrink-0"
+                className="px-6 py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold text-xs sm:text-sm rounded-2xl transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer flex items-center justify-center gap-2 flex-shrink-0 border-b-2 border-[#557F1C] active:translate-y-0.5"
               >
                 <span>{isThinking ? "Configuring Kit..." : "Generate Smart Kit"}</span>
                 <AppIcon name="sparkles" size={15} />
@@ -353,7 +420,7 @@ export default function AiAssistantPage() {
                             <h3 className="text-xs sm:text-sm font-bold text-[#18181B] truncate mt-0.5">
                               {isSwapped ? swappedAlternatives[item.id] : item.name}
                             </h3>
-                            <p className="text-[11px] text-[#71717A] flex items-center gap-2 mt-0.5">
+                            <p className="text-[11px] text-[#71717A] flex items-center gap-1.5 sm:gap-2 mt-0.5 flex-wrap">
                               <span>Shared by <strong>{item.owner}</strong> ({item.department})</span>
                               <span>•</span>
                               <span>★ {item.rating}</span>
@@ -441,7 +508,7 @@ export default function AiAssistantPage() {
                 <button
                   type="button"
                   onClick={() => setIsConfirmModalOpen(true)}
-                  className="w-full py-3.5 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-black text-xs rounded-2xl transition-all shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
+                  className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold text-xs rounded-2xl transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer flex items-center justify-center gap-1.5 border-b-2 border-[#557F1C] active:translate-y-0.5"
                 >
                   <span>1-Click Borrow Whole Bundle ({activeItems.length} Items) →</span>
                 </button>
@@ -525,7 +592,7 @@ export default function AiAssistantPage() {
                 type="button"
                 disabled={!agreementChecked || isSubmitting}
                 onClick={handleConfirmBundleBorrow}
-                className="flex-1 py-2.5 bg-[#84CC16] hover:bg-[#76B813] disabled:opacity-40 text-[#18181B] font-extrabold text-xs rounded-xl shadow-xs cursor-pointer text-center"
+                className="flex-1 py-2.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white hover:from-[#8AC538] hover:to-[#72A627] disabled:opacity-40 font-bold text-xs rounded-xl shadow-xs cursor-pointer text-center border-b-2 border-[#557F1C] active:translate-y-0.5"
               >
                 {isSubmitting ? "Submitting to Lenders..." : "Confirm & Open Lifecycle Tracker →"}
               </button>

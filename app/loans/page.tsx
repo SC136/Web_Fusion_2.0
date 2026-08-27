@@ -2,21 +2,48 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "@/app/components/dashboard/Sidebar";
 import AppNavbar from "@/app/components/layout/AppNavbar";
 import { AppIcon } from "@/app/components/dashboard/Icons";
 import { LIFECYCLE_STAGES, mockExchanges } from "@/app/data/mockData";
 
 export default function BorrowingLifecyclePage() {
-  // Selected Exchange (defaults to first exchange)
+  const [exchanges, setExchanges] = useState<typeof mockExchanges>(mockExchanges);
   const [selectedExchangeIndex, setSelectedExchangeIndex] = useState(0);
-  const currentExchange = mockExchanges[selectedExchangeIndex];
+
+  const currentExchange = exchanges[selectedExchangeIndex] || mockExchanges[0];
 
   // Current active stage state (0 to 8 corresponding to the 9 stages)
   const [activeStageIndex, setActiveStageIndex] = useState(
-    currentExchange.currentStageIndex
+    currentExchange.currentStageIndex ?? 0
   );
+
+  // Load dynamically added exchanges from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("campus_circular_exchanges");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const existingIds = new Set(parsed.map((p: any) => p.id));
+          const combined = [...parsed, ...mockExchanges.filter((m) => !existingIds.has(m.id))];
+          setExchanges(combined);
+
+          const selectedId = localStorage.getItem("campus_circular_selected_exchange");
+          if (selectedId) {
+            const foundIdx = combined.findIndex((c: any) => c.id === selectedId);
+            if (foundIdx !== -1) {
+              setSelectedExchangeIndex(foundIdx);
+              setActiveStageIndex(combined[foundIdx].currentStageIndex ?? 0);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load exchanges:", e);
+    }
+  }, []);
 
   // Inspection damage simulator toggle
   const [hasDamageReported, setHasDamageReported] = useState(false);
@@ -36,6 +63,13 @@ export default function BorrowingLifecyclePage() {
   };
 
   const currentStage = LIFECYCLE_STAGES[activeStageIndex];
+
+  const getInitials = (name?: string) => {
+    if (!name) return "CC";
+    const parts = name.split(" ").filter(Boolean);
+    if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    return name.slice(0, 2).toUpperCase();
+  };
 
   return (
     <div className="min-h-screen bg-[#FBF7F0] text-[#18181B] select-none flex flex-col">
@@ -68,17 +102,20 @@ export default function BorrowingLifecyclePage() {
           </div>
 
           {/* Switch Active Exchange Selector */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-[#71717A] hidden md:inline">Exchange:</span>
-            <div className="flex bg-white p-1 rounded-2xl border border-[#EDE8C8] shadow-2xs">
-              {mockExchanges.map((ex, idx) => (
+          <div className="flex items-center gap-2 max-w-full">
+            <span className="text-xs font-bold text-[#71717A] hidden md:inline flex-shrink-0">Exchange:</span>
+            <div className="flex bg-white p-1 rounded-2xl border border-[#EDE8C8] shadow-2xs overflow-x-auto max-w-full gap-1">
+              {exchanges.map((ex, idx) => (
                 <button
                   key={ex.id}
                   onClick={() => {
                     setSelectedExchangeIndex(idx);
-                    setActiveStageIndex(ex.currentStageIndex);
+                    setActiveStageIndex(ex.currentStageIndex ?? 0);
+                    try {
+                      localStorage.setItem("campus_circular_selected_exchange", ex.id);
+                    } catch {}
                   }}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                     selectedExchangeIndex === idx
                       ? "bg-[#18181B] text-white shadow-2xs"
                       : "text-[#52525B] hover:text-[#18181B]"
@@ -187,7 +224,7 @@ export default function BorrowingLifecyclePage() {
               <button
                 onClick={nextStage}
                 disabled={activeStageIndex === LIFECYCLE_STAGES.length - 1}
-                className="flex-1 sm:flex-none px-4 py-2 bg-[#84CC16] hover:bg-[#76B813] disabled:opacity-40 text-[#18181B] text-xs font-black rounded-xl transition-all shadow-xs cursor-pointer"
+                className="flex-1 sm:flex-none px-4 py-2 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white hover:from-[#8AC538] hover:to-[#72A627] disabled:opacity-40 font-bold text-xs rounded-xl transition-all shadow-xs cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
               >
                 Advance to Next Stage →
               </button>
@@ -264,7 +301,7 @@ export default function BorrowingLifecyclePage() {
 
                 <button
                   onClick={nextStage}
-                  className="w-full py-3 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold rounded-2xl text-xs sm:text-sm cursor-pointer shadow-xs"
+                  className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
                 >
                   Simulate Lender Approving Request →
                 </button>
@@ -311,7 +348,7 @@ export default function BorrowingLifecyclePage() {
 
                 <button
                   onClick={nextStage}
-                  className="w-full py-3 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold rounded-2xl text-xs sm:text-sm cursor-pointer shadow-xs"
+                  className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
                 >
                   Proceed to Physical Handover & Inspection →
                 </button>
@@ -355,7 +392,7 @@ export default function BorrowingLifecyclePage() {
 
                 <button
                   onClick={nextStage}
-                  className="w-full py-3 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold rounded-2xl text-xs sm:text-sm cursor-pointer shadow-xs"
+                  className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
                 >
                   Verify PIN & Start Active Borrowing →
                 </button>
@@ -404,7 +441,7 @@ export default function BorrowingLifecyclePage() {
 
                 <button
                   onClick={nextStage}
-                  className="w-full py-3 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold rounded-2xl text-xs sm:text-sm cursor-pointer shadow-xs"
+                  className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
                 >
                   Simulate Clock Approaching Return Deadline →
                 </button>
@@ -439,7 +476,7 @@ export default function BorrowingLifecyclePage() {
 
                 <button
                   onClick={nextStage}
-                  className="w-full py-3 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold rounded-2xl text-xs sm:text-sm cursor-pointer shadow-xs"
+                  className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
                 >
                   Meet Lender & Hand Back Item (Return) →
                 </button>
@@ -471,7 +508,7 @@ export default function BorrowingLifecyclePage() {
 
                 <button
                   onClick={nextStage}
-                  className="w-full py-3 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold rounded-2xl text-xs sm:text-sm cursor-pointer shadow-xs"
+                  className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
                 >
                   Proceed to Condition Inspection & Damage Verification →
                 </button>
@@ -549,7 +586,7 @@ export default function BorrowingLifecyclePage() {
 
                 <button
                   onClick={nextStage}
-                  className="w-full py-3 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold rounded-2xl text-xs sm:text-sm cursor-pointer shadow-xs"
+                  className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
                 >
                   Approve Inspection & Calculate Final Settlement →
                 </button>
@@ -603,7 +640,7 @@ export default function BorrowingLifecyclePage() {
 
                 <button
                   onClick={nextStage}
-                  className="w-full py-3 bg-[#84CC16] hover:bg-[#76B813] text-[#18181B] font-extrabold rounded-2xl text-xs sm:text-sm cursor-pointer shadow-xs"
+                  className="w-full py-3.5 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold rounded-2xl text-xs sm:text-sm transition-all shadow-xs hover:from-[#8AC538] hover:to-[#72A627] cursor-pointer border-b-2 border-[#557F1C] active:translate-y-0.5"
                 >
                   Proceed to Trust Rating & Reviews →
                 </button>
@@ -676,7 +713,7 @@ export default function BorrowingLifecyclePage() {
                   </button>
                   <Link
                     href="/profile"
-                    className="flex-1 py-3 bg-[#84CC16] text-[#18181B] font-extrabold text-xs rounded-xl hover:bg-[#76B813] flex items-center justify-center cursor-pointer shadow-xs"
+                    className="flex-1 py-3 bg-gradient-to-b from-[#7FB634] to-[#689A24] text-white font-bold text-xs rounded-xl hover:from-[#8AC538] hover:to-[#72A627] flex items-center justify-center cursor-pointer shadow-xs border-b-2 border-[#557F1C] active:translate-y-0.5"
                   >
                     View Updated Trust Profile →
                   </Link>
@@ -716,7 +753,7 @@ export default function BorrowingLifecyclePage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className={`w-7 h-7 rounded-full ${currentExchange.ownerAvatarBg} flex items-center justify-center font-bold text-[10px]`}>
-                      AM
+                      {getInitials(currentExchange.ownerName)}
                     </div>
                     <div>
                       <p className="font-bold text-[#18181B]">{currentExchange.ownerName}</p>
@@ -732,7 +769,7 @@ export default function BorrowingLifecyclePage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className={`w-7 h-7 rounded-full ${currentExchange.borrowerAvatarBg} flex items-center justify-center font-bold text-[10px]`}>
-                      AS
+                      {getInitials(currentExchange.borrowerName)}
                     </div>
                     <div>
                       <p className="font-bold text-[#18181B]">{currentExchange.borrowerName}</p>
