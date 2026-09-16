@@ -725,22 +725,22 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       // Deliberately skip CURRENT_USER_ID — each tab manages its own session
       if (e.key === STORAGE_KEYS.USERS && e.newValue) {
-        try { setUsers(JSON.parse(e.newValue)); } catch {}
+        try { setUsers(JSON.parse(e.newValue)); } catch { }
       }
       if (e.key === STORAGE_KEYS.LISTINGS && e.newValue) {
-        try { setListings(JSON.parse(e.newValue)); } catch {}
+        try { setListings(JSON.parse(e.newValue)); } catch { }
       }
       if (e.key === STORAGE_KEYS.EXCHANGES && e.newValue) {
-        try { setExchanges(JSON.parse(e.newValue)); } catch {}
+        try { setExchanges(JSON.parse(e.newValue)); } catch { }
       }
       if (e.key === STORAGE_KEYS.THREADS && e.newValue) {
-        try { setChatThreads(JSON.parse(e.newValue)); } catch {}
+        try { setChatThreads(JSON.parse(e.newValue)); } catch { }
       }
       if (e.key === STORAGE_KEYS.MESSAGES && e.newValue) {
-        try { setChatMessages(JSON.parse(e.newValue)); } catch {}
+        try { setChatMessages(JSON.parse(e.newValue)); } catch { }
       }
       if (e.key === STORAGE_KEYS.WANTED && e.newValue) {
-        try { setWantedRequests(JSON.parse(e.newValue)); } catch {}
+        try { setWantedRequests(JSON.parse(e.newValue)); } catch { }
       }
     };
 
@@ -948,17 +948,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         return prev.map((t) =>
           t.id === threadId
             ? {
-                ...t,
-                itemTitle: targetListing.title,
-                itemImage: targetListing.image,
-                exchangeId: newExchange.id,
-                exchangeRole: "Borrow Request Sent",
-                statusBadge: "Pending Approval",
-                meetupOtp: otpCode,
-                lastMessage: newMsg.text,
-                lastTimestamp: "Just now",
-                unreadCount: { ...t.unreadCount, [targetListing.ownerId]: (t.unreadCount[targetListing.ownerId] || 0) + 1 },
-              }
+              ...t,
+              itemTitle: targetListing.title,
+              itemImage: targetListing.image,
+              exchangeId: newExchange.id,
+              exchangeRole: "Borrow Request Sent",
+              statusBadge: "Pending Approval",
+              meetupOtp: otpCode,
+              lastMessage: newMsg.text,
+              lastTimestamp: "Just now",
+              unreadCount: { ...t.unreadCount, [targetListing.ownerId]: (t.unreadCount[targetListing.ownerId] || 0) + 1 },
+            }
             : t
         );
       }
