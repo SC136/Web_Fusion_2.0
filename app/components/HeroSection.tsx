@@ -1,23 +1,17 @@
-import Image from "next/image";
 import AppNavbar from "./layout/AppNavbar";
+import HeroStage, { HeroHint } from "./hero3d/HeroStage";
 
 export default function HeroSection() {
   return (
-    <div className="relative w-full h-screen h-[100dvh] max-h-screen overflow-hidden flex flex-col justify-between">
-      {/* Background Image */}
-      <Image
-        src="/bg.png"
-        alt="Campus Circular Illustration"
-        fill
-        priority
-        className="object-cover object-bottom -z-10 pointer-events-none select-none"
-      />
-
+    <HeroStage>
       {/* Unified Navbar at top */}
       <AppNavbar variant="guest" />
 
-      {/* Hero Center Content - Over the background */}
-      <div className="flex-1 flex flex-col items-center justify-start text-center pt-4 sm:pt-6 md:pt-10 lg:pt-12 px-4 z-10 max-w-4xl mx-auto">
+      {/* Hero copy, layered over the 3D crew */}
+      <div
+        data-hero-copy
+        className="relative z-10 flex flex-col items-center text-center pt-4 sm:pt-6 md:pt-10 lg:pt-12 px-4 max-w-4xl mx-auto"
+      >
         {/* Tagline Badge */}
         <div
           id="hero-badge"
@@ -120,10 +114,9 @@ export default function HeroSection() {
             </svg>
           </a>
         </div>
-      </div>
 
-      {/* Spacer at bottom so content is vertically centered */}
-      <div className="h-[28vh] sm:h-[32vh] md:h-[36vh] w-full pointer-events-none flex-shrink-0" />
-    </div>
+        <HeroHint />
+      </div>
+    </HeroStage>
   );
 }
