@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Campus Circular — Share, Borrow & Build Trust on Campus",
+  title: "Campus Circular | Share, Borrow & Build Trust on Campus",
   description:
     "Discover, share, and borrow resources within your campus. Save money, build trust, and make the most of what we already have.",
 };

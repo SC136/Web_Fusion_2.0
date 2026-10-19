@@ -53,12 +53,17 @@ class SceneErrorBoundary extends Component<{ onError: () => void; children: Reac
 
 const HintContext = createContext<"hidden" | "waiting" | "shown" | "dismissed">("hidden");
 
+export interface HeroStageProps {
+  children: ReactNode;
+  mode?: "2d" | "3d";
+}
+
 /**
- * Full-height hero with the 3D crew behind the copy. Falls back to the flat
- * illustration when WebGL is unavailable or the scene fails to load.
+ * Full-height hero with the 2D illustration as primary/default and optional
+ * interactive 3D crew. Falls back smoothly if WebGL is unavailable.
  * Mark the copy block with `data-hero-copy` so the crew is laid out below it.
  */
-export default function HeroStage({ children }: { children: ReactNode }) {
+export default function HeroStage({ children, mode = "2d" }: HeroStageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const webgl = useSyncExternalStore(subscribeNever, detectWebGL, () => null);
   const reducedMotion = useSyncExternalStore(
@@ -82,32 +87,39 @@ export default function HeroStage({ children }: { children: ReactNode }) {
     observer.observe(copy);
     observer.observe(container);
     return () => observer.disconnect();
-  }, []);
+  }, [mode]);
 
   const handleReady = useCallback(() => setReady(true), []);
   const handleInteract = useCallback(() => setInteracted(true), []);
   const handleError = useCallback(() => setFailed(true), []);
 
-  const show3D = webgl === true && !failed;
-  const hint = !show3D ? "hidden" : !ready ? "waiting" : interacted ? "dismissed" : "shown";
+  const is3D = mode === "3d" && webgl !== false && !failed;
+  const hint = !is3D ? "hidden" : !ready ? "waiting" : interacted ? "dismissed" : "shown";
 
   return (
     <div
       ref={containerRef}
       className="relative w-full h-screen h-[100dvh] max-h-screen overflow-hidden flex flex-col bg-[#FCF7EE]"
     >
-      {(webgl === false || failed) && (
+      {/* 2D Flat Illustration - Main/default view, and smooth backdrop while 3D is preparing */}
+      {(!is3D || !ready) && (
         <Image
           src="/bg.png"
           alt="Campus Circular Illustration"
           fill
           priority
-          className="object-cover object-bottom pointer-events-none select-none"
+          className="object-cover object-bottom pointer-events-none select-none transition-opacity duration-700"
         />
       )}
 
-      {show3D && (
-        <div className="absolute inset-0" aria-hidden="true">
+      {/* 3D Scene - Only loaded/rendered when 3D is toggled on */}
+      {mode === "3d" && webgl !== false && !failed && (
+        <div
+          className={`absolute inset-0 transition-opacity duration-700 ${
+            ready ? "opacity-100" : "opacity-0"
+          }`}
+          aria-hidden="true"
+        >
           <SceneErrorBoundary onError={handleError}>
             <HeroCanvas
               eventSource={containerRef}
@@ -123,8 +135,9 @@ export default function HeroStage({ children }: { children: ReactNode }) {
 
       <HintContext.Provider value={hint}>{children}</HintContext.Provider>
 
-      {show3D && !ready && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-24 lg:bottom-10 z-10 flex justify-center">
+      {/* 3D Loading Progress Pill */}
+      {mode === "3d" && !ready && !failed && (
+        <div className="pointer-events-none absolute inset-x-0 bottom-24 lg:bottom-10 z-20 flex justify-center">
           <div
             className="flex items-center gap-3 rounded-full border-2 border-[#18181B] bg-white px-4 py-2 shadow-[3px_3px_0_#18181B]"
             style={{ fontFamily: "'Pixelify Sans', monospace" }}
@@ -147,7 +160,7 @@ export function HeroHint() {
   if (state === "hidden") return null;
   return (
     <p
-      className={`mt-4 text-[11px] sm:text-xs text-[#71717A] transition-opacity duration-700 select-none ${
+      className={`mt-2 text-[10.5px] sm:text-[11px] text-[#71717A] transition-opacity duration-700 select-none ${
         state === "shown" ? "opacity-100" : "opacity-0"
       }`}
       style={{ fontFamily: "'Pixelify Sans', monospace" }}

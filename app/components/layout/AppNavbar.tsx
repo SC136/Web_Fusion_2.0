@@ -11,6 +11,8 @@ import { AppIcon } from "@/app/components/dashboard/Icons";
 
 interface AppNavbarProps {
   variant?: "auth" | "guest";
+  mode?: "2d" | "3d";
+  onToggleMode?: (mode: "2d" | "3d") => void;
 }
 
 const navLinks = [
@@ -20,7 +22,7 @@ const navLinks = [
   { label: "Help", href: "/help" },
 ];
 
-export default function AppNavbar({ variant = "auth" }: AppNavbarProps) {
+export default function AppNavbar({ variant = "auth", mode = "2d", onToggleMode }: AppNavbarProps) {
   const pathname = usePathname();
   const { currentUser, allUsers, switchUser } = useApp();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -204,6 +206,59 @@ export default function AppNavbar({ variant = "auth" }: AppNavbarProps) {
             </>
           ) : (
             <>
+              {onToggleMode && (
+                <div
+                  className="inline-flex items-center p-0.5 sm:p-1 rounded-full bg-[#FAF7F0] border-2 border-[#18181B] shadow-[2px_2px_0_#18181B] select-none mr-1 sm:mr-2"
+                  role="tablist"
+                  aria-label="Scene Mode"
+                >
+                  <button
+                    type="button"
+                    id="nav-toggle-2d"
+                    role="tab"
+                    aria-selected={mode === "2d"}
+                    onClick={() => onToggleMode("2d")}
+                    className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                      mode === "2d"
+                        ? "bg-[#18181B] text-white shadow-xs"
+                        : "text-[#52525B] hover:text-[#18181B]"
+                    }`}
+                    style={{ fontFamily: "'Pixelify Sans', monospace" }}
+                  >
+                    <svg
+                      className="w-3.5 h-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                      <circle cx="9" cy="9" r="2" />
+                      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                    </svg>
+                    <span>2D Art</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    id="nav-toggle-3d"
+                    role="tab"
+                    aria-selected={mode === "3d"}
+                    onClick={() => onToggleMode("3d")}
+                    className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                      mode === "3d"
+                        ? "bg-[#9DC05B] text-[#18181B] shadow-xs"
+                        : "text-[#52525B] hover:text-[#18181B]"
+                    }`}
+                    style={{ fontFamily: "'Pixelify Sans', monospace" }}
+                  >
+                    <span>✦ 3D Mode</span>
+                  </button>
+                </div>
+              )}
+
               <Link
                 href="/login"
                 id="nav-guest-login"
